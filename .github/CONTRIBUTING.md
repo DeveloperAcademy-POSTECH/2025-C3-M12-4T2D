@@ -15,7 +15,7 @@ AppleDeveloperAcademy@Postech Challenge3
 ### 브랜치 흐름
 
 #### 도식화
-```mermaid
+```bash
 main ←── dev
           ├── feature/login-view ──┐
           ├── fix/button-crash ──────┤
