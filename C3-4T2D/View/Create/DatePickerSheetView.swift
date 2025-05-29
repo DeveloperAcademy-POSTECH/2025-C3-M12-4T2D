@@ -13,14 +13,19 @@ struct DatePickerSheetView: View {
 
     var body: some View {
         VStack {
+            // 상단 여백 추가
+            Spacer().frame(height: 40)
+
             DatePicker(
                 "날짜 선택",
                 selection: $selectedDate,
                 displayedComponents: [.date]
             )
             .datePickerStyle(.graphical)
+            .accentColor(.yellow)
             .labelsHidden()
             .padding()
+            .environment(\.locale, Locale(identifier: "ko_KR"))
 
             Button(action: {
                 isPresented = false
@@ -34,12 +39,12 @@ struct DatePickerSheetView: View {
                     .cornerRadius(8)
                     .padding(.horizontal)
             }
-            .padding(.bottom, 20)
+            .padding(.bottom, 40)
         }
-        .presentationDetents([.height(400)]) // 하단에 절반만 올라오게
+        .presentationDetents([.medium]) // 하단에 절반만 올라오게
     }
 }
 
-//#Preview {
+// #Preview {
 //    DatePickerSheetView()
-//}
+// }

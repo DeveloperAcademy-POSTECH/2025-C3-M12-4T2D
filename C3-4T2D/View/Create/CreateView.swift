@@ -18,7 +18,6 @@ struct CreateView: View {
     @State private var showDatePicker = false
 
     var body: some View {
-//        ScrollView {
         ZStack(alignment: .bottom) {
             VStack(spacing: 0) {
                 TopBarView()
@@ -175,8 +174,9 @@ struct CreateView: View {
                     .presentationDetents([.medium, .large])
             }
             .padding(.horizontal, 20)
-            //        }
-            //        .scrollDismissesKeyboard(.interactively)
+        }
+        .onTapGesture {
+            hideKeyboard()
         }
     }
 }
@@ -193,6 +193,13 @@ func formattedDate(date: Date) -> String {
     } else {
         formatter.dateFormat = "M월 d일 (E)"
         return formatter.string(from: date)
+    }
+}
+
+extension View {
+    func hideKeyboard() {
+        let resign = #selector(UIResponder.resignFirstResponder)
+        UIApplication.shared.sendAction(resign, to: nil, from: nil, for: nil)
     }
 }
     
