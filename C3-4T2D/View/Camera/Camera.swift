@@ -23,8 +23,7 @@ class Camera: NSObject, AVCapturePhotoCaptureDelegate, AVCaptureVideoDataOutputS
     private var videoOutput: AVCaptureVideoDataOutput?
 
     private var sessionQueue: DispatchQueue!
-    
-    
+
     private let logger = Logger(subsystem: "com.seyeon.C3-4T2D", category: "Camera")
 
     // MARK: - 사용 가능한 장치 정리
@@ -284,6 +283,30 @@ class Camera: NSObject, AVCapturePhotoCaptureDelegate, AVCaptureVideoDataOutputS
             }
 
             photoOutput.capturePhoto(with: settings, delegate: self)
+        }
+    }
+
+    // MARK: - Flash 제어
+
+    func toggleFlash(on: Bool) {
+        sessionQueue.async {
+            guard let device = self.captureDevice, device.hasTorch else {
+                self.logger.debug("Device does not support torch (flash).")
+                return
+            }
+
+            do {
+                try device.lockForConfiguration()
+                if on {
+                    try device.setTorchModeOn(level: AVCaptureDevice.maxAvailableTorchLevel)
+                } else {
+                    device.torchMode = .off
+                }
+                device.unlockForConfiguration()
+                self.logger.debug("Torch mode set to \(on ? "ON" : "OFF")")
+            } catch {
+                self.logger.error("Failed to toggle flash: \(error.localizedDescription)")
+            }
         }
     }
 

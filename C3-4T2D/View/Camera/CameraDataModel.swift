@@ -13,14 +13,14 @@ final class CameraDataModel: ObservableObject {
     let camera = Camera()
 
     @Published var viewfinderImage: Image?
+    @Published var isFlashOn: Bool = false
 
     /// 카메라로 촬영한 결과를 UI로 넘겨줄 콜백
     @MainActor
     var onPhotoCaptured: ((Image) -> Void)?
-    
+
     @MainActor
     var onViewfinderImageUpdated: ((Image?) -> Void)?
-
 
     init() {
         Task {
@@ -30,6 +30,11 @@ final class CameraDataModel: ObservableObject {
         Task {
             await handleCameraPhotos()
         }
+    }
+
+    func toggleFlash() {
+        isFlashOn.toggle()
+        camera.toggleFlash(on: isFlashOn)
     }
 
     func handleCameraPreviews() async {
