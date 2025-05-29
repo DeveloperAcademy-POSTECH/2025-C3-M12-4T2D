@@ -30,6 +30,7 @@ struct Title: View {
             HStack {
                 // 제목
                 Text(title)
+                    .bold(true)
 
                 Spacer()
                 // 더보기
@@ -57,13 +58,13 @@ struct Title: View {
 // MARK: - ImageView
 
 struct ImageView: View {
-    var image: String = "Image"
+//    var image: String = "Image"
 
     var body: some View {
-        Image(image)
-            .resizable()
-            .scaledToFit()
-            .frame(maxWidth: .infinity)
+//        Image(image)
+        Rectangle()
+//            .resizable()
+            .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.width)
     }
 }
 

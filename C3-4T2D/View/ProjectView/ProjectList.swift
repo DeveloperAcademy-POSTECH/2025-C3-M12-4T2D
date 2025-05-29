@@ -10,10 +10,10 @@ import SwiftUI
 struct ProjectList: View {
     var body: some View {
         ScrollView {
-            LazyVStack {
+            LazyVStack(spacing: 25) {
                 ForEach(0 ..< 20) { _ in
                     Project()
-                        .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height * 0.5)
+                        .frame(width: UIScreen.main.bounds.width)
 //                        .border(Color.gray)
                 }
             }
