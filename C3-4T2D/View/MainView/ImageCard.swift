@@ -1,7 +1,13 @@
 import SwiftUI
 
 struct ImageCard: View {
+    let image: String
     var body: some View {
-        Rectangle().foregroundColor(.gray).frame(width: 193, height: 137).cornerRadius(5)
+        Image("tmpImage")
+            .resizable()
+            .frame(width: 193, height: 137)
+            .cornerRadius(5)
+
+//        Rectangle().foregroundColor(.gray).frame(width: 193, height: 137).cornerRadius(5)
     }
 }
