@@ -13,8 +13,6 @@ struct ProjectList: View {
             LazyVStack(spacing: 25) {
                 ForEach(0 ..< 20) { _ in
                     Project()
-                        .frame(width: UIScreen.main.bounds.width)
-//                        .border(Color.gray)
                 }
             }
         }
