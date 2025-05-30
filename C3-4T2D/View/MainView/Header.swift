@@ -6,7 +6,7 @@ struct Header: View {
             Image(systemName: "person.circle")
                 .resizable()
                 .frame(width: 35, height: 35)
-                .foregroundColor(.blue)
+                .tint(Color.yellow)
 
             HStack {
                 Text("D-129")
