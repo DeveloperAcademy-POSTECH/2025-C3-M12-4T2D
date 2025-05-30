@@ -153,7 +153,8 @@ class Camera: NSObject, AVCapturePhotoCaptureDelegate, AVCaptureVideoDataOutputS
         let videoOutput = AVCaptureVideoDataOutput()
         videoOutput.setSampleBufferDelegate(self, queue: DispatchQueue(label: "VideoDataOutputQueue"))
 
-        captureSession.sessionPreset = .photo
+//        captureSession.sessionPreset = .photo
+        captureSession.sessionPreset = .hd1280x720
 
         guard captureSession.canAddInput(input),
               captureSession.canAddOutput(photoOutput),
@@ -240,18 +241,18 @@ class Camera: NSObject, AVCapturePhotoCaptureDelegate, AVCaptureVideoDataOutputS
         }
     }
 
-    // MARK: - 카메라 전환
-
-    func switchCaptureDevice() {
-        if let current = captureDevice,
-           let index = availableCaptureDevices.firstIndex(of: current)
-        {
-            let nextIndex = (index + 1) % availableCaptureDevices.count
-            captureDevice = availableCaptureDevices[nextIndex]
-        } else {
-            captureDevice = AVCaptureDevice.default(for: .video)
-        }
-    }
+//    // MARK: - 카메라 전환
+//
+//    func switchCaptureDevice() {
+//        if let current = captureDevice,
+//           let index = availableCaptureDevices.firstIndex(of: current)
+//        {
+//            let nextIndex = (index + 1) % availableCaptureDevices.count
+//            captureDevice = availableCaptureDevices[nextIndex]
+//        } else {
+//            captureDevice = AVCaptureDevice.default(for: .video)
+//        }
+//    }
 
     // MARK: - 사진 촬영
 

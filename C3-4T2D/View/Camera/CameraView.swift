@@ -43,7 +43,7 @@ struct CameraView: View {
                     Spacer()
                 }
 
-                // 하단 바 (취소, 촬영, 전환)
+                // 하단 바 (취소, 촬영)
                 VStack {
                     Spacer()
 
@@ -68,15 +68,6 @@ struct CameraView: View {
                         }
 
                         Spacer()
-
-                        // 카메라 전환 버튼
-                        Button {
-                            model.camera.switchCaptureDevice()
-                        } label: {
-                            Image(systemName: "arrow.triangle.2.circlepath")
-                                .font(.system(size: 32, weight: .bold))
-                                .foregroundColor(.white)
-                        }
                     }
                     .padding(.horizontal, 32)
                     .frame(height: geometry.size.height * Self.barHeightFactor)
