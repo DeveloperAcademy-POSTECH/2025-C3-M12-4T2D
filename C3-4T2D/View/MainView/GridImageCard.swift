@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct GridImageCard: View {
-    let image: String
+    let project: Project
 
     var body: some View {
         Rectangle()
@@ -9,7 +9,8 @@ struct GridImageCard: View {
             .aspectRatio(1, contentMode: .fit)
             .cornerRadius(8)
             .overlay(
-                Image("tmpImage")
+                // 못 불러왔을때의 기본이미지도 필요할듯
+                Image(project.postList[project.postList.count - 1].postImageUrl ?? "tmpImage")
                     .resizable()
                     .aspectRatio(contentMode: .fill)
                     .cornerRadius(8) // 이것도 추가
