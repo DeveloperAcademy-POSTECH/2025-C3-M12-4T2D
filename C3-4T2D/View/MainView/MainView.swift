@@ -3,6 +3,31 @@ import SwiftUI
 struct MainView: View {
     private let dummyData = DummyData()
     @State private var selectedTabIndex: Int = 0
+    @State private var sortOrder: SortOrder = .newest
+
+    enum SortOrder: String, CaseIterable {
+        case newest = "최신순"
+        case oldest = "오래된순"
+    }
+
+    // MARK: 최신순일때의 프로젝트는 항상 진행중이 맨위? 아니면 이전프로젝트 수정을 했으면 가장 마지막에 추가된 글을 기준으로 판단 ??
+
+    var sortedProjects: [Project] {
+        switch sortOrder {
+        case .newest:
+            return dummyData.allProjects.sorted { first, second in
+                let firstLatest = first.postList.compactMap { $0.createdAt }.max() ?? Date.distantPast
+                let secondLatest = second.postList.compactMap { $0.createdAt }.max() ?? Date.distantPast
+                return firstLatest > secondLatest
+            }
+        case .oldest:
+            return dummyData.allProjects.sorted { first, second in
+                let firstEarliest = first.postList.compactMap { $0.createdAt }.min() ?? Date.distantFuture
+                let secondEarliest = second.postList.compactMap { $0.createdAt }.min() ?? Date.distantFuture
+                return firstEarliest < secondEarliest
+            }
+        }
+    }
 
     var body: some View {
         ScrollView {
@@ -43,10 +68,19 @@ struct MainView: View {
 
                 VStack {
                     HStack {
-                        HStack {
-                            Text("전체보기").font(.system(size: 17, weight: .semibold))
-                            Image(systemName: "chevron.down")
+                        Menu {
+                            ForEach(SortOrder.allCases, id: \.self) { order in
+                                Button(order.rawValue) {
+                                    sortOrder = order
+                                }
+                            }
+                        } label: {
+                            HStack {
+                                Text(sortOrder.rawValue).font(.system(size: 17, weight: .semibold))
+                                Image(systemName: "chevron.down")
+                            }
                         }
+                        .foregroundColor(.black)
                         Spacer()
                         HStack(spacing: 16) {
                             Button {
@@ -76,21 +110,21 @@ struct MainView: View {
                         switch selectedTabIndex {
                         case 0: // 프로젝트별 스크롤뷰
                             LazyVStack(spacing: 20) {
-                                ForEach(dummyData.allProjects) { project in
+                                ForEach(sortedProjects) { project in
                                     ProjectSectionCard(project: project)
                                 }
                             }.padding(.leading, 20)
                         case 1: // 리스트뷰
                             LazyVStack(spacing: 16) {
-                                ForEach(dummyData.allProjects) { project in
+                                ForEach(sortedProjects) { project in
                                     PostListCard(project: project)
                                 }
                             }
                             .padding(.horizontal, 20)
                         case 2: // 3x3 그리드뷰
                             LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 10), count: 3), spacing: 10) {
-                                ForEach(dummyData.allPosts) { post in
-                                    GridImageCard(image: post.postImageUrl ?? "")
+                                ForEach(sortedProjects) { project in
+                                    GridImageCard(project: project)
                                 }
                             }.padding(.horizontal, 20)
                         default:
