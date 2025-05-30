@@ -44,32 +44,38 @@ class DummyData {
         Project(
             projectTitle: "미래적인 잠자리",
             postList: postList1,
-            finishedAt: nil // 진행중
+            createdAt: postList1[0].createdAt,
+            finishedAt: postList1.map { $0.createdAt }.max()
         ),
         Project(
             projectTitle: "사마귀와 무당벌레 폭주족",
             postList: postList2,
+            createdAt: postList2[0].createdAt,
             finishedAt: postList2.map { $0.createdAt }.max()
         ),
         Project(
             projectTitle: "스폰지밥과 콜라캔의 행복한 사랑",
             postList: postList3,
+            createdAt: postList3[0].createdAt,
             finishedAt: postList3.map { $0.createdAt }.max()
         ),
         Project(
             projectTitle: "매정한 얼음과 바람",
             postList: postList4,
+            createdAt: postList4[0].createdAt,
             finishedAt: postList4.map { $0.createdAt }.max()
         ),
         Project(
             projectTitle: "시간을 초월한 분노",
             postList: postList5,
+            createdAt: postList5[0].createdAt,
             finishedAt: postList5.map { $0.createdAt }.max()
         ),
         Project(
             projectTitle: "투명 비닐에 담긴 사과",
             postList: postList6,
-            finishedAt: postList6.map { $0.createdAt }.max()
+            createdAt: postList6[0].createdAt,
+            finishedAt: nil // 진행중
         )
     ]
 
