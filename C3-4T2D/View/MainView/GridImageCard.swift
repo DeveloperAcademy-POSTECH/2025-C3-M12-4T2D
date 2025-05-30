@@ -1,24 +1,19 @@
 import SwiftUI
 
 struct GridImageCard: View {
-    let index: Int
+    let image: String
 
     var body: some View {
-        // Rectangle -> 이미지로 변환 예정
         Rectangle()
-            .foregroundColor(.gray.opacity(0.3))
-            .aspectRatio(1, contentMode: .fit) // 정사각형
+            .fill(Color.gray.opacity(0.3))
+            .aspectRatio(1, contentMode: .fit)
             .cornerRadius(8)
             .overlay(
-                VStack {
-                    Spacer()
-                    HStack {
-                        Text("그림 제목!")
-                            .font(.system(size: 11, weight: .semibold))
-                    }
-
-                    .padding(.bottom, 8)
-                }
+                Image("tmpImage")
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
+                    .cornerRadius(8) // 이것도 추가
             )
+            .clipped()
     }
 }
