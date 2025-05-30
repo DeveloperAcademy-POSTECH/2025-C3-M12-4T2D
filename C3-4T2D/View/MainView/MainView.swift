@@ -38,11 +38,27 @@ struct MainView: View {
                 VStack {
                     HStack {
                         VStack(alignment: .leading) {
-                            Text(dummyData.currentProject.projectTitle).font(.system(size: 17, weight: .bold))
-                            Text("2025.05.24 ~ 2025.07.02").font(.system(size: 11, weight: .regular))
+                            Text("진행중인 과정").font(.system(size: 22, weight: .bold)).padding(.bottom, 8)
+                            Text(dummyData.currentProject.projectTitle).font(.system(size: 19, weight: .bold))
+                            HStack {
+                                Text(formatDateRange(
+                                    startDate: dummyData.currentProject.postList.compactMap { $0.createdAt }.min() ?? Date(),
+                                    endDate: dummyData.currentProject.finishedAt
+                                ))
+                                .font(.system(size: 11, weight: .regular))
+                                .foregroundColor(.gray)
+
+                                Text(dummyData.currentProject.finishedAt == nil ? "진행중" : "완료")
+                                    .font(.system(size: 11, weight: .medium))
+                                    .padding(.horizontal, 8)
+                                    .padding(.vertical, 2)
+                                    .background(dummyData.currentProject.finishedAt == nil ? Color.green.opacity(0.2) : Color.gray.opacity(0.2))
+                                    .foregroundColor(dummyData.currentProject.finishedAt == nil ? .green : .gray)
+                                    .cornerRadius(4)
+                            }
                         }
                         Spacer()
-                        Image(systemName: "ellipsis").foregroundColor(.gray).font(.system(size: 24))
+                        Image(systemName: "plus").foregroundColor(.gray).font(.system(size: 24))
                     }.padding(.vertical, 12)
                         .padding(.trailing, 20)
 
