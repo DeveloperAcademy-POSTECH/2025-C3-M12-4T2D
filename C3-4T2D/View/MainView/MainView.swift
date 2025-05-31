@@ -5,28 +5,10 @@ struct MainView: View {
     @State private var selectedTabIndex: Int = 0
     @State private var sortOrder: SortOrder = .newest
 
-    enum SortOrder: String, CaseIterable {
-        case newest = "최신순"
-        case oldest = "오래된순"
-    }
-
     // MARK: 최신순일때의 프로젝트는 항상 진행중이 맨위? 아니면 이전프로젝트 수정을 했으면 가장 마지막에 추가된 글을 기준으로 판단 ??
 
     var sortedProjects: [Project] {
-        switch sortOrder {
-        case .newest:
-            return dummyData.allProjects.sorted { first, second in
-                let firstLatest = first.postList.compactMap { $0.createdAt }.max() ?? Date.distantPast
-                let secondLatest = second.postList.compactMap { $0.createdAt }.max() ?? Date.distantPast
-                return firstLatest > secondLatest
-            }
-        case .oldest:
-            return dummyData.allProjects.sorted { first, second in
-                let firstEarliest = first.postList.compactMap { $0.createdAt }.min() ?? Date.distantFuture
-                let secondEarliest = second.postList.compactMap { $0.createdAt }.min() ?? Date.distantFuture
-                return firstEarliest < secondEarliest
-            }
-        }
+        sortOrder.sort(projects: dummyData.allProjects)
     }
 
     var body: some View {
@@ -99,23 +81,14 @@ struct MainView: View {
                         .foregroundColor(.black)
                         Spacer()
                         HStack(spacing: 16) {
-                            Button {
-                                selectedTabIndex = 0
-                            } label: {
-                                Image(systemName: "rectangle.grid.1x2.fill")
-                                    .tint(selectedTabIndex == 0 ? .yellow : .gray)
-                            }
-                            Button {
-                                selectedTabIndex = 1
-                            } label: {
-                                Image(systemName: "rectangle.grid.2x2.fill")
-                                    .tint(selectedTabIndex == 1 ? .yellow : .gray)
-                            }
-                            Button {
-                                selectedTabIndex = 2
-                            } label: {
-                                Image(systemName: "rectangle.grid.3x3.fill")
-                                    .tint(selectedTabIndex == 2 ? .yellow : .gray)
+                            ForEach(TabType.allCases, id: \.self) { tab in
+                                Button {
+                                    selectedTabIndex = tab.rawValue
+                                } label: {
+                                    Image(tab.imageName(isSelected: selectedTabIndex == tab.rawValue))
+                                        .resizable()
+                                        .frame(width: 16, height: 16)
+                                }
                             }
                         }
                     }.padding(.horizontal, 20)
