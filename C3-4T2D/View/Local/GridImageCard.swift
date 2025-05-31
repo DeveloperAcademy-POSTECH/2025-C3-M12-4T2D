@@ -13,7 +13,6 @@ struct GridImageCard: View {
                 Image(project.postList[project.postList.count - 1].postImageUrl ?? "tmpImage")
                     .resizable()
                     .aspectRatio(contentMode: .fill)
-                    .cornerRadius(8) // 이것도 추가
             )
             .clipped()
     }
