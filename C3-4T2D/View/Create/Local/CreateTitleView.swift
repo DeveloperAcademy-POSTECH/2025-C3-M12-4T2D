@@ -1,5 +1,5 @@
 //
-//  TopBarView.swift
+//  CreateTitleView.swift
 //  C3-4T2D
 //
 //  Created by Hwnag Seyeon on 5/29/25.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct TopBarView: View {
+struct CreateTitleView: View {
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
@@ -45,5 +45,5 @@ struct TopBarView: View {
 }
 
 #Preview {
-    TopBarView()
+    CreateTitleView()
 }
