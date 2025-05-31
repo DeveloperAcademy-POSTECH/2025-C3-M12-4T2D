@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ImageView: View {
-    var image: String = "Image"
+    let image: String
 
     var body: some View {
 //        Rectangle()
