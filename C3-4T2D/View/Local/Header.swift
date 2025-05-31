@@ -25,7 +25,6 @@ struct Header: View {
                 }
             }
             Spacer()
-        }.padding(.vertical, 24)
-            .padding(.horizontal, 20)
+        }.padding(.all, 20)
     }
 }

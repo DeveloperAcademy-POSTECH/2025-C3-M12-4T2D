@@ -15,12 +15,12 @@ struct MainView: View {
         ScrollView {
             VStack(spacing: 0) {
                 Header()
-
+                Divider()
                 // BANNER
                 VStack {
                     HStack {
-                        VStack(alignment: .leading) {
-                            Text("진행중인 과정").font(.system(size: 22, weight: .bold)).padding(.bottom, 8)
+                        VStack(alignment: .leading, spacing: 12) {
+                            Text("진행중인 과정").font(.system(size: 22, weight: .bold))
                             Text(dummyData.currentProject.projectTitle).font(.system(size: 19, weight: .bold))
                             HStack {
                                 Text(DateFormatter.projectDateRange(
@@ -41,7 +41,7 @@ struct MainView: View {
                         }
                         Spacer()
                         Image(systemName: "plus").foregroundColor(.gray).font(.system(size: 24))
-                    }.padding(.vertical, 12)
+                    }.padding(.vertical, 15)
                         .padding(.trailing, 20)
 
                     ScrollView(.horizontal, showsIndicators: false) {
@@ -74,8 +74,8 @@ struct MainView: View {
                             }
                         } label: {
                             HStack {
-                                Text(sortOrder.rawValue).font(.system(size: 17, weight: .semibold))
-                                Image(systemName: "chevron.down")
+                                Text(sortOrder.rawValue).font(.system(size: 22, weight: .semibold))
+                                Image(systemName: "chevron.down").font(.system(size: 22, weight: .semibold))
                             }
                         }
                         .foregroundColor(.black)
