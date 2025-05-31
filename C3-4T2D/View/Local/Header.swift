@@ -8,7 +8,7 @@ struct Header: View {
                 .frame(width: 49, height: 49)
                 .tint(Color.yellow)
             VStack(alignment: .leading) {
-                HStack {
+                HStack(spacing: 10) {
                     Text("국민대학교 합격")
                         .font(.system(size: 12, weight: .semibold))
                     Text("D-129")
@@ -18,7 +18,7 @@ struct Header: View {
                         .background(Color.orange.opacity(0.2))
                 }
 
-                HStack(spacing: 11) {
+                HStack(spacing: 12) {
                     Text("🔥489").font(.system(size: 15, weight: .semibold))
                     Text("📒12").font(.system(size: 15, weight: .semibold))
                     Text("🎨112").font(.system(size: 15, weight: .semibold))
