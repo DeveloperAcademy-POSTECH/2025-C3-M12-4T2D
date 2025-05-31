@@ -18,7 +18,7 @@ struct ProjectSectionCard: View {
                         .font(.system(size: 19, weight: .bold))
 
                     HStack {
-                        Text(formatDateRange(
+                        Text(DateFormatter.projectDateRange(
                             startDate: project.postList.compactMap { $0.createdAt }.min() ?? Date(),
                             endDate: project.finishedAt
                         ))
