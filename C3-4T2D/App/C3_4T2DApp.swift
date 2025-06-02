@@ -5,15 +5,14 @@
 //  Created by bishoe on 5/28/25.
 //
 
-import SwiftUI
 import SwiftData
+import SwiftUI
 
 @main
 struct C3_4T2DApp: App {
-
     var body: some Scene {
         WindowGroup {
-            CreateTestView()
+            ContentView()
         }
     }
 }

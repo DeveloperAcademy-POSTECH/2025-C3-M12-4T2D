@@ -62,17 +62,3 @@ struct CreateDate: View {
         }
     }
 }
-
-struct CreateDate_Previews: PreviewProvider {
-    struct Wrapper: View {
-        @State private var date = Date()
-        var body: some View {
-            CreateDate(selectedDate: $date, showDatePicker: .constant(false))
-//                .padding()
-        }
-    }
-
-    static var previews: some View {
-        Wrapper()
-    }
-}

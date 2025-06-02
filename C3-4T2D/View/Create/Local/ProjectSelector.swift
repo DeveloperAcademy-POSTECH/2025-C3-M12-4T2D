@@ -8,14 +8,9 @@
 import SwiftUI
 
 struct ProjectSelector: View {
-
     var body: some View {
-        VStack{
+        VStack {
             Text("카테고리 선택 창")
         }
     }
 }
-
-//#Preview {
-//    ProjectSelector()
-//}

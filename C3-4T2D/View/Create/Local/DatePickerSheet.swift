@@ -44,7 +44,3 @@ struct DatePickerSheet: View {
         .presentationDetents([.medium]) // 하단에 절반만 올라오게
     }
 }
-
-// #Preview {
-//    DatePickerSheet()
-// }

@@ -8,14 +8,14 @@
 import SwiftUI
 
 struct CreateView: View {
-    @State private var projectName: String = ""
     @State private var showProjectSelector = false
     @State private var isPresentingCamera = false
-    @State private var descriptionText: String = ""
-    
-    @State private var selectedDate = Date()
     @State private var showDatePicker = false
-    
+
+    @State private var projectName: String = ""
+    @State private var descriptionText: String = ""
+
+    @State private var selectedDate = Date()
     @State private var selectedStage = "아이디어"
 
     var body: some View {
@@ -23,7 +23,7 @@ struct CreateView: View {
             CreateHeader()
                 .padding(.bottom, 12)
                 .padding(.horizontal, 20)
-            
+
             ScrollView {
                 VStack(spacing: 0) {
                     // 프로젝트명
@@ -35,15 +35,15 @@ struct CreateView: View {
                     // 진행 단계
                     CreateProcess(selectedStage: $selectedStage)
                         .padding(.bottom, 24)
-                    
+
                     // 사진 업로드
                     CreatePhoto(isPresentingCamera: $isPresentingCamera)
-                    
+
                     // 메모 입력
                     CreateMemo(descriptionText: $descriptionText)
-                
-                    // MARK: 작성 완료 버튼 (fixed footer)
-                
+
+                    // MARK: - 작성 완료 버튼 (fixed footer)
+
                     Button(action: {
                         // 작성 완료 동작
                     }) {
@@ -80,7 +80,7 @@ extension View {
         UIApplication.shared.sendAction(resign, to: nil, from: nil, for: nil)
     }
 }
-    
+
 #Preview {
     CreateView()
 }

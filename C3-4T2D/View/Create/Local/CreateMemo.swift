@@ -41,16 +41,3 @@ struct CreateMemo: View {
         .padding(.vertical, 16)
     }
 }
-
-#Preview {
-    CreateMemoPreviewWrapper()
-}
-
-struct CreateMemoPreviewWrapper: View {
-    @State private var descriptionText = ""
-
-    var body: some View {
-        CreateMemo(descriptionText: $descriptionText)
-//            .padding()
-    }
-}

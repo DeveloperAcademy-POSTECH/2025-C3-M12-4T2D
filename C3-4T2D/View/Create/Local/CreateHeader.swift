@@ -11,7 +11,7 @@ struct CreateHeader: View {
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
-        HStack() {
+        HStack {
             Button(action: {
                 dismiss() // 창 닫기
             }) {
@@ -40,10 +40,5 @@ struct CreateHeader: View {
         }
         .padding(.top, 16)
         .padding(.bottom, 12)
-
     }
-}
-
-#Preview {
-    CreateHeader()
 }

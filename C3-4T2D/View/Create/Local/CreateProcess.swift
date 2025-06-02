@@ -40,18 +40,5 @@ struct CreateProcess: View {
                 }
             }
         }
-//        .padding(.horizontal)
-    }
-}
-
-#Preview {
-    CreateProcessPreviewWrapper()
-}
-
-struct CreateProcessPreviewWrapper: View {
-    @State private var selectedStage = "스케치"
-
-    var body: some View {
-        CreateProcess(selectedStage: $selectedStage)
     }
 }

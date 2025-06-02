@@ -31,7 +31,6 @@ struct CreateProjTitle: View {
                         Image(systemName: "chevron.right")
                             .foregroundColor(.black)
                             .padding(.trailing, 8)
-                            
                     }
 
                     Divider()
@@ -40,26 +39,5 @@ struct CreateProjTitle: View {
             }
             .buttonStyle(PlainButtonStyle())
         }
-    }
-}
-
-#Preview {
-    StatefulPreviewWrapper("") { binding in
-        CreateProjTitle(projectName: binding, showProjectSelector: .constant(false))
-//            .padding()
-    }
-}
-
-struct StatefulPreviewWrapper<Value, Content: View>: View {
-    @State private var value: Value
-    var content: (Binding<Value>) -> Content
-
-    init(_ value: Value, content: @escaping (Binding<Value>) -> Content) {
-        _value = State(initialValue: value)
-        self.content = content
-    }
-
-    var body: some View {
-        content($value)
     }
 }
