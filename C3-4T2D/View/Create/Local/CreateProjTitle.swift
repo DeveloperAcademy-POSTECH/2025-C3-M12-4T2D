@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct CreateProjTitle: View {
-    @Binding var projectName: String
+    @Binding var projTitle: String
     @Binding var showProjectSelector: Bool
 
     var body: some View {
@@ -22,9 +22,9 @@ struct CreateProjTitle: View {
                         .foregroundColor(.black)
 
                     HStack {
-                        Text(projectName.isEmpty ? "프로젝트명을 선택해주세요" : projectName)
+                        Text(projTitle.isEmpty ? "프로젝트명을 선택해주세요" : projTitle)
                             .font(.system(size: 15))
-                            .foregroundColor(projectName.isEmpty ? .gray : .black)
+                            .foregroundColor(projTitle.isEmpty ? .gray : .black)
 
                         Spacer()
 

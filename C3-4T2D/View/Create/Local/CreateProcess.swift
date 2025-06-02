@@ -8,23 +8,20 @@
 import SwiftUI
 
 struct CreateProcess: View {
-    @Binding var selectedStage: String
-
-    let stages = ["아이디어", "스케치", "채색", "완성", "기타"]
+    @Binding var selectedStage: ProcessStage
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             Text("진행 단계")
                 .font(.title3.weight(.bold))
                 .padding(.bottom, 10)
-
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 16) {
-                    ForEach(stages, id: \.self) { stage in
+                    ForEach(ProcessStage.allCases) { stage in
                         Button(action: {
                             selectedStage = stage
                         }) {
-                            Text(stage)
+                            Text(stage.rawValue)
                                 .font(.system(size: 15))
                                 .foregroundColor(selectedStage == stage ? .white : .black)
                                 .padding(.horizontal, 16)

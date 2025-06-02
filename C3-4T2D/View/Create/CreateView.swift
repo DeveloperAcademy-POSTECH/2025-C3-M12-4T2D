@@ -12,11 +12,11 @@ struct CreateView: View {
     @State private var isPresentingCamera = false
     @State private var showDatePicker = false
 
-    @State private var projectName: String = ""
+    @State private var projTitle: String = ""
     @State private var descriptionText: String = ""
 
     @State private var selectedDate = Date()
-    @State private var selectedStage = "아이디어"
+    @State private var selectedStage: ProcessStage = .idea
 
     @State private var pickedImage: UIImage?
 
@@ -29,7 +29,7 @@ struct CreateView: View {
             ScrollView {
                 VStack(spacing: 0) {
                     // 프로젝트명
-                    CreateProjTitle(projectName: $projectName, showProjectSelector: $showProjectSelector)
+                    CreateProjTitle(projTitle: $projTitle, showProjectSelector: $showProjectSelector)
                         .padding(.bottom, 24)
                     // 날짜 선택
                     CreateDate(selectedDate: $selectedDate, showDatePicker: $showDatePicker)

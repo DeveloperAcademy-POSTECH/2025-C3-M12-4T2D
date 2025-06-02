@@ -9,6 +9,7 @@ import SwiftUI
 
 struct CreateMemo: View {
     @Binding var descriptionText: String
+    @FocusState private var isFocused: Bool
 
     var body: some View {
         VStack(alignment: .leading) {
@@ -18,7 +19,7 @@ struct CreateMemo: View {
                 .padding(.bottom, 8)
 
             ZStack(alignment: .topLeading) {
-                if descriptionText.isEmpty {
+                if descriptionText.isEmpty && !isFocused {
                     Text("과정에 대하여 남기고 싶은 내용이 있으면 적어주세요")
                         .foregroundColor(.gray)
                         .padding(.top, 12)
@@ -27,6 +28,7 @@ struct CreateMemo: View {
                 }
 
                 TextEditor(text: $descriptionText)
+                    .focused($isFocused)
                     .padding(8)
                     .font(.system(size: 15))
                     .scrollContentBackground(.hidden)
