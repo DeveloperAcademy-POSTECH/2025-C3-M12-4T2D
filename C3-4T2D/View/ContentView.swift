@@ -5,8 +5,8 @@
 //  Created by bishoe on 5/28/25.
 //
 
-import SwiftUI
 import SwiftData
+import SwiftUI
 
 struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
@@ -56,6 +56,6 @@ struct ContentView: View {
 }
 
 #Preview {
-    ProjectList()
+    ContentView()
         .modelContainer(for: Item.self, inMemory: true)
 }
