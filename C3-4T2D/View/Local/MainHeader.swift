@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct Header: View {
+struct MainHeader: View {
     var body: some View {
         HStack(spacing: 30) {
             Image(systemName: "person.circle")

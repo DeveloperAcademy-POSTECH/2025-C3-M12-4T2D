@@ -14,7 +14,7 @@ struct MainView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: 0) {
-                Header()
+                MainHeader()
                 Divider()
                 // BANNER
                 VStack {
