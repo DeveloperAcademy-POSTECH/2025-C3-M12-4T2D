@@ -9,6 +9,7 @@ import SwiftUI
 
 struct CameraTestView: View {
     @State private var isPresentingCamera = false
+    @State private var image: UIImage?
 
     var body: some View {
         VStack {
@@ -21,11 +22,17 @@ struct CameraTestView: View {
             Spacer()
         }
         .fullScreenCover(isPresented: $isPresentingCamera) {
-            CameraView()
+            ZStack {
+                Color.black.ignoresSafeArea() // Covers the system white edges
+                CameraView { selectedImage in
+                    self.image = selectedImage
+                    isPresentingCamera = false
+                }
+            }
         }
     }
 }
 
-#Preview {
+ #Preview {
     CameraTestView()
-}
+ }

@@ -2,74 +2,28 @@
 //  CameraView.swift
 //  C3-4T2D
 //
-//  Created by Hwnag Seyeon on 5/29/25.
+//  Created by Hwnag Seyeon on 6/2/25.
 //
 
 import SwiftUI
+import UIKit
 
-struct CameraView: View {
-    @StateObject private var model = CameraDataModel()
+struct CameraView: UIViewControllerRepresentable {
+    var didFinishPicking: (UIImage) -> Void
+    @Environment(\.presentationMode) var presentationMode
 
-    @State private var isShowingPreview = false
-    @State private var capturedImage: Image?
-    @State private var isShowingCapturedImage = false
+    func makeUIViewController(context: Context) -> UIImagePickerController {
+        let picker = UIImagePickerController()
+        picker.sourceType = .camera
+        picker.delegate = context.coordinator
+        return picker
+    }
 
-    var body: some View {
-        ZStack {
-            Color.green.ignoresSafeArea()
+    func updateUIViewController(_ uiViewController: UIImagePickerController, context: Context) {}
 
-            VStack {
-                CameraTopView(model: model)
-
-                Spacer()
-
-                GeometryReader { geometry in
-                    let width = geometry.size.width
-                    let height = width * 4 / 3
-
-                    ViewfinderView(image: $model.viewfinderImage)
-                        .frame(width: width, height: height)
-                        .clipped()
-//                        .cornerRadius(12)
-//                        .padding(.horizontal)
-
-//                GeometryReader { geometry in
-//                    let width = geometry.size.width
-//                    let height = width * 4 / 3
-//
-//                    Rectangle()
-//                        .fill(Color.blue)
-//                        .frame(width: width, height: height)
-//                        .overlay(
-//                            Text("카메라 미리보기 뷰 자리")
-//                                .foregroundColor(.white)
-//                                .bold()
-//                        )
-                }
-
-                Spacer()
-
-                CameraBottomView(model: model)
-            }
-        }
-        .task {
-            await model.camera.start()
-            model.onPhotoCaptured = { image in
-                capturedImage = image
-                isShowingCapturedImage = true
-            }
-        }
-        .fullScreenCover(isPresented: $isShowingCapturedImage) {
-            if let image = capturedImage {
-                CapturedImageView(image: image) {
-                    isShowingCapturedImage = false
-                }
-            }
-        }
+    func makeCoordinator() -> CameraCoordinator {
+        CameraCoordinator(parent: self)
     }
 }
 
 
-#Preview {
-    CameraView()
-}
