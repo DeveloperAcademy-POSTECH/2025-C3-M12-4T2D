@@ -29,10 +29,10 @@ struct CreatePhoto: View {
                             .clipShape(Circle())
                             .padding(.bottom, 16)
 
-                        Text("과정의 기록을 보여줄 수 있는 사진을 올려주세요")
-                            .font(.system(size: 15))
-                            .foregroundColor(Color.gray)
-                            .multilineTextAlignment(.center)
+//                        Text("과정의 기록을 보여줄 수 있는 사진을 올려주세요")
+//                            .font(.system(size: 15))
+//                            .foregroundColor(Color.gray)
+//                            .multilineTextAlignment(.center)
                     }
                 }
                 .padding(.vertical, 56)

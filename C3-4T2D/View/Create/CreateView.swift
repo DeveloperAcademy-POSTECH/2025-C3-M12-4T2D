@@ -18,6 +18,8 @@ struct CreateView: View {
     @State private var selectedDate = Date()
     @State private var selectedStage = "아이디어"
 
+    @State private var pickedImage: UIImage?
+
     var body: some View {
         VStack(spacing: 0) {
             CreateHeader()
@@ -62,7 +64,13 @@ struct CreateView: View {
             .scrollDismissesKeyboard(.interactively)
         }
         .fullScreenCover(isPresented: $isPresentingCamera) {
-            CameraTestView()
+            ZStack {
+                Color.black.ignoresSafeArea() // 흰 여백 덮기
+                CameraView { image in
+                    pickedImage = image
+                    isPresentingCamera = false
+                }
+            }
         }
         .sheet(isPresented: $showProjectSelector) {
             ProjectSelector()
