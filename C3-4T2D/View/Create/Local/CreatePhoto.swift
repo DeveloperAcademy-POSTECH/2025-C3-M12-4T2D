@@ -1,18 +1,18 @@
 //
-//  CreatePhotoView.swift
+//  CreatePhoto.swift
 //  C3-4T2D
 //
 //  Created by Hwnag Seyeon on 5/30/25.
 //
 import SwiftUI
 
-struct CreatePhotoView: View {
+struct CreatePhoto: View {
     @Binding var isPresentingCamera: Bool
 
     var body: some View {
         VStack(alignment: .leading) {
             Text("진행 과정")
-                .font(.system(size: 17, weight: .bold))
+                .font(.title3.weight(.bold))
                 .foregroundColor(.black)
                 .padding(.bottom, 8)
 
@@ -30,7 +30,7 @@ struct CreatePhotoView: View {
                             .padding(.bottom, 16)
 
                         Text("과정의 기록을 보여줄 수 있는 사진을 올려주세요")
-                            .font(.system(size: 13))
+                            .font(.system(size: 15))
                             .foregroundColor(Color.gray)
                             .multilineTextAlignment(.center)
                     }

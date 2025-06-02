@@ -1,5 +1,5 @@
 //
-//  CreateMemoView.swift
+//  CreateMemo.swift
 //  C3-4T2D
 //
 //  Created by Hwnag Seyeon on 5/30/25.
@@ -7,13 +7,13 @@
 
 import SwiftUI
 
-struct CreateMemoView: View {
+struct CreateMemo: View {
     @Binding var descriptionText: String
 
     var body: some View {
         VStack(alignment: .leading) {
             Text("과정에 관한 설명")
-                .font(.system(size: 17, weight: .bold))
+                .font(.title3.weight(.bold))
                 .foregroundColor(.black)
                 .padding(.bottom, 8)
 
@@ -23,15 +23,15 @@ struct CreateMemoView: View {
                         .foregroundColor(.gray)
                         .padding(.top, 12)
                         .padding(.leading, 8)
-                        .font(.system(size: 14))
+                        .font(.system(size: 15))
                 }
 
                 TextEditor(text: $descriptionText)
                     .padding(8)
-                    .font(.system(size: 14))
+                    .font(.system(size: 15))
                     .scrollContentBackground(.hidden)
                     .scrollDisabled(true)
-                    .frame(height: 120)
+                    .frame(minHeight: 140, maxHeight: 180)
                     .overlay(
                         RoundedRectangle(cornerRadius: 6)
                             .stroke(Color.gray.opacity(0.4), lineWidth: 1)
@@ -39,5 +39,18 @@ struct CreateMemoView: View {
             }
         }
         .padding(.vertical, 16)
+    }
+}
+
+#Preview {
+    CreateMemoPreviewWrapper()
+}
+
+struct CreateMemoPreviewWrapper: View {
+    @State private var descriptionText = ""
+
+    var body: some View {
+        CreateMemo(descriptionText: $descriptionText)
+//            .padding()
     }
 }

@@ -1,5 +1,5 @@
 //
-//  CreateDateView.swift
+//  CreateDate.swift
 //  C3-4T2D
 //
 //  Created by Hwnag Seyeon on 5/30/25.
@@ -7,25 +7,31 @@
 
 import SwiftUI
 
-struct CreateDateView: View {
+struct CreateDate: View {
     @Binding var selectedDate: Date
     @Binding var showDatePicker: Bool
 
     var body: some View {
-        VStack(alignment: .leading) {
+        VStack(alignment: .leading, spacing: 12) {
             Text("과정 기록일")
-                .font(.system(size: 17, weight: .bold))
+                .font(.title3.weight(.bold))
                 .foregroundColor(.black)
-                .padding(.bottom, 8)
 
             Button {
                 showDatePicker = true
             } label: {
                 HStack(spacing: 6) {
                     Image(systemName: "calendar")
-                        .font(.system(size: 16))
+                        .font(.system(size: 17))
+
                     Text(formattedDate(date: selectedDate))
-                        .font(.system(size: 14))
+                        .font(.system(size: 17))
+
+                    Spacer()
+
+                    Image(systemName: "chevron.right")
+                        .foregroundColor(.black)
+                        .padding(.trailing, 8)
                 }
                 .foregroundColor(.black)
             }
@@ -33,9 +39,8 @@ struct CreateDateView: View {
             Divider()
                 .background(Color.gray)
         }
-        .padding(.vertical, 16)
         .sheet(isPresented: $showDatePicker) {
-            DatePickerSheetView(
+            DatePickerSheet(
                 selectedDate: $selectedDate,
                 isPresented: $showDatePicker
             )
@@ -55,5 +60,19 @@ struct CreateDateView: View {
             formatter.dateFormat = "M월 d일 (E)"
             return formatter.string(from: date)
         }
+    }
+}
+
+struct CreateDate_Previews: PreviewProvider {
+    struct Wrapper: View {
+        @State private var date = Date()
+        var body: some View {
+            CreateDate(selectedDate: $date, showDatePicker: .constant(false))
+//                .padding()
+        }
+    }
+
+    static var previews: some View {
+        Wrapper()
     }
 }

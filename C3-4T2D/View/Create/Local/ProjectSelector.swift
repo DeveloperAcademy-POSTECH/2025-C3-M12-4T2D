@@ -1,5 +1,5 @@
 //
-//  ProjectSelectorView.swift
+//  ProjectSelector.swift
 //  C3-4T2D
 //
 //  Created by Hwnag Seyeon on 5/29/25.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct ProjectSelectorView: View {
+struct ProjectSelector: View {
 
     var body: some View {
         VStack{
@@ -17,5 +17,5 @@ struct ProjectSelectorView: View {
 }
 
 //#Preview {
-//    ProjectSelectorView()
+//    ProjectSelector()
 //}

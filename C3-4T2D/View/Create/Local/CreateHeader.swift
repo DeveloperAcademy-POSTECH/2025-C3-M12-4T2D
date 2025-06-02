@@ -1,5 +1,5 @@
 //
-//  CreateTitleView.swift
+//  CreateHeader.swift
 //  C3-4T2D
 //
 //  Created by Hwnag Seyeon on 5/29/25.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct CreateTitleView: View {
+struct CreateHeader: View {
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
@@ -24,7 +24,7 @@ struct CreateTitleView: View {
             Spacer()
 
             Text("과정 기록하기")
-                .font(.system(size: 17, weight: .semibold))
+                .font(.title3.weight(.bold))
                 .foregroundColor(.black)
 
             Spacer()
@@ -45,5 +45,5 @@ struct CreateTitleView: View {
 }
 
 #Preview {
-    CreateTitleView()
+    CreateHeader()
 }

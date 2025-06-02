@@ -12,64 +12,67 @@ struct CreateView: View {
     @State private var showProjectSelector = false
     @State private var isPresentingCamera = false
     @State private var descriptionText: String = ""
-    @State private var showPlaceholder: Bool = true
     
     @State private var selectedDate = Date()
     @State private var showDatePicker = false
+    
+    @State private var selectedStage = "아이디어"
 
     var body: some View {
-        ZStack(alignment: .bottom) {
-            VStack(spacing: 0) {
-                CreateTitleView()
-                    .padding(.bottom, 12)
-                
-                ScrollView {
-                    
+        VStack(spacing: 0) {
+            CreateHeader()
+                .padding(.bottom, 12)
+                .padding(.horizontal, 20)
+            
+            ScrollView {
+                VStack(spacing: 0) {
                     // 프로젝트명
-                    CreateProjTitleView(projectName: $projectName, showProjectSelector: $showProjectSelector)
-                    
+                    CreateProjTitle(projectName: $projectName, showProjectSelector: $showProjectSelector)
+                        .padding(.bottom, 24)
                     // 날짜 선택
-                    CreateDateView(selectedDate: $selectedDate, showDatePicker: $showDatePicker)
+                    CreateDate(selectedDate: $selectedDate, showDatePicker: $showDatePicker)
+                        .padding(.bottom, 24)
+                    // 진행 단계
+                    CreateProcess(selectedStage: $selectedStage)
+                        .padding(.bottom, 24)
                     
                     // 사진 업로드
-                    CreatePhotoView(isPresentingCamera: $isPresentingCamera)
+                    CreatePhoto(isPresentingCamera: $isPresentingCamera)
                     
                     // 메모 입력
-                    CreateMemoView(descriptionText: $descriptionText)
+                    CreateMemo(descriptionText: $descriptionText)
+                
+                    // MARK: 작성 완료 버튼 (fixed footer)
+                
+                    Button(action: {
+                        // 작성 완료 동작
+                    }) {
+                        Text("작성 완료")
+                            .font(.system(size: 16, weight: .bold))
+                            .foregroundColor(.white)
+                            .frame(maxWidth: .infinity)
+                            .frame(height: 52)
+                            .background(Color.yellow)
+                            .cornerRadius(8)
+                    }
+                    .padding(.top, 40)
                 }
-                .scrollDismissesKeyboard(.interactively)
-                
-                // MARK: 작성 완료 버트
-                
-                Spacer()
-                
-                Button(action: {
-                    // 작성 완료 동작
-                }) {
-                    Text("작성 완료")
-                        .font(.system(size: 16, weight: .bold))
-                        .foregroundColor(.white)
-                        .frame(maxWidth: .infinity)
-                        .frame(height: 52)
-                        .background(Color.yellow)
-                        .cornerRadius(8)
-                }
+                .padding(.horizontal, 20)
             }
-            .fullScreenCover(isPresented: $isPresentingCamera) {
-                CameraView()
-            }
-            .sheet(isPresented: $showProjectSelector) {
-                ProjectSelectorView()
-                    .presentationDetents([.medium, .large])
-            }
-            .padding(.horizontal, 20)
+            .scrollDismissesKeyboard(.interactively)
+        }
+        .fullScreenCover(isPresented: $isPresentingCamera) {
+            CameraTestView()
+        }
+        .sheet(isPresented: $showProjectSelector) {
+            ProjectSelector()
+                .presentationDetents([.medium, .large])
         }
         .onTapGesture {
             hideKeyboard()
         }
     }
 }
-
 
 extension View {
     func hideKeyboard() {

@@ -1,5 +1,5 @@
 //
-//  DatePickerSheetView.swift
+//  DatePickerSheet.swift
 //  C3-4T2D
 //
 //  Created by Hwnag Seyeon on 5/29/25.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct DatePickerSheetView: View {
+struct DatePickerSheet: View {
     @Binding var selectedDate: Date
     @Binding var isPresented: Bool
 
@@ -46,5 +46,5 @@ struct DatePickerSheetView: View {
 }
 
 // #Preview {
-//    DatePickerSheetView()
+//    DatePickerSheet()
 // }
