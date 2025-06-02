@@ -16,7 +16,7 @@ struct CreateProcess: View {
                 .font(.title3.weight(.bold))
                 .padding(.bottom, 10)
             ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 16) {
+                HStack(spacing: 8) {
                     ForEach(ProcessStage.allCases) { stage in
                         Button(action: {
                             selectedStage = stage
@@ -24,12 +24,12 @@ struct CreateProcess: View {
                             Text(stage.rawValue)
                                 .font(.system(size: 15))
                                 .foregroundColor(selectedStage == stage ? .white : .black)
-                                .padding(.horizontal, 16)
-                                .padding(.vertical, 4)
+                                .padding(.horizontal, 12)
+                                .padding(.vertical, 8)
                                 .frame(maxWidth: .infinity)
                                 .background(
                                     RoundedRectangle(cornerRadius: 1000)
-                                        .fill(selectedStage == stage ? Color.yellow : Color(.systemGray5))
+                                        .fill(selectedStage == stage ? Color.prime1 : Color(.systemGray5))
                                 )
                                 .fixedSize()
                         }

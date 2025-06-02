@@ -30,13 +30,13 @@ struct CreateView: View {
                 VStack(spacing: 0) {
                     // 프로젝트명
                     CreateProjTitle(projTitle: $projTitle, showProjectSelector: $showProjectSelector)
-                        .padding(.bottom, 24)
+                        .padding(.bottom, 20)
                     // 날짜 선택
                     CreateDate(selectedDate: $selectedDate, showDatePicker: $showDatePicker)
-                        .padding(.bottom, 24)
+                        .padding(.bottom, 20)
                     // 진행 단계
                     CreateProcess(selectedStage: $selectedStage)
-                        .padding(.bottom, 24)
+                        .padding(.bottom, 20)
 
                     // 사진 업로드
                     CreatePhoto(isPresentingCamera: $isPresentingCamera)
@@ -54,7 +54,7 @@ struct CreateView: View {
                             .foregroundColor(.white)
                             .frame(maxWidth: .infinity)
                             .frame(height: 52)
-                            .background(Color.yellow)
+                            .background(Color.prime1)
                             .cornerRadius(8)
                     }
                     .padding(.top, 40)

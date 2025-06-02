@@ -25,7 +25,7 @@ struct CreatePhoto: View {
                             .font(.system(size: 24, weight: .bold))
                             .foregroundColor(.white)
                             .frame(width: 64, height: 64)
-                            .background(Color.yellow)
+                            .background(Color.prime3)
                             .clipShape(Circle())
                             .padding(.bottom, 16)
 
