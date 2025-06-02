@@ -88,7 +88,7 @@ final class CameraDataModel: ObservableObject {
     }
 }
 
-// ✅ PhotoData 구조체는 내부에서만 사용되므로 유지
+// PhotoData 구조체는 내부에서만 사용되므로 유지
 private struct PhotoData {
     var thumbnailImage: Image
     var thumbnailSize: (width: Int, height: Int)
@@ -96,7 +96,7 @@ private struct PhotoData {
     var imageSize: (width: Int, height: Int)
 }
 
-// ✅ CIImage를 SwiftUI Image로 변환
+// CIImage를 SwiftUI Image로 변환
 private extension CIImage {
     var image: Image? {
         let ciContext = CIContext()
@@ -105,7 +105,7 @@ private extension CIImage {
     }
 }
 
-// ✅ CGImagePropertyOrientation → SwiftUI Image.Orientation 변환기
+// CGImagePropertyOrientation → SwiftUI Image.Orientation 변환기
 private extension Image.Orientation {
     init(_ cgImageOrientation: CGImagePropertyOrientation) {
         switch cgImageOrientation {

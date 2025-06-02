@@ -153,8 +153,8 @@ class Camera: NSObject, AVCapturePhotoCaptureDelegate, AVCaptureVideoDataOutputS
         let videoOutput = AVCaptureVideoDataOutput()
         videoOutput.setSampleBufferDelegate(self, queue: DispatchQueue(label: "VideoDataOutputQueue"))
 
-//        captureSession.sessionPreset = .photo
-        captureSession.sessionPreset = .hd1280x720
+        captureSession.sessionPreset = .photo
+//        captureSession.sessionPreset = .hd1280x720
 
         guard captureSession.canAddInput(input),
               captureSession.canAddOutput(photoOutput),

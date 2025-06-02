@@ -9,89 +9,66 @@ import SwiftUI
 
 struct CameraView: View {
     @StateObject private var model = CameraDataModel()
-    @Environment(\.dismiss) private var dismiss
 
-    @State private var isShowingCapturedImage = false
+    @State private var isShowingPreview = false
     @State private var capturedImage: Image?
-
-    private static let barHeightFactor = 0.15
+    @State private var isShowingCapturedImage = false
 
     var body: some View {
-        GeometryReader { geometry in
-            ZStack {
-                // 미리보기 뷰
-                ViewfinderView(image: $model.viewfinderImage)
-                    .background(Color.black)
+        ZStack {
+            Color.green.ignoresSafeArea()
 
-                // 상단 바 (플래시)
-                VStack {
-                    HStack {
-                        Button(action: {
-                            model.toggleFlash()
-                        }) {
-                            Image(systemName: model.isFlashOn ? "bolt.fill" : "bolt.slash")
-                                .foregroundColor(.white)
-                                .font(.system(size: 24, weight: .bold))
-                                .padding()
-                        }
+            VStack {
+                CameraTopView(model: model)
 
-                        Spacer()
-                    }
-                    .frame(height: geometry.size.height * Self.barHeightFactor)
-                    .background(Color.black.opacity(0.75))
+                Spacer()
 
-                    Spacer()
+                GeometryReader { geometry in
+                    let width = geometry.size.width
+                    let height = width * 4 / 3
+
+                    ViewfinderView(image: $model.viewfinderImage)
+                        .frame(width: width, height: height)
+                        .clipped()
+//                        .cornerRadius(12)
+//                        .padding(.horizontal)
+
+//                GeometryReader { geometry in
+//                    let width = geometry.size.width
+//                    let height = width * 4 / 3
+//
+//                    Rectangle()
+//                        .fill(Color.blue)
+//                        .frame(width: width, height: height)
+//                        .overlay(
+//                            Text("카메라 미리보기 뷰 자리")
+//                                .foregroundColor(.white)
+//                                .bold()
+//                        )
                 }
 
-                // 하단 바 (취소, 촬영)
-                VStack {
-                    Spacer()
+                Spacer()
 
-                    HStack {
-                        // 취소 버튼
-                        Button("취소") {
-                            dismiss()
-                        }
-                        .font(.system(size: 18, weight: .regular))
-                        .foregroundColor(.white)
-
-                        Spacer()
-
-                        // 촬영 버튼
-                        Button {
-                            model.camera.takePhoto()
-                        } label: {
-                            ZStack {
-                                Circle().strokeBorder(.white, lineWidth: 3).frame(width: 62, height: 62)
-                                Circle().fill(.white).frame(width: 50, height: 50)
-                            }
-                        }
-
-                        Spacer()
-                    }
-                    .padding(.horizontal, 32)
-                    .frame(height: geometry.size.height * Self.barHeightFactor)
-                    .background(Color.black.opacity(0.75))
-                }
+                CameraBottomView(model: model)
             }
-            .ignoresSafeArea()
-            .task {
-                await model.camera.start()
-                model.onPhotoCaptured = { image in
-                    capturedImage = image
-                    isShowingCapturedImage = true
-                }
+        }
+        .task {
+            await model.camera.start()
+            model.onPhotoCaptured = { image in
+                capturedImage = image
+                isShowingCapturedImage = true
             }
-            .fullScreenCover(isPresented: $isShowingCapturedImage) {
-                if let image = capturedImage {
-                    CapturedImageView(image: image) {
-                        isShowingCapturedImage = false
-                    }
+        }
+        .fullScreenCover(isPresented: $isShowingCapturedImage) {
+            if let image = capturedImage {
+                CapturedImageView(image: image) {
+                    isShowingCapturedImage = false
                 }
             }
         }
     }
 }
+
 
 #Preview {
     CameraView()
