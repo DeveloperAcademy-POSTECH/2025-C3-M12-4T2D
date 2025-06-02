@@ -7,11 +7,11 @@
 
 import SwiftUI
 
-struct Project: View {
+struct ProjectView: View {
     var body: some View {
         VStack(spacing: 10) { // 전체 그룹
             // 제목
-            ProjectTitleView(title: "스펀지밥과 콜라켄 - 채색(1)",date: "2025.05.24 14:32pm")
+            ProjectTitleView(title: "스펀지밥과 콜라켄 - 채색(1)", date: "2025.05.24 14:32pm")
             // 사진
             ImageView(image: "Image")
             // Comment
@@ -21,5 +21,5 @@ struct Project: View {
 }
 
 #Preview {
-    Project()
+    ProjectView()
 }

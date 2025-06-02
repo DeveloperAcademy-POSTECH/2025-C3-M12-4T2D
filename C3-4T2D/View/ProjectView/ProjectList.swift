@@ -12,7 +12,7 @@ struct ProjectList: View {
         ScrollView {
             LazyVStack(spacing: 25) {
                 ForEach(0 ..< 20) { _ in
-                    Project()
+                    ProjectView()
                 }
             }
         }
