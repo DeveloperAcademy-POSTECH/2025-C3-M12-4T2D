@@ -34,7 +34,7 @@ struct ProjectSelector: View {
                     addProjectIfValid()
                 }
                 .font(.subheadline.weight(.regular))
-                .foregroundColor(isAddingProject && !newProjectName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? .prime1 : .prime2)
+                .foregroundColor(isAddingProject && !newProjectName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? .prime1 : .gray1)
                 .disabled(!isAddingProject || newProjectName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
             }
             
@@ -86,17 +86,19 @@ struct ProjectSelector: View {
                             Label("편집", systemImage: "pencil")
                         }
                         .tint(.blue)
-                    }
+
+                    }.listRowInsets(EdgeInsets())
                 }
             }
             .listStyle(.plain)
-            .listRowInsets(EdgeInsets())
             .frame(maxWidth: .infinity)
-            .padding(.horizontal, -16)
             
         }
         .padding(.vertical, 30)
         .padding(.horizontal, 16)
+        .onTapGesture {
+            hideKeyboard()
+        }
         .confirmationDialog("정말 삭제하시겠습니까?", isPresented: $showDeleteConfirmation, titleVisibility: .visible) {
             Button("삭제", role: .destructive) {
                 if let project = projectToDelete {
@@ -124,9 +126,9 @@ struct ProjectSelector: View {
     private func deleteProject(_ project: String) {
         projects.removeAll { $0 == project }
     }
-    
-   
 }
+
+
 
 #Preview {
     ProjectSelector()
