@@ -1,0 +1,243 @@
+//
+//  OnboardingView.swift
+//  C3-4T2D
+//
+//  Created by 서연 on 6/2/25.
+//
+
+import SwiftUI
+
+struct OnboardingView: View {
+    @State private var nickname: String = ""
+    @State private var goal: String = ""
+    @State private var targetDate: Date = Date()
+    @State private var isSheetPresented = false
+
+    @FocusState private var focusedField: Field?
+
+    enum Field {
+        case nickname
+        case goal
+    }
+
+    private var dateFormatter: DateFormatter {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy년 MM월 dd일"
+        return formatter
+    }
+
+    var nicknameIsOverLimit: Bool { nickname.count > 10 }
+    var goalIsOverLimit: Bool { goal.count > 20 }
+
+    var nicknameLineColor: Color {
+        if nickname.isEmpty { return .prime3 }
+        return nicknameIsOverLimit ? Color("Alert_red01") : .prime1
+    }
+
+    var goalLineColor: Color {
+        if goal.isEmpty { return .prime3 }
+        return goalIsOverLimit ? Color("Alert_red01") : .prime1
+    }
+
+    var body: some View {
+        ZStack(alignment: .bottom) {
+            ScrollView {
+                VStack(alignment: .leading, spacing: 20) {
+
+                    // 헤더 텍스트
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("당신의 성장 타임라인,")
+                            .font(.system(size: 28))
+                            .fontWeight(.bold)
+
+                        HStack(spacing: 0) {
+                            Text("망고")
+                                .font(.system(size: 28))
+                                .foregroundColor(.prime1)
+                                .fontWeight(.bold)
+                            Text("가 함께해요")
+                                .font(.system(size: 28))
+                                .fontWeight(.bold)
+                        }
+                    }
+                    .padding(.top, 70)
+                    .padding(.bottom, 45)
+
+                    // 닉네임
+                    VStack(alignment: .leading, spacing: 5) {
+                        Text("닉네임")
+                            .font(.callout)
+                            .fontWeight(.semibold)
+                            .foregroundColor(.gray4)
+
+                        VStack(spacing: 5) {
+                            HStack {
+                                TextField("닉네임을 적어주세요", text: $nickname)
+                                    .font(.system(size: 17))
+                                    .textFieldStyle(PlainTextFieldStyle())
+                                    .foregroundColor(.black)
+                                    .focused($focusedField, equals: .nickname)
+                                    .submitLabel(.next)
+                                    .onSubmit {
+                                        focusedField = .goal
+                                    }
+
+                                if !nickname.isEmpty {
+                                    if nicknameIsOverLimit {
+                                        Button(action: { nickname = "" }) {
+                                            Image(systemName: "x.circle")
+                                                .foregroundColor(Color("Alert_red01"))
+                                        }
+                                    } else {
+                                        Image(systemName: "checkmark.circle")
+                                            .foregroundColor(.prime1)
+                                    }
+                                }
+                            }
+
+                            Rectangle()
+                                .frame(height: 2)
+                                .foregroundColor(nicknameLineColor)
+
+                            HStack {
+                                Spacer()
+                                Text("\(nickname.count)/10")
+                                    .font(.caption2)
+                                    .foregroundColor(nicknameIsOverLimit ? Color("Alert_red01") : .clear)
+                            }
+                            .padding(.top, 2)
+                        }
+                    }
+
+                    // 입시 목표
+                    VStack(alignment: .leading, spacing: 5) {
+                        Text("입시 목표")
+                            .font(.callout)
+                            .fontWeight(.semibold)
+                            .foregroundColor(.gray4)
+
+                        VStack(spacing: 5) {
+                            HStack {
+                                TextField("가고 싶은 학교나 원한 입시 목표를 적어주세요", text: $goal)
+                                    .font(.system(size: 17))
+                                    .textFieldStyle(PlainTextFieldStyle())
+                                    .foregroundColor(.black)
+                                    .focused($focusedField, equals: .goal)
+                                    .submitLabel(.done)
+                                    .onSubmit {
+                                        hideKeyboard()
+                                    }
+
+                                if !goal.isEmpty {
+                                    if goalIsOverLimit {
+                                        Button(action: { goal = "" }) {
+                                            Image(systemName: "x.circle")
+                                                .foregroundColor(Color("Alert_red01"))
+                                        }
+                                    } else {
+                                        Image(systemName: "checkmark.circle")
+                                            .foregroundColor(.prime1)
+                                    }
+                                }
+                            }
+
+                            Rectangle()
+                                .frame(height: 2)
+                                .foregroundColor(goalLineColor)
+
+                            HStack {
+                                Spacer()
+                                Text("\(goal.count)/20")
+                                    .font(.caption2)
+                                    .foregroundColor(goalIsOverLimit ? Color("Alert_red01") : .clear)
+                            }
+                            .padding(.top, 2)
+                        }
+                    }
+
+                    // 목표 달성 예정일
+                    VStack(alignment: .leading, spacing: 5) {
+                        Text("목표 달성 예정일")
+                            .font(.callout)
+                            .fontWeight(.semibold)
+                            .foregroundColor(.gray4)
+
+                        Button(action: {
+                            isSheetPresented = true
+                        }) {
+                            VStack(spacing: 5){
+                                Text("\(targetDate, formatter: dateFormatter)")
+                                    .font(.system(size: 17))
+                                    .foregroundColor(Color(hex : "C7C7C9"))
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                Rectangle()
+                                    .frame(height: 2)
+                                    .foregroundColor(.prime3)
+                            }
+                        }
+                    }
+
+                    Spacer().frame(height: 140)
+                }
+                .padding(.horizontal, 20)
+            }
+
+            // 바닥 고정 버튼
+            Button(action: {
+                // 완료 액션 조건 추가 필요
+            }) {
+                Text("작성 완료")
+                    .foregroundColor(.white)
+                    .frame(maxWidth: .infinity)
+                    .padding()
+                    .background(.prime4)
+                    .cornerRadius(10)
+            }
+            .disabled(true)
+            .padding(.horizontal, 20)
+            .padding(.bottom, 30)
+        }
+        .ignoresSafeArea(.keyboard, edges: .bottom)
+        .onTapGesture { hideKeyboard() }
+        .sheet(isPresented: $isSheetPresented) {
+            VStack {
+                Text("세나야 너의 멋진 노란 데이트 피커를 넣어주렴.")
+                    .font(.headline)
+                    .padding()
+                Spacer()
+            }
+            .presentationDetents([.medium])
+        }
+    }
+}
+
+// MARK: - Helpers
+
+extension View {
+    func hideKeyboard() {
+        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder),
+                                        to: nil, from: nil, for: nil)
+    }
+}
+
+extension Color {
+    init(hex: String) {
+        let scanner = Scanner(string: hex)
+        _ = scanner.scanString("#")
+
+        var rgb: UInt64 = 0
+        scanner.scanHexInt64(&rgb)
+
+        let r = Double((rgb >> 16) & 0xFF) / 255
+        let g = Double((rgb >> 8) & 0xFF) / 255
+        let b = Double(rgb & 0xFF) / 255
+
+        self.init(red: r, green: g, blue: b)
+    }
+}
+
+// MARK: - Preview
+
+#Preview {
+    OnboardingView()
+}
