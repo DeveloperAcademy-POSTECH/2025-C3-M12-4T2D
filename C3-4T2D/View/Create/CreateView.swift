@@ -19,6 +19,7 @@ struct CreateView: View {
     @State private var selectedStage: ProcessStage = .idea
 
     @State private var pickedImage: UIImage?
+    
 
     var body: some View {
         VStack(spacing: 0) {
@@ -39,7 +40,8 @@ struct CreateView: View {
                         .padding(.bottom, 20)
 
                     // 사진 업로드
-                    CreatePhoto(isPresentingCamera: $isPresentingCamera)
+//                    CreatePhoto(isPresentingCamera: $isPresentingCamera)
+                    CreatePhoto(isPresentingCamera: $isPresentingCamera, pickedImage: $pickedImage)
 
                     // 메모 입력
                     CreateMemo(descriptionText: $descriptionText)
