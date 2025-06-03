@@ -1,16 +1,22 @@
+import SwiftData
 import SwiftUI
 
 struct MainView: View {
     @Environment(Router.self) private var router
-    private let dummyData = DummyData()
+    @Environment(\.modelContext) private var modelContext
+
+    @Query private var allProjects: [Project]
+    // 현재 진행중인 프로젝트, 어처피 0 or 1 (있거나 없거나지 여러개가 아님)
+    @Query(SwiftDataManager.currentProject) private var getCurrentProject: [Project]
+
     @State private var selectedTabIndex: Int = 0
     @State private var sortOrder: SortOrder = .newest
 
-    // MARK: 최신순일때의 프로젝트는 항상 진행중이 맨위? 아니면 이전프로젝트 수정을 했으면 가장 마지막에 추가된 글을 기준으로 판단 ??
-
     var sortedProjects: [Project] {
-        sortOrder.sort(projects: dummyData.allProjects)
+        sortOrder.sort(projects: allProjects)
     }
+
+    var currentProject: Project? { getCurrentProject.first }
 
     var body: some View {
         ScrollView {
@@ -22,22 +28,29 @@ struct MainView: View {
                     HStack {
                         VStack(alignment: .leading, spacing: 12) {
                             Text("진행중인 과정").font(.system(size: 22, weight: .bold))
-                            Text(dummyData.currentProject.projectTitle).font(.system(size: 19, weight: .bold))
-                            HStack {
-                                Text(DateFormatter.projectDateRange(
-                                    startDate: dummyData.currentProject.postList.compactMap { $0.createdAt }.min() ?? Date(),
-                                    endDate: dummyData.currentProject.finishedAt
-                                ))
-                                .font(.system(size: 11, weight: .regular))
-                                .foregroundColor(.gray)
 
-                                Text(dummyData.currentProject.finishedAt == nil ? "진행중" : "완료")
-                                    .font(.system(size: 11, weight: .medium))
-                                    .padding(.horizontal, 8)
-                                    .padding(.vertical, 2)
-                                    .background(dummyData.currentProject.finishedAt == nil ? Color.green.opacity(0.2) : Color.gray.opacity(0.2))
-                                    .foregroundColor(dummyData.currentProject.finishedAt == nil ? .green : .gray)
-                                    .cornerRadius(4)
+                            if let current = currentProject {
+                                Text(current.projectTitle).font(.system(size: 19, weight: .bold))
+                                HStack {
+                                    Text(DateFormatter.projectDateRange(
+                                        startDate: current.postList.compactMap { $0.createdAt }.min() ?? Date(),
+                                        endDate: current.finishedAt
+                                    ))
+                                    .font(.system(size: 11, weight: .regular))
+                                    .foregroundColor(.gray)
+
+                                    Text(current.finishedAt == nil ? "진행중" : "완료")
+                                        .font(.system(size: 11, weight: .medium))
+                                        .padding(.horizontal, 8)
+                                        .padding(.vertical, 2)
+                                        .background(current.finishedAt == nil ? Color.green.opacity(0.2) : Color.gray.opacity(0.2))
+                                        .foregroundColor(current.finishedAt == nil ? .green : .gray)
+                                        .cornerRadius(4)
+                                }
+                            } else {
+                                Text("진행중인 프로젝트가 없습니다")
+                                    .font(.system(size: 19, weight: .bold))
+                                    .foregroundColor(.gray)
                             }
                         }
                         Spacer()
@@ -47,8 +60,14 @@ struct MainView: View {
 
                     ScrollView(.horizontal, showsIndicators: false) {
                         HStack(spacing: 10) {
-                            ForEach(dummyData.currentProject.postList) { post in
-                                ImageCard(image: post.postImageUrl ?? "")
+                            if let current = currentProject {
+                                ForEach(current.postList) { post in
+                                    ImageCard(image: post.postImageUrl ?? "")
+                                }
+                            } else {
+                                Text("진행중인 프로젝트를 생성해주세요")
+                                    .foregroundColor(.gray)
+                                    .padding()
                             }
                         }
                         .padding(.trailing, 20)
@@ -125,6 +144,13 @@ struct MainView: View {
                 }
                 .padding(.vertical, 20)
             }
+        }
+        .onAppear {
+            // MARK: 한번만 실행시키고 주석처리해주시면 됩니다 !
+
+//            DummyDataManager.createDummyData(context: modelContext, projects: allProjects)
+//            이거는 테스트할때만! swiftData초기화를 위해서 사용합니다.
+//            SwiftDataManager.deleteAllData(context: modelContext)
         }
     }
 }
