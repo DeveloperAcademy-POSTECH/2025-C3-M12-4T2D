@@ -17,22 +17,25 @@ struct ProjectSelector: View {
     @State private var newProjectName = ""
     @State private var projects: [String] = []
     @FocusState private var isTextFieldFocuesed: Bool
+    @State private var projectToDelete: String? = nil
+    @State private var showDeleteConfirmation = false
     
     var body: some View {
         VStack(spacing: 25) {
             // 상단 헤더
             HStack {
-                Text("과정 기록하기")
+                Text("프로젝트")
                     .font(.title3.weight(.bold))
                     .foregroundColor(.black)
-                
+
                 Spacer()
-                
+
                 Button("완료") {
                     addProjectIfValid()
                 }
                 .font(.subheadline.weight(.regular))
-                .foregroundColor(.prime1)
+                .foregroundColor(isAddingProject && !newProjectName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? .prime1 : .prime2)
+                .disabled(!isAddingProject || newProjectName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
             }
             
             // 프로젝트 추가
@@ -70,7 +73,8 @@ struct ProjectSelector: View {
                     .contentShape(Rectangle())
                     .swipeActions(edge: .trailing, allowsFullSwipe: false) {
                         Button {
-                            // deleteProject(project)
+                            projectToDelete = project
+                            showDeleteConfirmation = true
                         } label: {
                             Label("삭제", systemImage: "trash")
                         }
@@ -93,6 +97,17 @@ struct ProjectSelector: View {
         }
         .padding(.vertical, 30)
         .padding(.horizontal, 16)
+        .confirmationDialog("정말 삭제하시겠습니까?", isPresented: $showDeleteConfirmation, titleVisibility: .visible) {
+            Button("삭제", role: .destructive) {
+                if let project = projectToDelete {
+                    deleteProject(project)
+                }
+                projectToDelete = nil
+            }
+            Button("취소", role: .cancel) {
+                projectToDelete = nil
+            }
+        }
     }
     
     
@@ -106,12 +121,11 @@ struct ProjectSelector: View {
         isAddingProject = false
     }
     
-   /* private func deleteProject(_ project: String) {
+    private func deleteProject(_ project: String) {
         projects.removeAll { $0 == project }
     }
     
-    //삭제는 논의 후 추가
-   */
+   
 }
 
 #Preview {
