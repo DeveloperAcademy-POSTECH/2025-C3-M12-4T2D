@@ -5,6 +5,11 @@
 //  Edited by Hwnag Jimin on 6/3/25.
 //
 
+//MARK: TODO
+//'프로젝트 추가하기' 버튼 선택시에만 '완료' 버튼 활성화 (Prime3 -> Prime1)
+//Swipe Action으로 수정 기능 선택 시 프로젝트명 수정 기능 추가
+
+
 import SwiftUI
 
 struct ProjectSelector: View {
