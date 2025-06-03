@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct MainView: View {
+    @Environment(Router.self) private var router
     private let dummyData = DummyData()
     @State private var selectedTabIndex: Int = 0
     @State private var sortOrder: SortOrder = .newest
@@ -75,6 +76,7 @@ struct MainView: View {
                         } label: {
                             HStack {
                                 Text(sortOrder.rawValue).font(.system(size: 22, weight: .semibold))
+
                                 Image(systemName: "chevron.down").font(.system(size: 22, weight: .semibold))
                             }
                         }
@@ -128,5 +130,5 @@ struct MainView: View {
 }
 
 #Preview {
-    MainView()
+    ContentView()
 }
