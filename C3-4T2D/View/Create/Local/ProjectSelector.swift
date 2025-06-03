@@ -16,6 +16,7 @@ struct ProjectSelector: View {
     @State private var isAddingProject = false
     @State private var newProjectName = ""
     @State private var projects: [String] = []
+    @FocusState private var isTextFieldFocuesed: Bool
     
     var body: some View {
         VStack(spacing: 25) {
@@ -39,6 +40,12 @@ struct ProjectSelector: View {
                 TextField("새로운 프로젝트명을 입력해주세요", text: $newProjectName)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .frame(height: 46)
+                    .focused($isTextFieldFocuesed)
+                    .onAppear{
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                            isTextFieldFocuesed = true
+                        }
+                    }
                     .onSubmit {
                         addProjectIfValid()
                     }
@@ -83,12 +90,13 @@ struct ProjectSelector: View {
             .frame(maxWidth: .infinity)
             .padding(.horizontal, -16)
             
-            Spacer()
         }
         .padding(.vertical, 30)
         .padding(.horizontal, 16)
     }
     
+    
+    //공백인 경우 프로젝트 추가 불가
     private func addProjectIfValid() {
         let trimmedName = newProjectName.trimmingCharacters(in: .whitespacesAndNewlines)
         guard isAddingProject, !trimmedName.isEmpty else { return }
