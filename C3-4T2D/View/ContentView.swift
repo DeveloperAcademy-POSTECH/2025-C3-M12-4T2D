@@ -10,13 +10,12 @@ import SwiftUI
 
 struct ContentView: View {
     @State private var router = Router()
-    @State private var path = NavigationPath()
     @Query var users: [User]
     @Environment(\.modelContext) private var modelContext
     @Environment(\.scenePhase) private var scenePhase
 
     var body: some View {
-        NavigationStack(path: $path) {
+        NavigationStack(path: $router.path) {
             Group {
                 if users.isEmpty {
                     OnboardingView()
