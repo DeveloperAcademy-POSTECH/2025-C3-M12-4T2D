@@ -9,9 +9,9 @@ import SwiftData
 import SwiftUI
 
 struct ContentView: View {
+    @State private var router = Router()
     @State private var path = NavigationPath()
     @Query var users: [User]
-    @Environment(Router.self) private var router
     @Environment(\.modelContext) private var modelContext
     @Environment(\.scenePhase) private var scenePhase
 
@@ -43,6 +43,7 @@ struct ContentView: View {
                 }
             }
         }
+        .environment(router)
         .onChange(of: scenePhase) { newPhase in
             if newPhase == .active {
                 if let user = users.first {
