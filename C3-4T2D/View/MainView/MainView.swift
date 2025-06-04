@@ -13,6 +13,8 @@ struct MainView: View {
 
     @State private var selectedTabIndex: Int = 0
     @State private var sortOrder: SortOrder = .newest
+    @State private var showCamera: Bool = false
+    @State private var showCreate: Bool = false
 
     var sortedProjects: [Project] {
         sortOrder.sort(projects: allProjects)
@@ -60,7 +62,30 @@ struct MainView: View {
                             }
                         }
                         Spacer()
-                        Image(systemName: "plus").foregroundColor(.gray).font(.system(size: 24))
+                        Menu {
+                            Button {
+                                showCamera = true
+                            } label: {
+                                Label("바로 촬영하기", systemImage: "camera")
+                            }
+                            Button {
+                                showCreate = true
+                            } label: {
+                                Label("과정 기록하기", systemImage: "square.and.pencil")
+                            }
+                        } label: {
+                            Image(systemName: "plus")
+                                .foregroundColor(.gray)
+                                .font(.system(size: 24))
+                        }
+                        .fullScreenCover(isPresented: $showCamera) {
+                            CameraView { image in
+                                showCamera = false
+                            }
+                        }
+                        .fullScreenCover(isPresented: $showCreate) {
+                            CreateView()
+                        }
                     }.padding(.vertical, 15)
                         .padding(.trailing, 20)
 
