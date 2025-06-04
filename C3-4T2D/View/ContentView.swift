@@ -29,8 +29,8 @@ struct ContentView: View {
                     MainView()
                 case .onBoardingView:
                     OnboardingView()
-                case .ProjectView:
-                    ProjectView()
+                case .ProjectListView(let project):
+                    ProjectList(project)
                 case .projectDetailView:
                     Text("projectDetailView")
                 case .postDetailView:

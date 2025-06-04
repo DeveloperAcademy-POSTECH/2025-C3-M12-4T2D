@@ -38,7 +38,7 @@ struct ProjectSectionCard: View {
 
                 Spacer()
                 Button {
-                    router.navigate(to: .ProjectView)
+                    router.navigate(to: .ProjectListView(project))
                 } label: {
                     Image(systemName: "chevron.right")
                         .foregroundColor(.gray)
