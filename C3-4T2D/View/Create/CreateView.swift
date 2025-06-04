@@ -41,10 +41,11 @@ struct CreateView: View {
 
                     // 사진 업로드
 //                    CreatePhoto(isPresentingCamera: $isPresentingCamera)
-                    CreatePhoto(isPresentingCamera: $isPresentingCamera, pickedImage: $pickedImage)
+                    CreatePhoto(isPresentingCamera: $isPresentingCamera)
+                        .padding(.bottom, 20)
 
                     // 메모 입력
-                    CreateMemo(descriptionText: $descriptionText)
+                    CreateMemo(descriptionText: $descriptionText)     .padding(.bottom, 24)
 
                     // MARK: - 작성 완료 버튼 (fixed footer)
 
@@ -59,7 +60,7 @@ struct CreateView: View {
                             .background(Color.prime1)
                             .cornerRadius(8)
                     }
-                    .padding(.top, 40)
+//                    .padding(.top, 40)
                 }
                 .padding(.horizontal, 20)
             }
