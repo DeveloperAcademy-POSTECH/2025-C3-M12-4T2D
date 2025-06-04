@@ -54,7 +54,7 @@ struct CommentModal: View {
             Spacer()
             
             HStack {
-                TextField("", text: $commentText, prompt: Text("댓글을 입력하세요").foregroundColor(.white))
+                TextField("", text: $commentText, prompt: Text("댓글을 입력하세요").foregroundColor(.white), axis: .vertical)
                     .padding(.vertical, 13)
                     .padding(.horizontal, 21)
                     .background(Color.black.opacity(0.7))
