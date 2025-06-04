@@ -12,11 +12,7 @@ struct CommentModal: View {
     @State private var commentText = ""
     @State private var comments: [String] = []
     @State private var commentTimestamps: [String: Date] = [:]
-    private let dateFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "MM.dd, HH:mm"
-        return formatter
-    }()
+
     
     var body: some View {
         VStack(){
@@ -34,7 +30,7 @@ struct CommentModal: View {
                             .foregroundColor(.grayBlack)
                         
                         if let timestamp = commentTimestamps[comment] {
-                            Text(dateFormatter.string(from: timestamp))
+                            Text(DateFormatter.timestampFormatter.string(from: timestamp))
                                 .font(.caption2).fontWeight(.regular)
                                 .foregroundColor(.gray2)
                         }
