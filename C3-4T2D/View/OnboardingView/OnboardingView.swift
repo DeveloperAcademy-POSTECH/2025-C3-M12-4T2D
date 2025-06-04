@@ -213,13 +213,6 @@ struct OnboardingView: View {
 
 // MARK: - Helpers
 
-extension View {
-    func hideKeyboard() {
-        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder),
-                                        to: nil, from: nil, for: nil)
-    }
-}
-
 extension Color {
     init(hex: String) {
         let scanner = Scanner(string: hex)
