@@ -9,14 +9,13 @@ import SwiftData
 import SwiftUI
 
 struct ContentView: View {
-    @State private var path = NavigationPath()
+    @State private var router = Router()
     @Query var users: [User]
-    @Environment(Router.self) private var router
     @Environment(\.modelContext) private var modelContext
     @Environment(\.scenePhase) private var scenePhase
 
     var body: some View {
-        NavigationStack(path: $path) {
+        NavigationStack(path: $router.path) {
             Group {
                 if users.isEmpty {
                     OnboardingView()
@@ -43,6 +42,7 @@ struct ContentView: View {
                 }
             }
         }
+        .environment(router)
         .onChange(of: scenePhase) { newPhase in
             if newPhase == .active {
                 if let user = users.first {
