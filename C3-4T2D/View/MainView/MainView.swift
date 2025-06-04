@@ -6,6 +6,7 @@ struct MainView: View {
     @Environment(\.modelContext) private var modelContext
 
     @Query private var allProjects: [Project]
+    @Query private var users: [User]
     // 현재 진행중인 프로젝트, 어처피 0 or 1 (있거나 없거나지 여러개가 아님)
     @Query(SwiftDataManager.currentProject) private var getCurrentProject: [Project]
 
@@ -17,11 +18,12 @@ struct MainView: View {
     }
 
     var currentProject: Project? { getCurrentProject.first }
+    var currentUser: User? { users.first }
 
     var body: some View {
         ScrollView {
             VStack(spacing: 0) {
-                MainHeader()
+                MainHeader(user: currentUser)
                 Divider()
                 // BANNER
                 VStack {
