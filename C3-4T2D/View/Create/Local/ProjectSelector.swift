@@ -6,8 +6,7 @@
 //
 
 //MARK: TODO
-//'프로젝트 추가하기' 버튼 선택시에만 '완료' 버튼 활성화 (Prime3 -> Prime1)
-//Swipe Action으로 수정 기능 선택 시 프로젝트명 수정 기능 추가
+// 우측 상단 '+' 버튼 항상 활성화, 버튼 선택시에만 TextField 노출
 
 
 import SwiftUI
@@ -21,7 +20,7 @@ struct ProjectSelector: View {
     @State private var showDeleteConfirmation = false
     
     var body: some View {
-        VStack(spacing: 25) {
+        VStack() {
             // 상단 헤더
             HStack {
                 Text("프로젝트")
@@ -30,19 +29,25 @@ struct ProjectSelector: View {
 
                 Spacer()
 
-                Button("완료") {
-                    addProjectIfValid()
+                if isAddingProject {
+                    Button("추가") {
+                        addProjectIfValid()
+                    }
+                    .font(.subheadline.weight(.regular))
+                    .foregroundColor(!newProjectName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? .prime1 : .gray1)
+                    .disabled(newProjectName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                } else {
+                    Button(action: {isAddingProject = true}) {
+                        Image(systemName: "plus")
+                            .foregroundColor(.prime1)
+                    }
                 }
-                .font(.subheadline.weight(.regular))
-                .foregroundColor(isAddingProject && !newProjectName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? .prime1 : .gray1)
-                .disabled(!isAddingProject || newProjectName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
             }
             
             // 프로젝트 추가
             if isAddingProject {
                 TextField("새로운 프로젝트명을 입력해주세요", text: $newProjectName)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .frame(height: 46)
                     .focused($isTextFieldFocuesed)
                     .onAppear{
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
@@ -52,14 +57,6 @@ struct ProjectSelector: View {
                     .onSubmit {
                         addProjectIfValid()
                     }
-            } else {
-                Button("프로젝트 추가하기 +") {
-                    isAddingProject = true
-                }
-                .font(.body.weight(.regular))
-                .foregroundColor(.gray3)
-                .frame(maxWidth: .infinity)
-                .frame(height: 46)
             }
             
             // 프로젝트 리스트
@@ -79,20 +76,12 @@ struct ProjectSelector: View {
                             Label("삭제", systemImage: "trash")
                         }
                         .tint(.red)
-                        
-                        Button {
-                            // 편집 기능 구현
-                        } label: {
-                            Label("편집", systemImage: "pencil")
-                        }
-                        .tint(.blue)
 
                     }.listRowInsets(EdgeInsets())
                 }
             }
             .listStyle(.plain)
             .frame(maxWidth: .infinity)
-            
         }
         .padding(.vertical, 30)
         .padding(.horizontal, 16)
