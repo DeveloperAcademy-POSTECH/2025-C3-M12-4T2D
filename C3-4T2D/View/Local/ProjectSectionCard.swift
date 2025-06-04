@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct ProjectSectionCard: View {
+    @Environment(Router.self) var router
     let project: Project
 
     var body: some View {
@@ -36,10 +37,14 @@ struct ProjectSectionCard: View {
                 }
 
                 Spacer()
+                Button {
+                    router.navigate(to: .ProjectView)
+                } label: {
+                    Image(systemName: "chevron.right")
+                        .foregroundColor(.gray)
+                        .font(.system(size: 20, weight: .bold))
+                }
 
-                Image(systemName: "chevron.right")
-                    .foregroundColor(.gray)
-                    .font(.system(size: 20, weight: .bold))
             }.padding(.trailing, 20)
 
             ScrollView(.horizontal, showsIndicators: false) {

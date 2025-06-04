@@ -14,17 +14,9 @@ enum SortOrder: String, CaseIterable {
     func sort(projects: [Project]) -> [Project] {
         switch self {
         case .newest:
-            return projects.sorted { first, second in
-                let firstLatest = first.postList.compactMap { $0.createdAt }.max() ?? Date.distantPast
-                let secondLatest = second.postList.compactMap { $0.createdAt }.max() ?? Date.distantPast
-                return firstLatest > secondLatest
-            }
+            return projects.sorted { $0.createdAt > $1.createdAt }
         case .oldest:
-            return projects.sorted { first, second in
-                let firstEarliest = first.postList.compactMap { $0.createdAt }.min() ?? Date.distantFuture
-                let secondEarliest = second.postList.compactMap { $0.createdAt }.min() ?? Date.distantFuture
-                return firstEarliest < secondEarliest
-            }
+            return projects.sorted { $0.createdAt < $1.createdAt }
         }
     }
 }
