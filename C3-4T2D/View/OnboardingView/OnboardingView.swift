@@ -118,7 +118,7 @@ struct OnboardingView: View {
 
                         VStack(spacing: 5) {
                             HStack {
-                                TextField("가고 싶은 학교나 원한 입시 목표를 적어주세요", text: $goal)
+                                TextField("가고 싶은 학교나 원하는 입시 목표를 적어주세요", text: $goal)
                                     .font(.system(size: 17))
                                     .textFieldStyle(PlainTextFieldStyle())
                                     .foregroundColor(.black)
