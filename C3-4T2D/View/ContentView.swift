@@ -48,7 +48,7 @@ struct ContentView: View {
                 if let user = users.first {
                     let now = Date()
                     if let last = user.lastVisitAt {
-                        if now.timeIntervalSince(last) >= 10 {
+                        if now.timeIntervalSince(last) >= 3600 {
                             user.streakNum += 1
                             user.lastVisitAt = now
                             try? modelContext.save()
