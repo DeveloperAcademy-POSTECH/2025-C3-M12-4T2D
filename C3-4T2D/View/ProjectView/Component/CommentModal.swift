@@ -7,33 +7,49 @@
 
 import SwiftUI
 
-
-
 struct CommentModal: View {
     
-    @State private var isAddingComment = false
     @State private var commentText = ""
     @State private var comments: [String] = []
-    @State private var commentTimeStamp: Date? = nil
-    @State private var commentsToDelete: String? = nil
-    @State private var showDeleteConfirmation = false
-    
+    @State private var commentTimestamps: [String: Date] = [:]
+    private let dateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "MM.dd, HH:mm"
+        return formatter
+    }()
     
     var body: some View {
         VStack(){
             HStack(){
                 Text("코멘트")
                     .font(.title3).fontWeight(.bold)
-                    
             }
             Spacer()
             
             List {
                 ForEach(comments, id: \.self) { comment in
-                    Text(comment)
-                }
-                .onDelete { indexSet in
-                    comments.remove(atOffsets: indexSet)
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(comment)
+                            .font(.body)
+                            .foregroundColor(.grayBlack)
+                        
+                        if let timestamp = commentTimestamps[comment] {
+                            Text(dateFormatter.string(from: timestamp))
+                                .font(.caption2).fontWeight(.regular)
+                                .foregroundColor(.gray2)
+                        }
+                    }
+                    .listRowInsets(EdgeInsets())
+                    .padding(.vertical, 10)
+                    .padding(.horizontal, 4)
+                    .contextMenu {
+                        Button(role: .destructive, action: {
+                            deleteComment(comment)
+                        }) {
+                            Label("삭제", systemImage: "trash")
+                        }
+                    }
+                    .listRowSeparator(.hidden)
                 }
             }
             .listStyle(.plain)
@@ -42,13 +58,16 @@ struct CommentModal: View {
             Spacer()
             
             HStack {
-                TextField("댓글을 입력하세요", text: $commentText)
+                TextField("", text: $commentText, prompt: Text("댓글을 입력하세요").foregroundColor(.white))
                     .padding(.vertical, 13)
                     .padding(.horizontal, 21)
                     .background(Color.black.opacity(0.7))
                     .cornerRadius(23.5)
                     .foregroundColor(.white)
                     .padding(.trailing, 8)
+                    .onSubmit {
+                        addCommentIfValid()
+                    }
                 
                 Button(action: {
                     addCommentIfValid()
@@ -60,33 +79,31 @@ struct CommentModal: View {
                         .cornerRadius(23.5)
                 }
             }
-            .padding(.top, 16)
-            
-            
-            
         }
-        .padding(.vertical, 30)
+        .padding(.vertical, 20)
         .padding(.horizontal, 16)
         .onTapGesture { hideKeyboard() }
         .background(.grayWhite)
     }
     
-    //공백인 경우 코멘트 추가 불가
+    // 공백인 경우 코멘트 추가 불가
     private func addCommentIfValid() {
-        let trimmedName = commentText.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !trimmedName.isEmpty else { return }
+        let trimmedText = commentText.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmedText.isEmpty else { return }
 
-        comments.append(trimmedName)
+        comments.append(trimmedText)
+        commentTimestamps[trimmedText] = Date()
         commentText = ""
     }
 
-    private func deleteComments(_ project: String) {
-        comments.removeAll { $0 == project }
+    private func deleteComment(_ comment: String) {
+        comments.removeAll { $0 == comment }
+        commentTimestamps.removeValue(forKey: comment)
     }
 }
 
 
+
 #Preview {
-    ProjectList()
+    CommentModal()
 }
-       
