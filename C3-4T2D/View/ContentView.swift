@@ -11,7 +11,6 @@ import SwiftUI
 struct ContentView: View {
     @State private var router = Router()
     @Environment(\.modelContext) private var modelContext
-    @Query private var items: [Item]
 
     var body: some View {
         NavigationStack(path: $router.path) {
@@ -40,5 +39,4 @@ struct ContentView: View {
 
 #Preview {
     ContentView()
-        .modelContainer(for: Item.self, inMemory: true)
 }
