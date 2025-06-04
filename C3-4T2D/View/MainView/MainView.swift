@@ -7,6 +7,7 @@ struct MainView: View {
 
     @Query private var allProjects: [Project]
     @Query private var users: [User]
+    @Query private var allPosts: [Post]
     // 현재 진행중인 프로젝트, 어처피 0 or 1 (있거나 없거나지 여러개가 아님)
     @Query(SwiftDataManager.currentProject) private var getCurrentProject: [Project]
 
@@ -19,11 +20,14 @@ struct MainView: View {
 
     var currentProject: Project? { getCurrentProject.first }
     var currentUser: User? { users.first }
+    var projectCount: Int { allProjects.count }
+    var postCount: Int { allPosts.count }
+    var streakNum: Int { currentUser?.streakNum ?? 0 }
 
     var body: some View {
         ScrollView {
             VStack(spacing: 0) {
-                MainHeader(user: currentUser)
+                MainHeader(user: currentUser, streakNum: streakNum, projectCount: projectCount, postCount: postCount)
                 Divider()
                 // BANNER
                 VStack {

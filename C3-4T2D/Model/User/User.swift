@@ -17,8 +17,9 @@ final class User {
     var profileImage: String?
     var streakNum: Int
     var createdAt: Date
+    var lastVisitAt: Date? // 마지막 접속 시각
 
-    init(nickname: String, userGoal: String, remainingDays: Int, profileImage: String? = nil, streakNum: Int = 0) {
+    init(nickname: String, userGoal: String, remainingDays: Int, profileImage: String? = nil, streakNum: Int = 0, lastVisitAt: Date? = nil) {
         self.id = UUID()
         self.nickname = nickname
         self.userGoal = userGoal
@@ -26,5 +27,6 @@ final class User {
         self.profileImage = profileImage
         self.streakNum = streakNum
         self.createdAt = Date()
+        self.lastVisitAt = lastVisitAt
     }
 }

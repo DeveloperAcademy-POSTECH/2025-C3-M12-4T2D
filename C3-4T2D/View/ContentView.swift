@@ -12,6 +12,8 @@ struct ContentView: View {
     @State private var path = NavigationPath()
     @Query var users: [User]
     @Environment(Router.self) private var router
+    @Environment(\.modelContext) private var modelContext
+    @Environment(\.scenePhase) private var scenePhase
 
     var body: some View {
         NavigationStack(path: $path) {
@@ -38,6 +40,24 @@ struct ContentView: View {
                     Text("createView")
                 case .settingsView:
                     Text("settingsView")
+                }
+            }
+        }
+        .onChange(of: scenePhase) { newPhase in
+            if newPhase == .active {
+                if let user = users.first {
+                    let now = Date()
+                    if let last = user.lastVisitAt {
+                        if now.timeIntervalSince(last) >= 10 {
+                            user.streakNum += 1
+                            user.lastVisitAt = now
+                            try? modelContext.save()
+                        }
+                    } else {
+                        user.streakNum += 1
+                        user.lastVisitAt = now
+                        try? modelContext.save()
+                    }
                 }
             }
         }

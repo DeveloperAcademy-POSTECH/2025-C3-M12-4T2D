@@ -2,6 +2,9 @@ import SwiftUI
 
 struct MainHeader: View {
     var user: User?
+    var streakNum: Int
+    var projectCount: Int
+    var postCount: Int
     var body: some View {
         HStack(spacing: 30) {
             Image(systemName: "person.circle")
@@ -20,9 +23,9 @@ struct MainHeader: View {
                 }
 
                 HStack(spacing: 12) {
-                    Text("🔥489").font(.system(size: 15, weight: .semibold))
-                    Text("📒12").font(.system(size: 15, weight: .semibold))
-                    Text("🎨112").font(.system(size: 15, weight: .semibold))
+                    Text("🔥\(streakNum)").font(.system(size: 15, weight: .semibold))
+                    Text("📒\(projectCount)").font(.system(size: 15, weight: .semibold))
+                    Text("🎨\(postCount)").font(.system(size: 15, weight: .semibold))
                 }
             }
             Spacer()
