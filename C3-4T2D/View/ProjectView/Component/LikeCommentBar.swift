@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct Comment: View {
+struct LikeCommentBar: View {
     @State private var isLiked: Bool = false
     @State private var isCommentModal: Bool = false
     var body: some View {
@@ -31,7 +31,7 @@ struct Comment: View {
         }.padding(.horizontal)
             .sheet(isPresented: $isCommentModal) {
                 CommentModal()
-                    .presentationDetents([.medium, .large])
+                    .presentationDetents([.medium])
             }
     }
 }
