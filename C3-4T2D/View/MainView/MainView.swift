@@ -6,22 +6,30 @@ struct MainView: View {
     @Environment(\.modelContext) private var modelContext
 
     @Query private var allProjects: [Project]
+    @Query private var users: [User]
+    @Query private var allPosts: [Post]
     // 현재 진행중인 프로젝트, 어처피 0 or 1 (있거나 없거나지 여러개가 아님)
     @Query(SwiftDataManager.currentProject) private var getCurrentProject: [Project]
 
     @State private var selectedTabIndex: Int = 0
     @State private var sortOrder: SortOrder = .newest
+    @State private var showCamera: Bool = false
+    @State private var showCreate: Bool = false
 
     var sortedProjects: [Project] {
         sortOrder.sort(projects: allProjects)
     }
 
     var currentProject: Project? { getCurrentProject.first }
+    var currentUser: User? { users.first }
+    var projectCount: Int { allProjects.count }
+    var postCount: Int { allPosts.count }
+    var streakNum: Int { currentUser?.streakNum ?? 0 }
 
     var body: some View {
         ScrollView {
             VStack(spacing: 0) {
-                MainHeader()
+                MainHeader(user: currentUser, streakNum: streakNum, projectCount: projectCount, postCount: postCount)
                 Divider()
                 // BANNER
                 VStack {
@@ -54,7 +62,30 @@ struct MainView: View {
                             }
                         }
                         Spacer()
-                        Image(systemName: "plus").foregroundColor(.gray).font(.system(size: 24))
+                        Menu {
+                            Button {
+                                showCamera = true
+                            } label: {
+                                Label("바로 촬영하기", systemImage: "camera")
+                            }
+                            Button {
+                                showCreate = true
+                            } label: {
+                                Label("과정 기록하기", systemImage: "square.and.pencil")
+                            }
+                        } label: {
+                            Image(systemName: "plus")
+                                .foregroundColor(.gray)
+                                .font(.system(size: 24))
+                        }
+                        .fullScreenCover(isPresented: $showCamera) {
+                            CameraView { image in
+                                showCamera = false
+                            }
+                        }
+                        .fullScreenCover(isPresented: $showCreate) {
+                            CreateView()
+                        }
                     }.padding(.vertical, 15)
                         .padding(.trailing, 20)
 

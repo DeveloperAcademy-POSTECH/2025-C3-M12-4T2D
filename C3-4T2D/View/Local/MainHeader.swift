@@ -1,6 +1,10 @@
 import SwiftUI
 
 struct MainHeader: View {
+    var user: User?
+    var streakNum: Int
+    var projectCount: Int
+    var postCount: Int
     var body: some View {
         HStack(spacing: 30) {
             Image(systemName: "person.circle")
@@ -9,9 +13,9 @@ struct MainHeader: View {
                 .tint(Color.yellow)
             VStack(alignment: .leading) {
                 HStack(spacing: 10) {
-                    Text("국민대학교 합격")
+                    Text(user?.userGoal ?? "목표를 입력하세요")
                         .font(.system(size: 12, weight: .semibold))
-                    Text("D-129")
+                    Text(user != nil ? "D-\(user!.remainingDays)" : "D-0")
                         .font(.system(size: 11))
                         .padding(.horizontal, 4)
                         .padding(.vertical, 1.5)
@@ -19,9 +23,9 @@ struct MainHeader: View {
                 }
 
                 HStack(spacing: 12) {
-                    Text("🔥489").font(.system(size: 15, weight: .semibold))
-                    Text("📒12").font(.system(size: 15, weight: .semibold))
-                    Text("🎨112").font(.system(size: 15, weight: .semibold))
+                    Text("🔥\(streakNum)").font(.system(size: 15, weight: .semibold))
+                    Text("📒\(projectCount)").font(.system(size: 15, weight: .semibold))
+                    Text("🎨\(postCount)").font(.system(size: 15, weight: .semibold))
                 }
             }
             Spacer()
