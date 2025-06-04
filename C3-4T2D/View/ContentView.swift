@@ -9,18 +9,25 @@ import SwiftData
 import SwiftUI
 
 struct ContentView: View {
-    @State private var router = Router()
-    @Environment(\.modelContext) private var modelContext
+    @State private var path = NavigationPath()
+    @Query var users: [User]
+    @Environment(Router.self) private var router
 
     var body: some View {
-        NavigationStack(path: $router.path) {
-            MainView().navigationDestination(for: Destination.self) { destination in
+        NavigationStack(path: $path) {
+            Group {
+                if users.isEmpty {
+                    OnboardingView()
+                } else {
+                    MainView()
+                }
+            }
+            .navigationDestination(for: Destination.self) { destination in
                 switch destination {
-                // Text()대신 해당하는 View 적용 필요
                 case .mainView:
                     MainView()
                 case .onBoardingView:
-                    Text("onBoardingView")
+                    OnboardingView()
                 case .ProjectView:
                     ProjectView()
                 case .projectDetailView:
@@ -33,7 +40,7 @@ struct ContentView: View {
                     Text("settingsView")
                 }
             }
-        }.environment(router)
+        }
     }
 }
 

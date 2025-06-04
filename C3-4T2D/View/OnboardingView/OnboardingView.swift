@@ -10,6 +10,7 @@ import SwiftData
 
 struct OnboardingView: View {
     @Environment(\.modelContext) private var modelContext
+    @Environment(Router.self) private var router
     
     @State private var nickname: String = ""
     @State private var goal: String = ""
@@ -69,6 +70,7 @@ struct OnboardingView: View {
         )
         do {
             try modelContext.save()
+            router.navigate(to: .mainView)
         } catch {
             print("Error saving user: \(error)")
         }
