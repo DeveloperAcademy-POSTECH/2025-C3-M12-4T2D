@@ -6,20 +6,27 @@
 //
 
 import Foundation
+import SwiftData
 
-struct Post: Identifiable {
-    let id: UUID = .init()
+@Model
+final class Post {
+    @Attribute(.unique) var id: UUID
     var postImageUrl: String?
     var memo: String?
-    var order: Int // 사용자 지정 순서
-    var projectId: UUID
+    // 사용자 지정 순서 -> 유저가 혹여나 순서를 잘못올렸을때 사용 (아직 활용 X )
+    var order: Int
     var createdAt: Date
 
-    init(postImageUrl: String? = nil, memo: String? = nil, order: Int = 0, projectId: UUID, createdAt: Date = Date()) {
+    // Project와 연결된 부분
+    var project: Project
+
+    init(postImageUrl: String? = nil, memo: String? = nil, order: Int = 0, project: Project) {
+        self.id = UUID()
         self.postImageUrl = postImageUrl
         self.memo = memo
         self.order = order
-        self.projectId = projectId
-        self.createdAt = createdAt
+        // 필수 -> 결국project안에 post가 포함되는 구조
+        self.project = project
+        self.createdAt = Date()
     }
 }

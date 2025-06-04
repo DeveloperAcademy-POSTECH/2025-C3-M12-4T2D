@@ -6,16 +6,19 @@
 //
 
 import Foundation
+import SwiftData
 
-struct User: Identifiable {
-    let id: UUID = .init()
+@Model
+final class User {
+    @Attribute(.unique) var id: UUID
     var userGoal: String
     var remainingDays: Int // D-Day
     var profileImage: String?
     var streakNum: Int
-    let createdAt: Date
+    var createdAt: Date
 
     init(userGoal: String, remainingDays: Int, profileImage: String? = nil, streakNum: Int = 0) {
+        self.id = UUID()
         self.userGoal = userGoal
         self.remainingDays = remainingDays
         self.profileImage = profileImage
