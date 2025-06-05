@@ -11,4 +11,12 @@ extension DateFormatter {
             return "\(formatter.string(from: startDate)) ~"
         }
     }
+    
+    static let timestampFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "MM.dd. HH:mm"
+        return formatter
+    }()
+
 }
+
