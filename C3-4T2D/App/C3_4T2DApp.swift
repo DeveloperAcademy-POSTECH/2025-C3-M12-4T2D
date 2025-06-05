@@ -27,8 +27,8 @@ struct C3_4T2DApp: App {
 
     var body: some Scene {
         WindowGroup {
-//            ContentView()
-            OnboardingView()
+            CreateView()
+//            OnboardingView()
         }
         .modelContainer(sharedModelContainer)
     }
