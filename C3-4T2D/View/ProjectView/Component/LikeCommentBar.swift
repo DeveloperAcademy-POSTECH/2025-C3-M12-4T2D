@@ -31,7 +31,8 @@ struct LikeCommentBar: View {
         }.padding(.horizontal)
             .sheet(isPresented: $isCommentModal) {
                 CommentModal()
-                    .presentationDetents([.medium])
+                    .presentationDetents([.medium, .large])
+                    .presentationDragIndicator(.visible)
             }
     }
 }
