@@ -43,10 +43,12 @@ struct CreateView: View {
                         .padding(.bottom, 20)
 
                     // 사진 업로드
+//                    CreatePhoto(isPresentingCamera: $isPresentingCamera)
                     CreatePhoto(isPresentingCamera: $isPresentingCamera)
+                        .padding(.bottom, 20)
 
                     // 메모 입력
-                    CreateMemo(descriptionText: $descriptionText)
+                    CreateMemo(descriptionText: $descriptionText)     .padding(.bottom, 24)
 
                     // 작성 완료 동작
                     Button(action: {
@@ -75,7 +77,6 @@ struct CreateView: View {
                             .background(Color.prime1)
                             .cornerRadius(8)
                     }
-                    .padding(.top, 40)
                 }
                 .padding(.horizontal, 20)
             }
@@ -100,13 +101,8 @@ struct CreateView: View {
     }
 }
 
-extension View {
-    func hideKeyboard() {
-        let resign = #selector(UIResponder.resignFirstResponder)
-        UIApplication.shared.sendAction(resign, to: nil, from: nil, for: nil)
-    }
-}
-
 #Preview {
     CreateView()
 }
+
+
