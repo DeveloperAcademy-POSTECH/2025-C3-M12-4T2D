@@ -202,6 +202,7 @@ struct OnboardingView: View {
                         VStack(spacing: 5) {
                             HStack {
                                 Button(action: {
+                                    hideKeyboard()
                                     isSheetPresented = true
                                 }) {
                                     Text("\(targetDate, formatter: dateFormatter)")
@@ -226,7 +227,7 @@ struct OnboardingView: View {
                 }
                 .padding(.horizontal, 20)
             }
-
+            
             // 바닥 고정 버튼
             Button(action: completeOnboarding) {
                 Text("작성 완료")
@@ -245,7 +246,7 @@ struct OnboardingView: View {
         .sheet(isPresented: $isSheetPresented) {
             DatePickerSheet(
                 selectedDate: $targetDate,
-                isPresented: $isSheetPresented
+                isPresented: $isSheetPresented,
             )
             .presentationDetents([.medium])
             .onDisappear {
