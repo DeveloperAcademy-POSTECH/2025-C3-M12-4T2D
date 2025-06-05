@@ -49,6 +49,7 @@ struct MainHeader: View {
                         }
                     }
                     Spacer()
+
                 }
                 .padding(.top, 24)
                 .padding(.horizontal, 20)

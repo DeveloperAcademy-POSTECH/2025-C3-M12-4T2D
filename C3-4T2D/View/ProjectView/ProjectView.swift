@@ -15,7 +15,7 @@ struct ProjectView: View {
             // 사진
             ImageView(image: "Image")
             // Comment
-            Comment()
+            LikeCommentBar()
         }
     }
 }
