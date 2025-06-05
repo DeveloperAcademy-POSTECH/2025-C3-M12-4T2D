@@ -79,17 +79,30 @@ class CropViewModel: ObservableObject {
      - Parameter image: 크롭할 UIImage입니다.
      - Returns: 크롭된 UIImage 또는 실패 시 nil을 반환합니다.
      */
-    func cropToRectangle(_ image: UIImage) -> UIImage? {
-        guard let orientedImage = image.correctlyOriented else { return nil }
-        
-        let cropRect = calculateCropRect(orientedImage)
-        
-        guard let cgImage = orientedImage.cgImage,
-              let result = cgImage.cropping(to: cropRect) else {
-            return nil
-        }
-        
-        return UIImage(cgImage: result)
+    func cropToRectangle(_ image: UIImage, displayedImageSize: CGSize) -> UIImage? {
+        let imageSize = image.size
+
+        // 이미지가 화면에 표시된 영역의 크기 대비 실제 픽셀 크기 비율
+        let scaleX = imageSize.width / displayedImageSize.width
+        let scaleY = imageSize.height / displayedImageSize.height
+
+        // 마스크의 크기를 이미지 픽셀 기준으로 변환
+        let cropWidth = maskSize.width * scaleX / scale
+        let cropHeight = maskSize.height * scaleY / scale
+
+        // 이미지 중앙에서 offset을 반영해 crop center 위치 결정
+        let centerX = imageSize.width / 2 + offset.width * scaleX / scale
+        let centerY = imageSize.height / 2 + offset.height * scaleY / scale
+
+        let cropRect = CGRect(
+            x: centerX - cropWidth / 2,
+            y: centerY - cropHeight / 2,
+            width: cropWidth,
+            height: cropHeight
+        )
+
+        guard let cgImage = image.cgImage?.cropping(to: cropRect) else { return nil }
+        return UIImage(cgImage: cgImage, scale: image.scale, orientation: image.imageOrientation)
     }
     
     

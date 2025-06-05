@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-/// `PhotoEditView`는 이미지를 자르기 위한 SwiftUI 뷰입니다.
+/// `PhotoEditView여기`는 이미지를 자르기 위한 SwiftUI 뷰입니다.
 ///
 /// 이 뷰는 사용자가 이미지를 원하는 비율로 자를 수 있도록 도와줍니다.
 /// `CropConfiguration` 인스턴스를 통해 자르기 동작을 세밀하게 설정할 수 있으며,

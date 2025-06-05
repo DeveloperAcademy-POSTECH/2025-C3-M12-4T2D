@@ -44,10 +44,11 @@ struct CropView: View {
 
     var body: some View {
         // MARK: - 제스처 정의 (확대/축소, 드래그, 회전)
+
         // 확대/축소 제스처
         let magnificationGesture = MagnificationGesture()
             .onChanged { value in
-                let sensitivity: CGFloat = 0.1 * configuration.zoomSensitivity
+                let sensitivity: CGFloat = 0.5 * configuration.zoomSensitivity
                 let scaledValue = (value.magnitude - 1) * sensitivity + 1
 
                 let maxScaleValues = viewModel.calculateMagnificationGestureMaxValues()
@@ -88,6 +89,7 @@ struct CropView: View {
             }
 
         // MARK: - 뷰 레이아웃 구조
+
         VStack {
             HStack {
                 // 취소 버튼
@@ -96,14 +98,14 @@ struct CropView: View {
                 } label: {
                     Text(
                         configuration.texts.cancelButton ??
-                        NSLocalizedString("cancel", tableName: localizableTableName, bundle: .main, comment: "")
+                            NSLocalizedString("cancel", tableName: localizableTableName, bundle: .main, comment: "")
                     )
                     .padding()
                     .font(configuration.fonts.cancelButton)
                     .foregroundColor(configuration.colors.cancelButton)
                 }
                 .padding()
-                
+
                 Spacer()
 
                 // 저장(크롭) 버튼
@@ -119,7 +121,7 @@ struct CropView: View {
                 } label: {
                     Text(
                         configuration.texts.saveButton ??
-                        NSLocalizedString("완료", tableName: localizableTableName, bundle: .main, comment: "")
+                            NSLocalizedString("완료", tableName: localizableTableName, bundle: .main, comment: "")
                     )
                     .padding()
                     .font(configuration.fonts.saveButton)
@@ -132,6 +134,7 @@ struct CropView: View {
             // 이미지와 마스크 오버레이, 버튼 영역
             ZStack {
                 // MARK: - 이미지 표시 및 오버레이(마스크 영역 표시)
+
                 Image(uiImage: image)
                     .resizable()
                     .scaledToFit()
@@ -150,19 +153,27 @@ struct CropView: View {
                     )
 
                 // 마스크 모양으로 실제 이미지 영역을 표시 (마스크 영역 외에는 가려짐)
-                Image(uiImage: image)
-                    .resizable()
-                    .scaledToFit()
-                    .rotationEffect(viewModel.angle)
-                    .scaleEffect(viewModel.scale)
-                    .offset(viewModel.offset)
-                    .mask(
-                        // 마스크 뷰를 오버레이로 적용
-                        MaskShapeView()
-                            .frame(width: viewModel.maskSize.width, height: viewModel.maskSize.height)
-                    )
+                ZStack {
+                    Image(uiImage: image)
+                        .resizable()
+                        .scaledToFit()
+                        .rotationEffect(viewModel.angle)
+                        .scaleEffect(viewModel.scale)
+                        .offset(viewModel.offset)
+                        .mask(
+                            // 마스크 뷰를 오버레이로 적용
+                            MaskShapeView()
+                                .frame(width: viewModel.maskSize.width, height: viewModel.maskSize.height)
+                        )
+
+                    // White border overlay
+                    MaskShapeView()
+                        .stroke(Color.white, lineWidth: 2)
+                        .frame(width: viewModel.maskSize.width, height: viewModel.maskSize.height)
+                }
 
                 // MARK: - 하단 버튼 영역 (취소/저장)
+
                 VStack {
                     Spacer()
                     HStack {
@@ -190,6 +201,7 @@ struct CropView: View {
     }
 
     // MARK: - 오프셋 값 보정(최대/최소 범위 내로 제한)
+
     private func updateOffset() {
         let maxOffsetPoint = viewModel.calculateDragGestureMax()
         let newX = min(max(viewModel.offset.width, -maxOffsetPoint.x), maxOffsetPoint.x)
@@ -199,6 +211,7 @@ struct CropView: View {
     }
 
     // MARK: - 실제 크롭(자르기) 로직
+
     /// 현재 상태(회전 포함)에서 이미지를 잘라 반환합니다.
     private func cropImage() -> UIImage? {
         var editedImage: UIImage = image
@@ -212,9 +225,9 @@ struct CropView: View {
             }
         }
         // 마스크 영역 기준으로 이미지를 크롭
-        return viewModel.cropToRectangle(editedImage)
+        return viewModel.cropToRectangle(editedImage, displayedImageSize: viewModel.imageSizeInView)
     }
-    
+
     private func rotate90Degrees() {
         let ninetyDegrees = Angle.degrees(90)
         viewModel.angle += ninetyDegrees
@@ -222,14 +235,16 @@ struct CropView: View {
     }
 
     // MARK: - 마스크 뷰 구조체
+
     /// 실제 마스크 모양을 그리는 뷰입니다. (현재는 사각형만 지원)
-    private struct MaskShapeView: View {
-        var body: some View {
-            Rectangle()
+    private struct MaskShapeView: Shape {
+        func path(in rect: CGRect) -> Path {
+            return Path { path in
+                path.addRect(rect)
+            }
         }
     }
 }
-
 
 #if DEBUG
 import SwiftUI
@@ -237,7 +252,7 @@ import SwiftUI
 struct CropView_Previews: PreviewProvider {
     static var previews: some View {
         CropView(
-            image: UIImage(named: "cropimg") ?? UIImage(systemName: "photo") ?? UIImage(),
+            image: UIImage(named: "tmpImage") ?? UIImage(systemName: "photo") ?? UIImage(),
             configuration: CropConfiguration(
                 maxMagnificationScale: 5,
                 maskRadius: 150,
