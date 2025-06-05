@@ -17,6 +17,12 @@ extension DateFormatter {
         formatter.dateFormat = "MM.dd. HH:mm"
         return formatter
     }()
-
+    
+    static var koreanDate: DateFormatter {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "ko_KR")
+        formatter.dateStyle = .medium
+        formatter.timeStyle = .none
+        return formatter
+    }
 }
-
