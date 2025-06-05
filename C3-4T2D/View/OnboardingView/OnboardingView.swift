@@ -70,7 +70,7 @@ struct OnboardingView: View {
         )
         do {
             try modelContext.save()
-            router.navigate(to: .mainView)
+            router.navigateToRoot()
         } catch {
             print("Error saving user: \(error)")
         }
