@@ -86,65 +86,64 @@ struct MainView: View {
                             }
                             .padding(.vertical, 28)
                             .padding(.bottom, 8)
-                        } else {
+                        } else {}
+                        Rectangle()
+                            .foregroundColor(.gray.opacity(0.2))
+                            .frame(height: 12)
+                        VStack {
+                            HStack {
+                                Button(action: { showSortSheet = true }) {
+                                    HStack {
+                                        Text(sortOrder.rawValue).font(.system(size: 22, weight: .semibold))
+                                        Image(systemName: "chevron.down").font(.system(size: 22, weight: .semibold))
+                                    }
+                                }.foregroundColor(.black)
+                                Spacer()
+                                HStack(spacing: 16) {
+                                    ForEach(TabType.allCases, id: \.self) { tab in
+                                        Button {
+                                            selectedTabIndex = tab.rawValue
+                                        } label: {
+                                            Image(tab.imageName(isSelected: selectedTabIndex == tab.rawValue))
+                                                .resizable()
+                                                .frame(width: 20, height: 20)
+                                        }
+                                    }
+                                }
+                            }.padding(.horizontal, 20)
+                                .padding(.bottom, 20)
 
+                            // 탭에 따른 레이아웃 변화
+                            Group {
+                                switch selectedTabIndex {
+                                case 0: // 프로젝트별 스크롤뷰
+                                    LazyVStack(spacing: 20) {
+                                        ForEach(sortedProjects) { project in
+                                            ProjectSectionCard(project: project)
+                                        }
+                                    }.padding(.leading, 20)
+                                case 1: // 리스트뷰
+                                    LazyVStack(spacing: 16) {
+                                        ForEach(sortedProjects) { project in
+                                            PostListCard(project: project)
+                                        }
+                                    }
+                                    .padding(.horizontal, 20)
+                                case 2: // 3x3 그리드뷰
+                                    LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 10), count: 3), spacing: 10) {
+                                        ForEach(sortedProjects) { project in
+                                            GridImageCard(project: project)
+                                        }
+                                    }.padding(.horizontal, 20)
+                                default:
+                                    EmptyView()
+                                }
+                            }
+                            Spacer(minLength: 0)
                         }
-                                Rectangle()
-                                    .foregroundColor(.gray.opacity(0.2))
-                                    .frame(height: 12)
-                         VStack {
-                             HStack {
-                                 Button(action: { showSortSheet = true }) {
-                                     HStack {
-                                         Text(sortOrder.rawValue).font(.system(size: 22, weight: .semibold))
-                                         Image(systemName: "chevron.down").font(.system(size: 22, weight: .semibold))
-                                     }
-                                 }.foregroundColor(.black)
-                                 Spacer()
-                                 HStack(spacing: 16) {
-                                     ForEach(TabType.allCases, id: \.self) { tab in
-                                         Button {
-                                             selectedTabIndex = tab.rawValue
-                                         } label: {
-                                             Image(tab.imageName(isSelected: selectedTabIndex == tab.rawValue))
-                                                 .resizable()
-                                                 .frame(width: 20, height: 20)
-                                         }
-                                     }
-                                 }
-                             }.padding(.horizontal, 20)
-                                 .padding(.bottom, 20)
+                        .padding(.vertical, 20)
 
-                             // 탭에 따른 레이아웃 변화
-                             Group {
-                                 switch selectedTabIndex {
-                                 case 0: // 프로젝트별 스크롤뷰
-                                     LazyVStack(spacing: 20) {
-                                         ForEach(sortedProjects) { project in
-                                             ProjectSectionCard(project: project)
-                                         }
-                                     }.padding(.leading, 20)
-                                 case 1: // 리스트뷰
-                                     LazyVStack(spacing: 16) {
-                                         ForEach(sortedProjects) { project in
-                                             PostListCard(project: project)
-                                         }
-                                     }
-                                     .padding(.horizontal, 20)
-                                 case 2: // 3x3 그리드뷰
-                                     LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 10), count: 3), spacing: 10) {
-                                         ForEach(sortedProjects) { project in
-                                             GridImageCard(project: project)
-                                         }
-                                     }.padding(.horizontal, 20)
-                                 default:
-                                     EmptyView()
-                                 }
-                             }
-                             Spacer(minLength: 0)
-                         }
-                         .padding(.vertical, 20)
-                         // MARK: 한번만 실행시키고 주석처리해주시면 됩니다 !
+                        // MARK: 한번만 실행시키고 주석처리해주시면 됩니다 !
                     }
                     .background(Color.white)
                     .cornerRadius(15, corners: [.topLeft, .topRight])
@@ -152,15 +151,15 @@ struct MainView: View {
                     .frame(minHeight: UIScreen.main.bounds.height)
                 }
                 .onAppear {
-                //            MARK: 한번만 실행시키고 주석처리해주시면 됩니다 !
-                            DummyDataManager.createDummyData(context: modelContext, projects: allProjects)
-                //            이거는 테스트할때만! swiftData초기화를 위해서 사용합니다.
-                //            SwiftDataManager.deleteAllData(context: modelContext)
-                        }
+                    //            MARK: 한번만 실행시키고 주석처리해주시면 됩니다 !
+                    //  DummyDataManager.createDummyData(context: modelContext, projects: allProjects)
+                    //           이거는 테스트할때만! swiftData초기화를 위해서 사용합니다.
+//                                SwiftDataManager.deleteAllData(context: modelContext)
+                }
             }
         }
         .fullScreenCover(isPresented: $showCamera) {
-            CameraView { image in
+            CameraView { _ in
                 showCamera = false
             }
         }
@@ -170,19 +169,19 @@ struct MainView: View {
         .confirmationDialog("진행중인 과정", isPresented: $showActionSheet, titleVisibility: .visible) {
             Button("바로 촬영하기") { showCamera = true }
             Button("과정 기록하기") { showCreate = true }
-         }
-         .confirmationDialog("프로젝트 정렬", isPresented: $showSortSheet, titleVisibility: .visible) {
-             ForEach(SortOrder.allCases, id: \.self) { order in
-                 Button(order.rawValue) { sortOrder = order }
-             }
-         }
+        }
+        .confirmationDialog("프로젝트 정렬", isPresented: $showSortSheet, titleVisibility: .visible) {
+            ForEach(SortOrder.allCases, id: \.self) { order in
+                Button(order.rawValue) { sortOrder = order }
+            }
+        }
     }
 }
 
 // 코너 라운드 확장
 extension View {
     func cornerRadius(_ radius: CGFloat, corners: UIRectCorner) -> some View {
-        clipShape( RoundedCorner(radius: radius, corners: corners) )
+        clipShape(RoundedCorner(radius: radius, corners: corners))
     }
 }
 
@@ -194,7 +193,6 @@ extension View {
 //     )
 
 // // MARK: 전체 프로젝트 (탭 섹션)
-
 
 struct RoundedCorner: Shape {
     var radius: CGFloat = .infinity
