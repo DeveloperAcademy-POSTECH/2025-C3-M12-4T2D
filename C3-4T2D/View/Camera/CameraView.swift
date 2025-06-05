@@ -33,5 +33,3 @@ struct CameraView: UIViewControllerRepresentable {
         CameraCoordinator(parent: self)
     }
 }
-
-
