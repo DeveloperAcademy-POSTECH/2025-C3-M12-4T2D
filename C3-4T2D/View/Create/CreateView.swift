@@ -61,7 +61,7 @@ struct CreateView: View {
                 }
                 .padding(.horizontal, 20)
             }
-            .scrollDismissesKeyboard(.interactively)
+            .scrollDismissesKeyboard(.immediately)
         }
         .fullScreenCover(isPresented: $isPresentingCamera) {
             ZStack {
