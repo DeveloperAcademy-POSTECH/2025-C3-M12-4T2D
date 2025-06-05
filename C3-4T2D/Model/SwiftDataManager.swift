@@ -85,7 +85,7 @@ enum SwiftDataManager {
 
     /// 진행중인 프로젝트 가져오기
     static var currentProject: FetchDescriptor<Project> {
-        var descriptor = FetchDescriptor<Project>(
+        let descriptor = FetchDescriptor<Project>(
             predicate: #Predicate { $0.finishedAt == nil }
         )
         return descriptor
@@ -93,9 +93,19 @@ enum SwiftDataManager {
 
     /// 이전  프로젝트만 가져오기 ( 진행중 프로젝트 제외)
     static var completedProjects: FetchDescriptor<Project> {
-        var descriptor = FetchDescriptor<Project>(
+        let descriptor = FetchDescriptor<Project>(
             predicate: #Predicate { $0.finishedAt != nil },
             sortBy: [SortDescriptor(\.finishedAt, order: .reverse)]
+        )
+        return descriptor
+    }
+
+    /// 특정 프로젝트에 해당하는 포스트들 가져오기
+    static func getPostsForProject(_ project: Project) -> FetchDescriptor<Post> {
+        let projectId = project.id // 값을 미리 추출함 (비교할때project.id는 불가능)
+        let descriptor = FetchDescriptor<Post>(
+            predicate: #Predicate<Post> { $0.project.id == projectId },
+            sortBy: [SortDescriptor(\.createdAt, order: .reverse)]
         )
         return descriptor
     }
