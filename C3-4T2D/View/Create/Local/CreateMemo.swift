@@ -33,13 +33,13 @@ struct CreateMemo: View {
                     .font(.system(size: 15))
                     .scrollContentBackground(.hidden)
                     .scrollDisabled(true)
-                    .frame(minHeight: 140, maxHeight: 180)
+                    .frame(minHeight: 200, maxHeight: 300)
                     .overlay(
                         RoundedRectangle(cornerRadius: 6)
                             .stroke(Color.gray.opacity(0.4), lineWidth: 1)
                     )
             }
         }
-        .padding(.vertical, 16)
+//        .padding(.vertical, 16)
     }
 }

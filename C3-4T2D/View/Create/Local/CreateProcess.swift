@@ -15,7 +15,6 @@ struct CreateProcess: View {
             Text("진행 단계")
                 .font(.title3.weight(.bold))
                 .padding(.bottom, 10)
-            ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 8) {
                     ForEach(ProcessStage.allCases) { stage in
                         Button(action: {
@@ -23,19 +22,19 @@ struct CreateProcess: View {
                         }) {
                             Text(stage.rawValue)
                                 .font(.system(size: 15))
-                                .foregroundColor(selectedStage == stage ? .white : .black)
+                                .foregroundColor(selectedStage == stage ? .white : Color("Gray_3"))
                                 .padding(.horizontal, 12)
                                 .padding(.vertical, 8)
                                 .frame(maxWidth: .infinity)
                                 .background(
-                                    RoundedRectangle(cornerRadius: 1000)
-                                        .fill(selectedStage == stage ? Color.prime1 : Color(.systemGray5))
+                                    selectedStage == stage ? Color("Prime 1") : Color(.tertiarySystemFill)
                                 )
                                 .fixedSize()
+                                .clipShape(Capsule())
                         }
                     }
+                    Spacer()
                 }
-            }
         }
     }
 }

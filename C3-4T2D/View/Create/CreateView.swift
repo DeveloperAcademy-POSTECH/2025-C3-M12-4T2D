@@ -5,15 +5,19 @@
 //  Created by Hwnag Seyeon on 5/29/25.
 //
 
+import SwiftData
 import SwiftUI
-
+// 이미지 저장은 swiftdata 연결 아직 전
 struct CreateView: View {
+    @Environment(\.modelContext) private var context
+
     @State private var showProjectSelector = false
     @State private var isPresentingCamera = false
     @State private var showDatePicker = false
 
     @State private var projTitle: String = ""
     @State private var descriptionText: String = ""
+    @FocusState private var isFocused: Bool
 
     @State private var selectedDate = Date()
     @State private var selectedStage: ProcessStage = .idea
@@ -39,15 +43,31 @@ struct CreateView: View {
                         .padding(.bottom, 20)
 
                     // 사진 업로드
+//                    CreatePhoto(isPresentingCamera: $isPresentingCamera)
                     CreatePhoto(isPresentingCamera: $isPresentingCamera)
+                        .padding(.bottom, 20)
 
                     // 메모 입력
-                    CreateMemo(descriptionText: $descriptionText)
+                    CreateMemo(descriptionText: $descriptionText)     .padding(.bottom, 24)
 
-                    // MARK: - 작성 완료 버튼 (fixed footer)
-
+                    // 작성 완료 동작
                     Button(action: {
-                        // 작성 완료 동작
+                        let project = Project(projectTitle: projTitle, finishedAt: selectedDate)
+                        context.insert(project)
+
+                        let post = Post(
+                            postImageUrl: nil,
+                            memo: descriptionText,
+                            project: project
+                        )
+                        context.insert(post)
+
+                        do {
+                            try context.save()
+                            print("프로젝트 및 포스트 저장 성공")
+                        } catch {
+                            print("저장 실패: \(error)")
+                        }
                     }) {
                         Text("작성 완료")
                             .font(.system(size: 16, weight: .bold))
@@ -57,7 +77,6 @@ struct CreateView: View {
                             .background(Color.prime1)
                             .cornerRadius(8)
                     }
-                    .padding(.top, 40)
                 }
                 .padding(.horizontal, 20)
             }
@@ -83,7 +102,8 @@ struct CreateView: View {
 }
 
 
-
 #Preview {
     CreateView()
 }
+
+
