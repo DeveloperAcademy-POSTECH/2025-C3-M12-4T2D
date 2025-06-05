@@ -20,8 +20,8 @@ struct PostListCard: View {
 
             VStack(alignment: .leading, spacing: 5) {
                 Text(project.projectTitle)
-                    .font(.system(size: 17, weight: .semibold))
-                    .lineLimit(2)
+                    .font(.system(size: 16, weight: .bold))
+                    .lineLimit(1)
 
                 HStack {
                     Text(DateFormatter.projectDateRange(
@@ -42,23 +42,21 @@ struct PostListCard: View {
 
                 HStack(spacing: 12) {
                     HStack(spacing: 4) {
-                        Image(systemName: "folder.fill")
-                            .foregroundColor(.orange)
-                            .font(.system(size: 12))
+                        Image("note")
+                            .resizable()
+                            .frame(width: 14, height: 14)
                         Text("12")
-                            .font(.system(size: 12, weight: .semibold))
+                            .font(.system(size: 14, weight: .semibold))
                     }
 
                     HStack(spacing: 4) {
-                        Image(systemName: "person.fill")
-                            .foregroundColor(.orange)
-                            .font(.system(size: 12, weight: .semibold))
+                        Image("pallet")
+                            .resizable()
+                            .frame(width: 14, height: 14)
                         Text("112")
-                            .font(.system(size: 14, weight: .medium))
+                            .font(.system(size: 14, weight: .semibold))
                     }
                 }
-
-                Spacer()
             }
 
             Spacer()

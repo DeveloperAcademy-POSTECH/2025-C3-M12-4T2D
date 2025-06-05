@@ -6,12 +6,17 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct OnboardingView: View {
+    @Environment(\.modelContext) private var modelContext
+    @Environment(Router.self) private var router
+    
     @State private var nickname: String = ""
     @State private var goal: String = ""
     @State private var targetDate: Date = Date()
     @State private var isSheetPresented = false
+    @State private var isDateSelected = false
 
     @FocusState private var focusedField: Field?
 
@@ -37,6 +42,38 @@ struct OnboardingView: View {
     var goalLineColor: Color {
         if goal.isEmpty { return .prime3 }
         return goalIsOverLimit ? Color("Alert_red01") : .prime1
+    }
+    
+    var dateLineColor: Color {
+        isDateSelected ? .prime1 : .prime3
+    }
+    
+    var isFormValid: Bool {
+        !nickname.isEmpty && !goal.isEmpty && !nicknameIsOverLimit && !goalIsOverLimit && isDateSelected
+    }
+
+    private func calculateRemainingDays() -> Int {
+        let calendar = Calendar.current
+        let today = calendar.startOfDay(for: Date())
+        let target = calendar.startOfDay(for: targetDate)
+        let components = calendar.dateComponents([.day], from: today, to: target)
+        return components.day ?? 0
+    }
+
+    private func completeOnboarding() {
+        let remainingDays = calculateRemainingDays()
+        let user = SwiftDataManager.createUser(
+            context: modelContext,
+            nickname: nickname,
+            goal: goal,
+            remainingDays: remainingDays
+        )
+        do {
+            try modelContext.save()
+            router.navigate(to: .mainView)
+        } catch {
+            print("Error saving user: \(error)")
+        }
     }
 
     var body: some View {
@@ -162,18 +199,27 @@ struct OnboardingView: View {
                             .fontWeight(.semibold)
                             .foregroundColor(.gray4)
 
-                        Button(action: {
-                            isSheetPresented = true
-                        }) {
-                            VStack(spacing: 5){
-                                Text("\(targetDate, formatter: dateFormatter)")
-                                    .font(.system(size: 17))
-                                    .foregroundColor(Color(hex : "C7C7C9"))
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-                                Rectangle()
-                                    .frame(height: 2)
-                                    .foregroundColor(.prime3)
+                        VStack(spacing: 5) {
+                            HStack {
+                                Button(action: {
+                                    hideKeyboard()
+                                    isSheetPresented = true
+                                }) {
+                                    Text("\(targetDate, formatter: dateFormatter)")
+                                        .font(.system(size: 17))
+                                        .foregroundColor(isDateSelected ? .black : Color(hex: "C7C7C9"))
+                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                }
+                                
+                                if isDateSelected {
+                                    Image(systemName: "checkmark.circle")
+                                        .foregroundColor(.prime1)
+                                }
                             }
+
+                            Rectangle()
+                                .frame(height: 2)
+                                .foregroundColor(dateLineColor)
                         }
                     }
 
@@ -181,32 +227,31 @@ struct OnboardingView: View {
                 }
                 .padding(.horizontal, 20)
             }
-
+            
             // 바닥 고정 버튼
-            Button(action: {
-                // 완료 액션 조건 추가 필요
-            }) {
+            Button(action: completeOnboarding) {
                 Text("작성 완료")
                     .foregroundColor(.white)
                     .frame(maxWidth: .infinity)
                     .padding()
-                    .background(.prime4)
+                    .background(isFormValid ? .prime1 : .prime4)
                     .cornerRadius(10)
             }
-            .disabled(true)
+            .disabled(!isFormValid)
             .padding(.horizontal, 20)
             .padding(.bottom, 30)
         }
         .ignoresSafeArea(.keyboard, edges: .bottom)
         .onTapGesture { hideKeyboard() }
         .sheet(isPresented: $isSheetPresented) {
-            VStack {
-                Text("세나야 너의 멋진 노란 데이트 피커를 넣어주렴.")
-                    .font(.headline)
-                    .padding()
-                Spacer()
-            }
+            DatePickerSheet(
+                selectedDate: $targetDate,
+                isPresented: $isSheetPresented,
+            )
             .presentationDetents([.medium])
+            .onDisappear {
+                isDateSelected = true
+            }
         }
     }
 }

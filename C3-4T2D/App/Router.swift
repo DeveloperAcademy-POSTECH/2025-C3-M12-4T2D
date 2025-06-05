@@ -28,7 +28,8 @@ class Router {
 enum Destination: Hashable {
     case onBoardingView
     case mainView
-    case ProjectView
+    case ProjectListView(Project)
+
     /* projectDetailView(Project) 이런식으로 나중에 필요에따라 데이터 넘겨주기도 가능함 */
     case projectDetailView
     case postDetailView

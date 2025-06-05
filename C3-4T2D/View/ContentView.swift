@@ -10,19 +10,27 @@ import SwiftUI
 
 struct ContentView: View {
     @State private var router = Router()
+    @Query var users: [User]
     @Environment(\.modelContext) private var modelContext
+    @Environment(\.scenePhase) private var scenePhase
 
     var body: some View {
         NavigationStack(path: $router.path) {
-            MainView().navigationDestination(for: Destination.self) { destination in
+            Group {
+                if users.isEmpty {
+                    OnboardingView()
+                } else {
+                    MainView()
+                }
+            }
+            .navigationDestination(for: Destination.self) { destination in
                 switch destination {
-                // Text()대신 해당하는 View 적용 필요
                 case .mainView:
                     MainView()
                 case .onBoardingView:
-                    Text("onBoardingView")
-                case .ProjectView:
-                    ProjectView()
+                    OnboardingView()
+                case .ProjectListView(let project):
+                    ProjectList(project)
                 case .projectDetailView:
                     Text("projectDetailView")
                 case .postDetailView:
@@ -33,7 +41,26 @@ struct ContentView: View {
                     Text("settingsView")
                 }
             }
-        }.environment(router)
+        }
+        .environment(router)
+        .onChange(of: scenePhase) { newPhase in
+            if newPhase == .active {
+                if let user = users.first {
+                    let now = Date()
+                    if let last = user.lastVisitAt {
+                        if now.timeIntervalSince(last) >= 3600 {
+                            user.streakNum += 1
+                            user.lastVisitAt = now
+                            try? modelContext.save()
+                        }
+                    } else {
+                        user.streakNum += 1
+                        user.lastVisitAt = now
+                        try? modelContext.save()
+                    }
+                }
+            }
+        }
     }
 }
 
