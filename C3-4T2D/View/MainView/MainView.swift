@@ -168,15 +168,15 @@ struct MainView: View {
                     .frame(minHeight: UIScreen.main.bounds.height)
                 }
                 .onAppear {
-                //            MARK: 한번만 실행시키고 주석처리해주시면 됩니다 !
-                            DummyDataManager.createDummyData(context: modelContext, projects: allProjects)
-                //            이거는 테스트할때만! swiftData초기화를 위해서 사용합니다.
-                //            SwiftDataManager.deleteAllData(context: modelContext)
-                        }
+                    //            MARK: 한번만 실행시키고 주석처리해주시면 됩니다 !
+                    //  DummyDataManager.createDummyData(context: modelContext, projects: allProjects)
+                    //           이거는 테스트할때만! swiftData초기화를 위해서 사용합니다.
+//                                SwiftDataManager.deleteAllData(context: modelContext)
+                }
             }
         }
         .fullScreenCover(isPresented: $showCamera) {
-            CameraView { image in
+            CameraView { _ in
                 showCamera = false
             }
         }
@@ -186,19 +186,19 @@ struct MainView: View {
         .confirmationDialog("진행중인 과정", isPresented: $showActionSheet, titleVisibility: .visible) {
             Button("바로 촬영하기") { showCamera = true }
             Button("과정 기록하기") { showCreate = true }
-         }
-         .confirmationDialog("프로젝트 정렬", isPresented: $showSortSheet, titleVisibility: .visible) {
-             ForEach(SortOrder.allCases, id: \.self) { order in
-                 Button(order.rawValue) { sortOrder = order }
-             }
-         }
+        }
+        .confirmationDialog("프로젝트 정렬", isPresented: $showSortSheet, titleVisibility: .visible) {
+            ForEach(SortOrder.allCases, id: \.self) { order in
+                Button(order.rawValue) { sortOrder = order }
+            }
+        }
     }
 }
 
 // 코너 라운드 확장
 extension View {
     func cornerRadius(_ radius: CGFloat, corners: UIRectCorner) -> some View {
-        clipShape( RoundedCorner(radius: radius, corners: corners) )
+        clipShape(RoundedCorner(radius: radius, corners: corners))
     }
 }
 
@@ -210,7 +210,6 @@ extension View {
 //     )
 
 // // MARK: 전체 프로젝트 (탭 섹션)
-
 
 struct RoundedCorner: Shape {
     var radius: CGFloat = .infinity

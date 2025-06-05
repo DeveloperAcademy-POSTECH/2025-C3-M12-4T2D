@@ -61,7 +61,7 @@ struct CreateView: View {
                 }
                 .padding(.horizontal, 20)
             }
-            .scrollDismissesKeyboard(.interactively)
+            .scrollDismissesKeyboard(.immediately)
         }
         .fullScreenCover(isPresented: $isPresentingCamera) {
             ZStack {
@@ -82,12 +82,7 @@ struct CreateView: View {
     }
 }
 
-extension View {
-    func hideKeyboard() {
-        let resign = #selector(UIResponder.resignFirstResponder)
-        UIApplication.shared.sendAction(resign, to: nil, from: nil, for: nil)
-    }
-}
+
 
 #Preview {
     CreateView()
