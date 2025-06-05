@@ -20,7 +20,7 @@ struct PostView: View {
             if let imageUrl = post.postImageUrl {
                 ImageView(image: imageUrl)
             }
-            Comment()
+            LikeCommentBar()
         }
     }
 }
