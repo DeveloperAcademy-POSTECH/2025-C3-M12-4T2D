@@ -6,29 +6,66 @@ struct MainHeader: View {
     var projectCount: Int
     var postCount: Int
     var body: some View {
-        HStack(spacing: 30) {
-            Image(systemName: "person.circle")
-                .resizable()
-                .frame(width: 49, height: 49)
-                .tint(Color.yellow)
-            VStack(alignment: .leading) {
-                HStack(spacing: 10) {
-                    Text(user?.userGoal ?? "목표를 입력하세요")
-                        .font(.system(size: 12, weight: .semibold))
-                    Text(user != nil ? "D-\(user!.remainingDays)" : "D-0")
-                        .font(.system(size: 11))
-                        .padding(.horizontal, 4)
-                        .padding(.vertical, 1.5)
-                        .background(Color.orange.opacity(0.2))
-                }
+        ZStack(alignment: .top) {
+            Color(hex: "FFD55C")
+                .ignoresSafeArea(edges: .top)
+            VStack(alignment: .leading, spacing: 0) {
+                HStack(alignment: .center, spacing: 12) {
+                    Image("profile") // 프로필 이미지 에셋명에 맞게 수정
+                        .resizable()
+                        .frame(width: 50, height: 50)
+                        .clipShape(Circle())
+                    VStack(alignment: .leading, spacing: 4) {
+                        HStack(spacing: 8) {
+                            Text(user?.userGoal ?? "목표를 입력하세요")
+                                .font(.system(size: 16, weight: .semibold))
+                            Text(user != nil ? "D-\(user!.remainingDays)" : "D-0")
+                                .font(.system(size: 13, weight: .medium))
+                                .foregroundColor(.black)
+                                .padding(.horizontal, 8)
+                                .padding(.vertical, 2)
+                                .background(Color.white)
+                                .cornerRadius(5)
+                        }
+                        HStack(spacing: 16) {
+                            HStack(spacing: 4) {
+                                Image("fire")
+                                    .resizable()
+                                    .frame(width: 20, height: 20)
+                                Text("\(streakNum)").font(.system(size: 15, weight: .semibold))
+                            }
+                            HStack(spacing: 4) {
+                                Image("note")
+                                    .resizable()
+                                    .frame(width: 20, height: 20)
+                                Text("\(projectCount)").font(.system(size: 15, weight: .semibold))
+                            }
+                            HStack(spacing: 4) {
+                                Image("pallet")
+                                    .resizable()
+                                    .frame(width: 20, height: 20)
+                                Text("\(postCount)").font(.system(size: 15, weight: .semibold))
+                            }
+                        }
+                    }
+                    Spacer()
 
-                HStack(spacing: 12) {
-                    Text("🔥\(streakNum)").font(.system(size: 15, weight: .semibold))
-                    Text("📒\(projectCount)").font(.system(size: 15, weight: .semibold))
-                    Text("🎨\(postCount)").font(.system(size: 15, weight: .semibold))
                 }
+                .padding(.top, 24)
+                .padding(.horizontal, 20)
+                .padding(.bottom, 8)
             }
-            Spacer()
-        }.padding(.all, 20)
+            VStack {
+                Spacer()
+                Image("head")
+                    .resizable()
+                    .scaledToFill()
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 42)
+                    .clipped()
+                    .offset(y: 0)
+            }
+        }
+        .frame(height: 130)
     }
 }
