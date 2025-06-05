@@ -17,21 +17,34 @@ struct MainView: View {
     @State private var showCreate: Bool = false
     @State private var showActionSheet: Bool = false
     @State private var showSortSheet: Bool = false
-
+    
     var sortedProjects: [Project] {
         sortOrder.sort(projects: allProjects)
     }
+    var completedProjects: [Project] {
+        sortedProjects.filter { $0.finishedAt != nil }
+    }
+    var allPostForGrid: [Post] {
+        sortedProjects.flatMap { $0.postList }
+    }
+    
+
 
     var currentProject: Project? { getCurrentProject.first }
     var currentUser: User? { users.first }
     var projectCount: Int { allProjects.count }
     var postCount: Int { allPosts.count }
     var streakNum: Int { currentUser?.streakNum ?? 0 }
+    
+
+    // 진행중인 최신 프로젝트 (finishedAt == nil 중 createdAt이 가장 최신)
+    var latestActiveProject: Project? {
+        allProjects.filter { $0.finishedAt == nil }.sorted { $0.createdAt > $1.createdAt }.first
+    }
 
     var body: some View {
         ZStack(alignment: .top) {
-            Color(hex: "FFD55C")
-                .ignoresSafeArea()
+            Color(hex: "FFD55C").ignoresSafeArea()
 
             ScrollView(.vertical, showsIndicators: false) {
                 VStack(spacing: 0) {
@@ -86,64 +99,68 @@ struct MainView: View {
                             }
                             .padding(.vertical, 28)
                             .padding(.bottom, 8)
-                        } else {}
-                        Rectangle()
-                            .foregroundColor(.gray.opacity(0.2))
-                            .frame(height: 12)
-                        VStack {
-                            HStack {
-                                Button(action: { showSortSheet = true }) {
-                                    HStack {
-                                        Text(sortOrder.rawValue).font(.system(size: 22, weight: .semibold))
-                                        Image(systemName: "chevron.down").font(.system(size: 22, weight: .semibold))
-                                    }
-                                }.foregroundColor(.black)
-                                Spacer()
-                                HStack(spacing: 16) {
-                                    ForEach(TabType.allCases, id: \.self) { tab in
-                                        Button {
-                                            selectedTabIndex = tab.rawValue
-                                        } label: {
-                                            Image(tab.imageName(isSelected: selectedTabIndex == tab.rawValue))
-                                                .resizable()
-                                                .frame(width: 20, height: 20)
-                                        }
-                                    }
-                                }
-                            }.padding(.horizontal, 20)
-                                .padding(.bottom, 20)
+                        } else {
+                            ActiveProjectCard(project: currentProject!)
 
-                            // 탭에 따른 레이아웃 변화
-                            Group {
-                                switch selectedTabIndex {
-                                case 0: // 프로젝트별 스크롤뷰
-                                    LazyVStack(spacing: 20) {
-                                        ForEach(sortedProjects) { project in
-                                            ProjectSectionCard(project: project)
-                                        }
-                                    }.padding(.leading, 20)
-                                case 1: // 리스트뷰
-                                    LazyVStack(spacing: 16) {
-                                        ForEach(sortedProjects) { project in
-                                            PostListCard(project: project)
-                                        }
-                                    }
-                                    .padding(.horizontal, 20)
-                                case 2: // 3x3 그리드뷰
-                                    LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 10), count: 3), spacing: 10) {
-                                        ForEach(sortedProjects) { project in
-                                            GridImageCard(project: project)
-                                        }
-                                    }.padding(.horizontal, 20)
-                                default:
-                                    EmptyView()
-                                }
-                            }
-                            Spacer(minLength: 0)
                         }
-                        .padding(.vertical, 20)
+                                Rectangle()
+                                    .foregroundColor(.gray.opacity(0.2))
+                                    .frame(height: 12)
+                        
+                         VStack {
+                             HStack {
+                                 Button(action: { showSortSheet = true }) {
+                                     HStack {
+                                         Text(sortOrder.rawValue).font(.system(size: 22, weight: .bold))
+                                         Image(systemName: "chevron.down").font(.system(size: 22, weight: .semibold))
+                                     }
+                                 }.foregroundColor(.black)
+                                 Spacer()
+                                 HStack(spacing: 12) {
+                                     ForEach(TabType.allCases, id: \.self) { tab in
+                                         Button {
+                                             selectedTabIndex = tab.rawValue
+                                         } label: {
+                                             Image(tab.imageName(isSelected: selectedTabIndex == tab.rawValue))
+                                                 .resizable()
+                                                 .frame(width: 20, height: 20)
+                                         }
+                                     }
+                                 }
+                             }.padding(.horizontal, 20)
+                                 .padding(.bottom, 8)
 
-                        // MARK: 한번만 실행시키고 주석처리해주시면 됩니다 !
+                             // 탭에 따른 레이아웃 변화
+                             Group {
+                                 switch selectedTabIndex {
+                                 case 0: // 프로젝트별 스크롤뷰
+                                     LazyVStack(spacing: 20) {
+                                         ForEach(completedProjects) { project in
+                                             ProjectSectionCard(project: project)
+                                         }
+                                     }
+                                 case 1: // 리스트뷰
+                                     LazyVStack(spacing: 20) {
+                                         ForEach(completedProjects) { project in
+                                             PostListCard(project: project)
+                                         }
+                                     }
+                                     .padding(.horizontal, 20)
+                                 case 2: // 3x3 그리드뷰
+                                     LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 4), count: 3), spacing: 4) {
+                                         ForEach(allPostForGrid) { post in
+                                             GridImageCard(post: post)
+                                         }
+                                     }
+                                     .padding(.horizontal, 20)
+                                 default:
+                                     EmptyView()
+                                 }
+                             }
+                             Spacer(minLength: 0)
+                         }
+                         .padding(.vertical, 20)
+                         // MARK: 한번만 실행시키고 주석처리해주시면 됩니다 !
                     }
                     .background(Color.white)
                     .cornerRadius(15, corners: [.topLeft, .topRight])
