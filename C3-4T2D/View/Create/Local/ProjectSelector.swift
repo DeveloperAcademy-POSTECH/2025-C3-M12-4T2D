@@ -5,9 +5,9 @@
 //  Edited by Hwnag Jimin on 6/3/25.
 //
 
-//MARK: TODO
-// 우측 상단 '+' 버튼 항상 활성화, 버튼 선택시에만 TextField 노출
+// MARK: TODO
 
+// 우측 상단 '+' 버튼 항상 활성화, 버튼 선택시에만 TextField 노출
 
 import SwiftUI
 
@@ -18,9 +18,9 @@ struct ProjectSelector: View {
     @FocusState private var isTextFieldFocuesed: Bool
     @State private var projectToDelete: String? = nil
     @State private var showDeleteConfirmation = false
-    
+
     var body: some View {
-        VStack() {
+        VStack {
             // 상단 헤더
             HStack {
                 Text("프로젝트")
@@ -37,19 +37,19 @@ struct ProjectSelector: View {
                     .foregroundColor(!newProjectName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? .prime1 : .gray1)
                     .disabled(newProjectName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
                 } else {
-                    Button(action: {isAddingProject = true}) {
+                    Button(action: { isAddingProject = true }) {
                         Image(systemName: "plus")
                             .foregroundColor(.prime1)
                     }
                 }
             }
-            
+
             // 프로젝트 추가
             if isAddingProject {
                 TextField("새로운 프로젝트명을 입력해주세요", text: $newProjectName)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .focused($isTextFieldFocuesed)
-                    .onAppear{
+                    .onAppear {
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                             isTextFieldFocuesed = true
                         }
@@ -58,7 +58,7 @@ struct ProjectSelector: View {
                         addProjectIfValid()
                     }
             }
-            
+
             // 프로젝트 리스트
             List {
                 ForEach(projects, id: \.self) { project in
@@ -100,24 +100,21 @@ struct ProjectSelector: View {
             }
         }
     }
-    
-    
-    //공백인 경우 프로젝트 추가 불가
+
+    // 공백인 경우 프로젝트 추가 불가
     private func addProjectIfValid() {
         let trimmedName = newProjectName.trimmingCharacters(in: .whitespacesAndNewlines)
         guard isAddingProject, !trimmedName.isEmpty else { return }
-        
+
         projects.append(trimmedName)
         newProjectName = ""
         isAddingProject = false
     }
-    
+
     private func deleteProject(_ project: String) {
         projects.removeAll { $0 == project }
     }
 }
-
-
 
 #Preview {
     ProjectSelector()

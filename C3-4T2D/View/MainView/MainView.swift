@@ -18,6 +18,10 @@ struct MainView: View {
     @State private var showActionSheet: Bool = false
     @State private var showSortSheet: Bool = false
 
+
+    @State private var mainPickedImage: UIImage? // MainView의 pickedImage라서 mainPickedImage
+
+
     var sortedProjects: [Project] {
         sortOrder.sort(projects: allProjects)
     }
@@ -158,6 +162,8 @@ struct MainView: View {
                             Spacer(minLength: 0)
                         }
                         .padding(.vertical, 20)
+
+
                     }
                     .background(Color.white)
                     .cornerRadius(15, corners: [.topLeft, .topRight])
@@ -165,6 +171,8 @@ struct MainView: View {
                     .frame(minHeight: UIScreen.main.bounds.height)
                 }
                 .onAppear {
+                    print(showCreate)
+
                     //            MARK: 한번만 실행시키고 주석처리해주시면 됩니다 !
 
                     //  DummyDataManager.createDummyData(context: modelContext, projects: allProjects)
@@ -174,13 +182,21 @@ struct MainView: View {
             }
         }
         .fullScreenCover(isPresented: $showCamera) {
-            CameraView { _ in
+            CameraView { image in
+                mainPickedImage = image
                 showCamera = false
+            }
+            .onDisappear {
+                showCreate = true
             }
         }
         .fullScreenCover(isPresented: $showCreate) {
-            CreateView()
+            CreateView(createPickedImage: $mainPickedImage) // 바인딩된 이미지 전달
+                .onDisappear {
+                    showCreate = false
+                }
         }
+
         .confirmationDialog("진행중인 과정", isPresented: $showActionSheet, titleVisibility: .visible) {
             Button("바로 촬영하기") { showCamera = true }
             Button("과정 기록하기") { showCreate = true }
