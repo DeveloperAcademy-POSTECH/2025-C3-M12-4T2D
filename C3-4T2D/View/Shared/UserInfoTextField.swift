@@ -1,5 +1,5 @@
 //
-//  OnboardingTextField.swift
+//  UserInfoTextField.swift
 //  C3-4T2D
 //
 //  Created by bishoe on 6/5/25.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct OnboardingTextField: View {
+struct UserInfoTextField: View {
     let title: String
     let placeholder: String
     @Binding var text: String
