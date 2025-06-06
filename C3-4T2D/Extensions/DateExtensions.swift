@@ -11,12 +11,26 @@ extension DateFormatter {
             return "\(formatter.string(from: startDate)) ~"
         }
     }
-    
+
     static let timestampFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateFormat = "MM.dd. HH:mm"
         return formatter
     }()
-
 }
 
+extension Date {
+    var remainingDaysFromToday: Int {
+        let calendar = Calendar.current
+        let today = calendar.startOfDay(for: Date())
+        let target = calendar.startOfDay(for: self)
+        let components = calendar.dateComponents([.day], from: today, to: target)
+        return components.day ?? 0
+    }
+
+    var onboardingDateString: String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy년 MM월 dd일"
+        return formatter.string(from: self)
+    }
+}
