@@ -18,6 +18,14 @@ extension DateFormatter {
         formatter.dateFormat = "MM.dd. HH:mm"
         return formatter
     }()
+
+    static var koreanDate: DateFormatter {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "ko_KR")
+        formatter.dateStyle = .medium
+        formatter.timeStyle = .none
+        return formatter
+    }
 }
 
 extension Date {
@@ -45,14 +53,5 @@ extension Date {
     func dateFieldErrorColor(isSelected: Bool) -> Color {
         if !isSelected { return .prime3 }
         return !isValidTargetDate() ? .alert : .prime1
-    }
-}
-
-    static var koreanDate: DateFormatter {
-        let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "ko_KR")
-        formatter.dateStyle = .medium
-        formatter.timeStyle = .none
-        return formatter
     }
 }
