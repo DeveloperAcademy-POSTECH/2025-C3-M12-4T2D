@@ -18,7 +18,9 @@ struct MainView: View {
     @State private var showActionSheet: Bool = false
     @State private var showSortSheet: Bool = false
 
+
     @State private var mpickedImage: UIImage? // MainView의 pickedImage라서 mpickedImage
+
 
     var sortedProjects: [Project] {
         sortOrder.sort(projects: allProjects)
@@ -161,7 +163,7 @@ struct MainView: View {
                         }
                         .padding(.vertical, 20)
 
-                        // MARK: 한번만 실행시키고 주석처리해주시면 됩니다 !
+
                     }
                     .background(Color.white)
                     .cornerRadius(15, corners: [.topLeft, .topRight])
@@ -175,7 +177,7 @@ struct MainView: View {
 
                     //  DummyDataManager.createDummyData(context: modelContext, projects: allProjects)
                     //           이거는 테스트할때만! swiftData초기화를 위해서 사용합니다.
-//                                SwiftDataManager.deleteAllData(context: modelContext)
+//                    SwiftDataManager.deleteAllData(context: modelContext)
                 }
             }
         }
@@ -207,12 +209,6 @@ struct MainView: View {
     }
 }
 
-// 코너 라운드 확장
-extension View {
-    func cornerRadius(_ radius: CGFloat, corners: UIRectCorner) -> some View {
-        clipShape(RoundedCorner(radius: radius, corners: corners))
-    }
-}
 
 // Divider()
 //     .overlay(

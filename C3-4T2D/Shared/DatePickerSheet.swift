@@ -22,7 +22,7 @@ struct DatePickerSheet: View {
                 displayedComponents: [.date]
             )
             .datePickerStyle(.graphical)
-            .accentColor(.yellow)
+            .accentColor(.prime1)
             .labelsHidden()
             .padding()
             .environment(\.locale, Locale(identifier: "ko_KR"))
