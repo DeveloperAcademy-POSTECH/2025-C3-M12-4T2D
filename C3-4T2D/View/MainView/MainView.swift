@@ -19,7 +19,7 @@ struct MainView: View {
     @State private var showSortSheet: Bool = false
 
 
-    @State private var mpickedImage: UIImage? // MainView의 pickedImage라서 mpickedImage
+    @State private var mainPickedImage: UIImage? // MainView의 pickedImage라서 mainPickedImage
 
 
     var sortedProjects: [Project] {
@@ -183,7 +183,7 @@ struct MainView: View {
         }
         .fullScreenCover(isPresented: $showCamera) {
             CameraView { image in
-                mpickedImage = image
+                mainPickedImage = image
                 showCamera = false
             }
             .onDisappear {
@@ -191,7 +191,7 @@ struct MainView: View {
             }
         }
         .fullScreenCover(isPresented: $showCreate) {
-            CreateView(cpickedImage: $mpickedImage) // 바인딩된 이미지 전달
+            CreateView(createPickedImage: $mainPickedImage) // 바인딩된 이미지 전달
                 .onDisappear {
                     showCreate = false
                 }

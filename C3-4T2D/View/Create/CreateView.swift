@@ -44,7 +44,7 @@ struct CreateView: View {
 
                     // 사진 업로드
 //                    CreatePhoto(isPresentingCamera: $isPresentingCamera)
-                    CreatePhoto(isPresentingCamera: $isPresentingCamera, pickedImage: $cpickedImage)
+                    CreatePhoto(isPresentingCamera: $isPresentingCamera, pickedImage: $createPickedImage)
                         .padding(.bottom, 20)
 
                     // 메모 입력
@@ -87,7 +87,7 @@ struct CreateView: View {
             ZStack {
                 Color.black.ignoresSafeArea() // 흰 여백 덮기
                 CameraView { image in
-                    cpickedImage = image
+                    createPickedImage = image
                     isPresentingCamera = false
                 }
             }
@@ -100,7 +100,7 @@ struct CreateView: View {
             hideKeyboard()
         }
         .onDisappear {
-            cpickedImage = nil
+            createPickedImage = nil
         }
     }
 }
