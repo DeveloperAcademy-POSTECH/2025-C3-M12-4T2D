@@ -9,6 +9,7 @@ import SwiftUI
 
 // 리스트뷰
 struct PostListCard: View {
+    @Environment(Router.self) var router
     let project: Project
     
     private var latestPost: Post? {
@@ -25,27 +26,32 @@ struct PostListCard: View {
 
     var body: some View {
         HStack(spacing: 15) {
-            if let post = latestPost, let imageUrl = post.postImageUrl, !imageUrl.isEmpty {
-                let url = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent(imageUrl)
-                if let data = try? Data(contentsOf: url), let uiImage = UIImage(data: data) {
-                    Image(uiImage: uiImage)
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
+            Group {
+                if let post = latestPost, let imageUrl = post.postImageUrl, !imageUrl.isEmpty {
+                    let url = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent(imageUrl)
+                    if let data = try? Data(contentsOf: url), let uiImage = UIImage(data: data) {
+                        Image(uiImage: uiImage)
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .frame(width: 100, height: 70)
+                            .clipped()
+                            .cornerRadius(5)
+                    } else {
+                        placeholderView
+                    }
+                } else if let post = latestPost, let memo = post.memo, !memo.isEmpty {
+                    Text(memo)
+                        .font(.system(size: 12, weight: .medium))
+                        .foregroundColor(.black)
                         .frame(width: 100, height: 70)
-                        .clipped()
+                        .background(Color.gray.opacity(0.3))
                         .cornerRadius(5)
                 } else {
                     placeholderView
                 }
-            } else if let post = latestPost, let memo = post.memo, !memo.isEmpty {
-                Text(memo)
-                    .font(.system(size: 12, weight: .medium))
-                    .foregroundColor(.black)
-                    .frame(width: 100, height: 70)
-                    .background(Color.gray.opacity(0.3))
-                    .cornerRadius(5)
-            } else {
-                placeholderView
+            }
+            .onTapGesture {
+                router.navigate(to: .ProjectListView(project))
             }
 
             VStack(alignment: .leading, spacing: 5) {

@@ -74,6 +74,9 @@ struct ActiveProjectCard: View {
                                     .padding(8)
                             }
                         }
+                        .onTapGesture {
+                            router.navigate(to: .ProjectListView(project))
+                        }
                     }
 
                 }
