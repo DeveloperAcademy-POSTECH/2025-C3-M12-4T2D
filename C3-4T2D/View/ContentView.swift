@@ -37,8 +37,8 @@ struct ContentView: View {
                     Text("postDetailView")
                 case .createView:
                     Text("createView")
-                case .settingsView:
-                    Text("settingsView")
+                case .profileSettingView:
+                    ProfileSettingView()
                 }
             }
         }
