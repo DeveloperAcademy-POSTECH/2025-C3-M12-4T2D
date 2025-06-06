@@ -119,13 +119,8 @@ struct ProjectSelector: View {
         let trimmedName = newProjectName.trimmingCharacters(in: .whitespacesAndNewlines)
         guard isAddingProject, !trimmedName.isEmpty else { return }
 
-        // 기존 진행중인 프로젝트 완료 처리
-        if let current = projects.first(where: { $0.finishedAt == nil }) {
-            current.finishedAt = Date()
-        }
-        let newProject = Project(projectTitle: trimmedName)
-        context.insert(newProject)
-        try? context.save()
+        // 기존 진행중인 프로젝트 완료 및 새 프로젝트 생성 (헬퍼 함수 사용)
+        let newProject = SwiftDataManager.startNewProject(context: context, title: trimmedName)
         selectedProject = newProject
         newProjectName = ""
         isAddingProject = false
