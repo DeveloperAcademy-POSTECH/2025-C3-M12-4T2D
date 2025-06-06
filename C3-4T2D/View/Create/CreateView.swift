@@ -16,6 +16,7 @@ struct CreateView: View {
     @State private var showProjectSelector = false
     @State private var isPresentingCamera = false
     @State private var showDatePicker = false
+    @State private var showExitAlert = false
 
     @State private var selectedProject: Project? = nil
     @State private var descriptionText: String = ""
@@ -25,9 +26,14 @@ struct CreateView: View {
     @State private var selectedStage: ProcessStage = .idea
 
     @Binding var createPickedImage: UIImage?
+
+    private var hasUnsavedChanges: Bool {
+        selectedProject != nil || createPickedImage != nil || !descriptionText.isEmpty
+    }
+
     var body: some View {
         VStack(spacing: 0) {
-            CreateHeader()
+            CreateHeader(showExitAlert: $showExitAlert, hasUnsavedChanges: hasUnsavedChanges)
                 .padding(.bottom, 12)
                 .padding(.horizontal, 20)
 
@@ -110,6 +116,14 @@ struct CreateView: View {
         }
         .onDisappear {
             createPickedImage = nil
+        }
+        .alert("작성 중인 내용이 있어요", isPresented: $showExitAlert) {
+            Button("취소", role: .cancel) { }
+            Button("종료", role: .destructive) {
+                dismiss()
+            }
+        } message: {
+            Text("정말 종료하시겠어요?")
         }
     }
 }
