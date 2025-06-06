@@ -193,12 +193,6 @@ struct MainView: View {
     }
 }
 
-// 코너 라운드 확장
-extension View {
-    func cornerRadius(_ radius: CGFloat, corners: UIRectCorner) -> some View {
-        clipShape(RoundedCorner(radius: radius, corners: corners))
-    }
-}
 
 // Divider()
 //     .overlay(
