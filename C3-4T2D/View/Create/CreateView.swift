@@ -11,6 +11,7 @@ import SwiftUI
 // 이미지 저장은 swiftdata 연결 아직 전
 struct CreateView: View {
     @Environment(\.modelContext) private var context
+    @Environment(\.dismiss) private var dismiss
 
     @State private var showProjectSelector = false
     @State private var isPresentingCamera = false
@@ -72,6 +73,7 @@ struct CreateView: View {
                         do {
                             try context.save()
                             print("포스트 저장 성공")
+                            dismiss()
                         } catch {
                             print("저장 실패: \(error)")
                         }
