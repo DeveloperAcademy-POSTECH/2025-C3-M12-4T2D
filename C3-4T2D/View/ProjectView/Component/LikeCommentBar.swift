@@ -11,24 +11,27 @@ struct LikeCommentBar: View {
     @State private var isLiked: Bool = false
     @State private var isCommentModal: Bool = false
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            HStack {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(spacing: 12) {
                 // 하트, 댓글
                 Button(action: {
                     isLiked.toggle()
                 }) {
-                    isLiked ? Image(systemName: "heart.fill") : Image(systemName: "heart")
+                    (isLiked ? Image(systemName: "heart.fill") : Image(systemName: "heart"))
+                        .resizable()
+                        .frame(width: 24, height: 24)
+                        .foregroundColor(.gray)
                 }
                 Button(action: {
                     isCommentModal.toggle()
                 }) {
-                    Image(systemName: "message")
+                    Image("comment")
                     Text("3")
+                        .foregroundColor(.gray)
                 }
                 Spacer()
             }
-            TextView()
-        }.padding(.horizontal)
+        }
             .sheet(isPresented: $isCommentModal) {
                 CommentModal()
                     .presentationDetents([.medium, .large])

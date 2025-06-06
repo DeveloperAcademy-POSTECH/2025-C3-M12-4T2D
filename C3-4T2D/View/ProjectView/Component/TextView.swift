@@ -7,10 +7,11 @@
 import SwiftUI
 
 struct TextView: View {
+    var text: String = ""
     var date: String = "05.21 14:32"
     var body: some View {
-        // 피드백 내용
-        Text("함께 걷고, 함께 웃고, 때론 아무 말 없이 시간을 보내는 그 순간들이 쌓여 지금의 우리를 만들었다는 생각이 든다.")
+        // 실제 메모 내용 표시
+        Text(text)
             .lineLimit(nil)
         // 날짜
         Text(date)
