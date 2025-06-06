@@ -23,8 +23,7 @@ struct CreateView: View {
     @State private var selectedDate = Date()
     @State private var selectedStage: ProcessStage = .idea
 
-    @Binding var cpickedImage: UIImage? // CreateView의 pickedImage라서 cpickedImage
-
+    @Binding var createPickedImage: UIImage?
     var body: some View {
         VStack(spacing: 0) {
             CreateHeader()
