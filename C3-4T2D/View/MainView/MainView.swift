@@ -200,11 +200,14 @@ struct MainView: View {
         .confirmationDialog("진행중인 과정", isPresented: $showActionSheet, titleVisibility: .visible) {
             Button("바로 촬영하기") { showCamera = true }
             Button("과정 기록하기") { showCreate = true }
+            Button("취소", role: .cancel) {}
         }
+        
         .confirmationDialog("프로젝트 정렬", isPresented: $showSortSheet, titleVisibility: .visible) {
             ForEach(SortOrder.allCases, id: \.self) { order in
                 Button(order.rawValue) { sortOrder = order }
             }
+            Button("취소", role: .cancel) {}
         }
     }
 }
