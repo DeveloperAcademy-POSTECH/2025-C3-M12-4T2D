@@ -31,8 +31,13 @@ struct MainView: View {
     }
 
     var allPostForGrid: [Post] {
-        sortedProjects.flatMap { $0.postList }
-            .sorted(by: { $0.createdAt > $1.createdAt })
+        let posts = sortedProjects.flatMap { $0.postList }
+        switch sortOrder {
+        case .newest:
+            return posts.sorted { $0.createdAt > $1.createdAt }
+        case .oldest:
+            return posts.sorted { $0.createdAt < $1.createdAt }
+        }
     }
 
     var currentProject: Project? { getCurrentProject.first }
