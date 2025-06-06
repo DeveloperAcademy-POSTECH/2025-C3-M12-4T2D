@@ -24,11 +24,25 @@ enum SwiftDataManager {
         context.insert(post)
     }
 
-    /// 사용자 생성 함수
+    /// 사용자 생성
     static func createUser(context: ModelContext, nickname: String, goal: String, remainingDays: Int) -> User {
         let user = User(nickname: nickname, userGoal: goal, remainingDays: remainingDays)
         context.insert(user)
         return user
+    }
+
+    /// 사용자 정보 업데이트
+    static func updateUserInfo(context: ModelContext, user: User, nickname: String, goal: String, remainingDays: Int) {
+        user.nickname = nickname
+        user.userGoal = goal
+        user.remainingDays = remainingDays
+
+        do {
+            try context.save()
+            print("\(nickname), \(goal), D-\(remainingDays)")
+        } catch {
+            print("사용자 업뎃 에러: \(error)")
+        }
     }
 
     /// 현재 진행중인 프로젝트 가져오기 (한개 있거나 , 아예 없거나)

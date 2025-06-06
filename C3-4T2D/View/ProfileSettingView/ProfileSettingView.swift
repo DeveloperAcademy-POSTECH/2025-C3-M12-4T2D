@@ -5,6 +5,7 @@
 //  Created by 서연 on 6/5/25.
 //
 
+import SwiftData
 import SwiftUI
 import UIKit
 
@@ -17,11 +18,55 @@ struct ProfileSettingView: View {
     @State private var profileImage: UIImage? = nil
     @State private var isDateSelected = false
     @FocusState private var focusedField: TextFieldType?
+    
     @Environment(Router.self) var router
     @Environment(\.modelContext) private var modelContext
+    @Query var users: [User]
 
-    private var mainContent: some View {
-        ZStack(alignment: .top) {
+    private var isFormValid: Bool {
+        !nickname.isEmpty &&
+            !nickname.isOverMaxLength(maxLength: 10) &&
+            !goal.isEmpty &&
+            !goal.isOverMaxLength(maxLength: 20) &&
+            isDateSelected &&
+            targetDate.isValidTargetDate()
+    }
+    
+    private func saveUserInfo() {
+        guard let user = users.first else { return }
+        
+        guard isFormValid else {
+            print("유효성 검사 실패")
+            return
+        }
+        
+        let remainingDays = targetDate.remainingDaysFromToday
+        
+        SwiftDataManager.updateUserInfo(
+            context: modelContext,
+            user: user,
+            nickname: nickname,
+            goal: goal,
+            remainingDays: remainingDays
+        )
+        
+        router.navigateBack()
+    }
+    
+    private func loadUserInfo() {
+        guard let user = users.first else { return }
+        
+        nickname = user.nickname
+        goal = user.userGoal
+        
+        // remainingDays를 기반으로 targetDate 계산
+        let calendar = Calendar.current
+        targetDate = calendar.date(byAdding: .day, value: user.remainingDays, to: Date()) ?? Date()
+        isDateSelected = true
+    }
+    
+    var body: some View {
+        ScrollView {
             VStack(alignment: .leading, spacing: 20) {
                 ZStack {
                     Circle()
@@ -89,6 +134,7 @@ struct ProfileSettingView: View {
                     hideKeyboard()
                 }
                 
+                // 목표 날짜 필드
                 UserGoalDateField(
                     targetDate: $targetDate,
                     isDateSelected: $isDateSelected,
@@ -102,35 +148,34 @@ struct ProfileSettingView: View {
                 Spacer().frame(height: 200)
             }
             .padding(.horizontal, 20)
-            .ignoresSafeArea(.keyboard, edges: .bottom)
-            .onTapGesture { hideKeyboard() }
         }
-    }
-    
-    var body: some View {
-        mainContent
-            .navigationTitle("프로필 수정")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("저장하기") {
-                        // 저장 액션 구현 예정
-                    }
-                    .foregroundColor(.prime1)
-                    .font(.system(size: 17, weight: .semibold))
+        .navigationTitle("프로필 수정")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button("저장하기") {
+                    saveUserInfo()
                 }
+                .foregroundColor(isFormValid ? .prime1 : .gray2)
+                .font(.system(size: 17, weight: .semibold))
+                .disabled(!isFormValid)
             }
-            .padding(.top, 0)
-            .ignoresSafeArea(.container, edges: .top)
-            .confirmationDialog("프로필 사진 편집", isPresented: $isPhotoActionSheetPresented, titleVisibility: .visible) {
-                Button("사진 삭제", role: .destructive) {
-                    profileImage = nil
-                }
-                Button("사진 변경") {
-                    // 추후 포토피커 연결 필요
-                }
-                Button("취소", role: .cancel) {}
+        }
+        .onAppear {
+            loadUserInfo()
+        }
+        .onTapGesture {
+            hideKeyboard()
+        }
+        .confirmationDialog("프로필 사진 편집", isPresented: $isPhotoActionSheetPresented, titleVisibility: .visible) {
+            Button("사진 삭제", role: .destructive) {
+                profileImage = nil
             }
+            Button("사진 변경") {
+                // 추후 포토피커 연결 필요
+            }
+            Button("취소", role: .cancel) {}
+        }
     }
 }
 
