@@ -125,6 +125,13 @@ struct CreateView: View {
         } message: {
             Text("정말 종료하시겠어요?")
         }
+        .onAppear {
+            if selectedProject == nil {
+                if let current = try? context.fetch(SwiftDataManager.currentProject).first {
+                    selectedProject = current
+                }
+            }
+        }
     }
 }
 
