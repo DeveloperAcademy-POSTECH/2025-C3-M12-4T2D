@@ -7,6 +7,7 @@
 
 import SwiftData
 import SwiftUI
+
 // 이미지 저장은 swiftdata 연결 아직 전
 struct CreateView: View {
     @Environment(\.modelContext) private var context
@@ -22,7 +23,7 @@ struct CreateView: View {
     @State private var selectedDate = Date()
     @State private var selectedStage: ProcessStage = .idea
 
-    @State private var pickedImage: UIImage?
+    @Binding var cpickedImage: UIImage? // CreateView의 pickedImage라서 cpickedImage
 
     var body: some View {
         VStack(spacing: 0) {
@@ -44,11 +45,12 @@ struct CreateView: View {
 
                     // 사진 업로드
 //                    CreatePhoto(isPresentingCamera: $isPresentingCamera)
-                    CreatePhoto(isPresentingCamera: $isPresentingCamera)
+                    CreatePhoto(isPresentingCamera: $isPresentingCamera, pickedImage: $cpickedImage)
                         .padding(.bottom, 20)
 
                     // 메모 입력
-                    CreateMemo(descriptionText: $descriptionText)     .padding(.bottom, 24)
+                    CreateMemo(descriptionText: $descriptionText)
+                        .padding(.bottom, 24)
 
                     // 작성 완료 동작
                     Button(action: {
@@ -86,7 +88,7 @@ struct CreateView: View {
             ZStack {
                 Color.black.ignoresSafeArea() // 흰 여백 덮기
                 CameraView { image in
-                    pickedImage = image
+                    cpickedImage = image
                     isPresentingCamera = false
                 }
             }
@@ -98,12 +100,12 @@ struct CreateView: View {
         .onTapGesture {
             hideKeyboard()
         }
+        .onDisappear {
+            cpickedImage = nil
+        }
     }
 }
 
-
-#Preview {
-    CreateView()
-}
-
-
+// #Preview {
+//    CreateView()
+// }
