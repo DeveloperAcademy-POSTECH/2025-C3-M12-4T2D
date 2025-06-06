@@ -1,4 +1,5 @@
 import Foundation
+import SwiftUI
 
 extension DateFormatter {
     static func projectDateRange(startDate: Date, endDate: Date?) -> String {
@@ -32,5 +33,17 @@ extension Date {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy년 MM월 dd일"
         return formatter.string(from: self)
+    }
+
+    /// 오늘날짜 이후로 캘린더 선택하게끔 변경
+    func isValidTargetDate() -> Bool {
+        let today = Calendar.current.startOfDay(for: Date())
+        let selected = Calendar.current.startOfDay(for: self)
+        return selected > today
+    }
+
+    func dateFieldErrorColor(isSelected: Bool) -> Color {
+        if !isSelected { return .prime3 }
+        return !isValidTargetDate() ? .alert : .prime1
     }
 }
