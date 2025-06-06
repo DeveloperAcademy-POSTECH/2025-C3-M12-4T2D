@@ -9,21 +9,16 @@ import Foundation
 import SwiftUI
 
 extension String {
-    var isValidNickname: Bool {
-        !isEmpty && count <= 10
+    func isValidText(maxLength: Int) -> Bool {
+        !isEmpty && count <= maxLength
     }
 
-    var isValidGoal: Bool {
-        !isEmpty && count <= 20
-    }
-
-    var nicknameErrorColor: Color {
+    func textFieldErrorColor(maxLength: Int) -> Color {
         if isEmpty { return .prime3 }
-        return count > 10 ? .alert : .prime1
+        return count > maxLength ? .alert : .prime1
     }
 
-    var goalErrorColor: Color {
-        if isEmpty { return .prime3 }
-        return count > 20 ? .alert : .prime1
+    func isOverMaxLength(maxLength: Int) -> Bool {
+        count > maxLength
     }
 }
