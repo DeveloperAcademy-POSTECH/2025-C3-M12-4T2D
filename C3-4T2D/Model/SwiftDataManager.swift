@@ -104,7 +104,7 @@ enum SwiftDataManager {
     static func getPostsForProject(_ project: Project) -> FetchDescriptor<Post> {
         let projectId = project.id // 값을 미리 추출함 (비교할때project.id는 불가능)
         let descriptor = FetchDescriptor<Post>(
-            predicate: #Predicate<Post> { $0.project.id == projectId },
+            predicate: #Predicate<Post> { $0.project?.id == projectId },
             sortBy: [SortDescriptor(\.createdAt, order: .reverse)]
         )
         return descriptor

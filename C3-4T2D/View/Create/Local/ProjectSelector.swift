@@ -22,6 +22,8 @@ struct ProjectSelector: View {
     @FocusState private var isTextFieldFocuesed: Bool
     @State private var projectToDelete: Project? = nil
     @State private var showDeleteConfirmation = false
+    @State private var showPostDeleteConfirmation = false
+    @State private var postCountToDelete: Int = 0
 
     var body: some View {
         VStack {
@@ -104,13 +106,34 @@ struct ProjectSelector: View {
         .confirmationDialog("정말 삭제하시겠습니까?", isPresented: $showDeleteConfirmation, titleVisibility: .visible) {
             Button("삭제", role: .destructive) {
                 if let project = projectToDelete {
-                    context.delete(project)
-                    try? context.save()
+                    if project.postList.isEmpty {
+                        context.delete(project)
+                        try? context.save()
+                        projectToDelete = nil
+                    } else {
+                        postCountToDelete = project.postList.count
+                        showPostDeleteConfirmation = true
+                    }
                 }
-                projectToDelete = nil
             }
             Button("취소", role: .cancel) {
                 projectToDelete = nil
+            }
+        }
+        .alert("이 프로젝트에는 포스트가 \(postCountToDelete)개 있습니다. 정말 모두 삭제하시겠습니까?", isPresented: $showPostDeleteConfirmation) {
+            Button("취소", role: .cancel) {
+                projectToDelete = nil
+            }
+            Button("네, 모두 삭제", role: .destructive) {
+                if let project = projectToDelete {
+                    let postsToDelete = Array(project.postList)
+                    for post in postsToDelete {
+                        context.delete(post)
+                    }
+                    context.delete(project)
+                    try? context.save()
+                    projectToDelete = nil
+                }
             }
         }
     }
