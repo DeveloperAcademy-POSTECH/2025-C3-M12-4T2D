@@ -24,24 +24,39 @@ enum SwiftDataManager {
         context.insert(post)
     }
 
-    /// 사용자 생성
-    static func createUser(context: ModelContext, nickname: String, goal: String, remainingDays: Int) -> User {
-        let user = User(nickname: nickname, userGoal: goal, remainingDays: remainingDays)
+    /// 유저 생성
+    static func createUser(context: ModelContext, nickname: String, goal: String, remainingDays: Int, profileImageData: Data? = nil) -> User {
+        let user = User(nickname: nickname, userGoal: goal, remainingDays: remainingDays, profileImageData: profileImageData)
         context.insert(user)
         return user
     }
 
-    /// 사용자 정보 업데이트
-    static func updateUserInfo(context: ModelContext, user: User, nickname: String, goal: String, remainingDays: Int) {
+    /// 유저 정보 업뎃
+    static func updateUserInfo(context: ModelContext, user: User, nickname: String, goal: String, remainingDays: Int, profileImageData: Data? = nil) {
         user.nickname = nickname
         user.userGoal = goal
         user.remainingDays = remainingDays
+
+        if let imageData = profileImageData {
+            user.profileImageData = imageData
+        }
 
         do {
             try context.save()
             print("\(nickname), \(goal), D-\(remainingDays)")
         } catch {
-            print("사용자 업뎃 에러: \(error)")
+            print("유저 업데이트 에러: \(error)")
+        }
+    }
+
+    /// 프로필 이미지만 업데이트
+    static func updateUserProfileImage(context: ModelContext, user: User, profileImageData: Data?) {
+        user.profileImageData = profileImageData
+
+        do {
+            try context.save()
+        } catch {
+            print("profileImage 업뎃오류: \(error)")
         }
     }
 
@@ -52,7 +67,7 @@ enum SwiftDataManager {
 
             return projects.first
         } catch {
-            print("현재프로젝트 가져오기 에러 \(error)")
+            print("현재프로젝트 에러 \(error)")
             return nil
         }
     }

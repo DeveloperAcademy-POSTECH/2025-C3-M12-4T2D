@@ -15,10 +15,20 @@ struct MainHeader: View {
                     Button {
                         router.navigate(to: .profileSettingView)
                     } label: {
-                        Image("profile") // 프로필 이미지 에셋명에 맞게 수정
-                            .resizable()
-                            .frame(width: 50, height: 50)
-                            .clipShape(Circle())
+                        if let imageData = user?.profileImageData,
+                           let uiImage = UIImage(data: imageData) {
+                            Image(uiImage: uiImage)
+                                .resizable()
+                                .scaledToFill()
+                                .frame(width: 50, height: 50)
+                                .clipShape(Circle())
+                        } else {
+                            Image("profile") // 기본 프로필 이미지
+                                .resizable()
+                                .scaledToFill()
+                                .frame(width: 50, height: 50)
+                                .clipShape(Circle())
+                        }
                     }
                     VStack(alignment: .leading, spacing: 4) {
                         HStack(spacing: 8) {
