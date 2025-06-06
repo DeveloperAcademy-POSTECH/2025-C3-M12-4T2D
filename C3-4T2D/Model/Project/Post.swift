@@ -18,9 +18,9 @@ final class Post {
     var createdAt: Date
 
     // Project와 연결된 부분
-    var project: Project
+    var project: Project?
 
-    init(postImageUrl: String? = nil, memo: String? = nil, order: Int = 0, project: Project) {
+    init(postImageUrl: String? = nil, memo: String? = nil, order: Int = 0, project: Project? = nil) {
         self.id = UUID()
         self.postImageUrl = postImageUrl
         self.memo = memo

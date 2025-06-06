@@ -10,14 +10,20 @@
 // 우측 상단 '+' 버튼 항상 활성화, 버튼 선택시에만 TextField 노출
 
 import SwiftUI
+import SwiftData
 
 struct ProjectSelector: View {
+    @Environment(\.modelContext) private var context
+    @Query private var projects: [Project]
+    @Binding var selectedProject: Project?
+
     @State private var isAddingProject = false
     @State private var newProjectName = ""
-    @State private var projects: [String] = []
     @FocusState private var isTextFieldFocuesed: Bool
-    @State private var projectToDelete: String? = nil
+    @State private var projectToDelete: Project? = nil
     @State private var showDeleteConfirmation = false
+    @State private var showPostDeleteConfirmation = false
+    @State private var postCountToDelete: Int = 0
 
     var body: some View {
         VStack {
@@ -61,13 +67,23 @@ struct ProjectSelector: View {
 
             // 프로젝트 리스트
             List {
-                ForEach(projects, id: \.self) { project in
+                ForEach(projects.sorted { $0.createdAt > $1.createdAt }) { project in
                     HStack {
-                        Text(project)
+                        Text(project.projectTitle)
                             .lineLimit(1)
                         Spacer()
+                        Text(DateFormatter.projectDateRange(startDate: project.createdAt, endDate: project.finishedAt))
+                            .font(.caption)
+                            .foregroundColor(.gray)
+                        if selectedProject?.id == project.id {
+                            Image(systemName: "checkmark")
+                                .foregroundColor(.prime1)
+                        }
                     }
                     .contentShape(Rectangle())
+                    .onTapGesture {
+                        selectedProject = project
+                    }
                     .swipeActions(edge: .trailing, allowsFullSwipe: false) {
                         Button {
                             projectToDelete = project
@@ -76,7 +92,6 @@ struct ProjectSelector: View {
                             Label("삭제", systemImage: "trash")
                         }
                         .tint(.red)
-
                     }.listRowInsets(EdgeInsets())
                 }
             }
@@ -91,31 +106,50 @@ struct ProjectSelector: View {
         .confirmationDialog("정말 삭제하시겠습니까?", isPresented: $showDeleteConfirmation, titleVisibility: .visible) {
             Button("삭제", role: .destructive) {
                 if let project = projectToDelete {
-                    deleteProject(project)
+                    if project.postList.isEmpty {
+                        context.delete(project)
+                        try? context.save()
+                        projectToDelete = nil
+                    } else {
+                        postCountToDelete = project.postList.count
+                        showPostDeleteConfirmation = true
+                    }
                 }
-                projectToDelete = nil
             }
             Button("취소", role: .cancel) {
                 projectToDelete = nil
             }
         }
+        .alert("이 프로젝트에는 포스트가 \(postCountToDelete)개 있습니다. 정말 모두 삭제하시겠습니까?", isPresented: $showPostDeleteConfirmation) {
+            Button("취소", role: .cancel) {
+                projectToDelete = nil
+            }
+            Button("네, 모두 삭제", role: .destructive) {
+                if let project = projectToDelete {
+                    let postsToDelete = Array(project.postList)
+                    for post in postsToDelete {
+                        context.delete(post)
+                    }
+                    context.delete(project)
+                    try? context.save()
+                    projectToDelete = nil
+                }
+            }
+        }
     }
 
-    // 공백인 경우 프로젝트 추가 불가
     private func addProjectIfValid() {
         let trimmedName = newProjectName.trimmingCharacters(in: .whitespacesAndNewlines)
         guard isAddingProject, !trimmedName.isEmpty else { return }
 
-        projects.append(trimmedName)
+        // 기존 진행중인 프로젝트 완료 및 새 프로젝트 생성 (헬퍼 함수 사용)
+        let newProject = SwiftDataManager.startNewProject(context: context, title: trimmedName)
+        selectedProject = newProject
         newProjectName = ""
         isAddingProject = false
-    }
-
-    private func deleteProject(_ project: String) {
-        projects.removeAll { $0 == project }
     }
 }
 
 #Preview {
-    ProjectSelector()
+    ProjectSelector(selectedProject: .constant(nil))
 }

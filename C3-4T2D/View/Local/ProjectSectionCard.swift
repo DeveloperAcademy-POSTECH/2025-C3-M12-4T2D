@@ -51,21 +51,31 @@ struct ProjectSectionCard: View {
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 12) {
                     Spacer(minLength: 8)
-                    ForEach(project.postList) { _ in
-                        Image("tmpImage")
-                            .resizable()
-                            .frame(width: 140, height: 100)
-                            .cornerRadius(8)
-                    }
-                    if project.postList.count > 4 {
-                        ZStack {
-                            Color.gray.opacity(0.1)
-                                .frame(width: 80, height: 80)
+                    ForEach(project.postList.sorted(by: { $0.createdAt > $1.createdAt })) { post in
+                        if let imageUrl = post.postImageUrl, !imageUrl.isEmpty {
+                            let url = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent(imageUrl)
+                            if let data = try? Data(contentsOf: url), let uiImage = UIImage(data: data) {
+                                Image(uiImage: uiImage)
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fill)
+                                    .frame(width: 140, height: 100)
+                                    .clipped()
+                                    .cornerRadius(8)
+                            } else {
+                                Text(post.memo ?? "")
+                                    .font(.system(size: 12, weight: .medium))
+                                    .foregroundColor(.black)
+                                    .frame(width: 140, height: 100)
+                                    .background(Color.gray.opacity(0.3))
+                                    .cornerRadius(8)
+                            }
+                        } else {
+                            Text(post.memo ?? "")
+                                .font(.system(size: 12, weight: .medium))
+                                .foregroundColor(.black)
+                                .frame(width: 140, height: 100)
+                                .background(Color.gray.opacity(0.3))
                                 .cornerRadius(8)
-
-                            Text("+\(project.postList.count - 4)")
-                                .font(.system(size: 14, weight: .medium))
-                                .foregroundColor(.gray)
                         }
                     }
                 }

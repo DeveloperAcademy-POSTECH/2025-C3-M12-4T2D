@@ -50,21 +50,29 @@ struct ActiveProjectCard: View {
                 HStack(spacing: 12) {
                     Spacer(minLength: 8)
 
-                    ForEach(project.postList) { post in
-                        if let url = post.postImageUrl, let uiImage = UIImage(named: url) {
-                            Image(uiImage: uiImage)
-                                .resizable()
-                                .aspectRatio(contentMode: .fill)
+                    ForEach(project.postList.sorted(by: { $0.createdAt > $1.createdAt })) { post in
+                        ZStack {
+                            Rectangle()
+                                .fill(Color.gray.opacity(0.3))
                                 .frame(width: 200, height: 143)
-                                .clipped()
                                 .cornerRadius(8)
-                        } else {
-                            Image("tmpImage")
-                                .resizable()
-                                .aspectRatio(contentMode: .fill)
-                                .frame(width: 200, height: 143)
-                                .clipped()
-                                .cornerRadius(8)
+                            if let url = post.postImageUrl, !url.isEmpty {
+                                let fileUrl = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent(url)
+                                if let data = try? Data(contentsOf: fileUrl), let uiImage = UIImage(data: data) {
+                                    Image(uiImage: uiImage)
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fill)
+                                        .frame(width: 200, height: 143)
+                                        .clipped()
+                                        .cornerRadius(8)
+                                }
+                            } else {
+                                Text(post.memo ?? "")
+                                    .font(.system(size: 15, weight: .medium))
+                                    .foregroundColor(.black)
+                                    .multilineTextAlignment(.center)
+                                    .padding(8)
+                            }
                         }
                     }
 
