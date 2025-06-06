@@ -19,11 +19,11 @@ struct OnboardingDateField: View {
     
     private var textColor: Color {
         if !isDateSelected { return .gray2 }
-        return targetDate.isValidTargetDate ? .black : .alert
+        return targetDate.isValidTargetDate() ? .black : .alert
     }
     
     private var showError: Bool {
-        isDateSelected && !targetDate.isValidTargetDate
+        isDateSelected && !targetDate.isValidTargetDate()
     }
     
     var body: some View {
@@ -43,7 +43,7 @@ struct OnboardingDateField: View {
                     }
                     
                     if isDateSelected {
-                        if !targetDate.isValidTargetDate {
+                        if !targetDate.isValidTargetDate() {
                             Button(action: {
                                 targetDate = Date()
                                 isDateSelected = false

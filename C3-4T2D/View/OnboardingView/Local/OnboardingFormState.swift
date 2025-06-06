@@ -17,6 +17,6 @@ struct OnboardingFormState {
         nickname.isValidText(maxLength: 10) &&
             goal.isValidText(maxLength: 20) &&
             isDateSelected &&
-            targetDate.isValidTargetDate
+            targetDate.isValidTargetDate()
     }
 }
