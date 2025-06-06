@@ -70,7 +70,7 @@ struct ProjectSelector: View {
                         Text(project.projectTitle)
                             .lineLimit(1)
                         Spacer()
-                        Text("\(dateString(project.createdAt)) ~ \(project.finishedAt != nil ? dateString(project.finishedAt!) : "진행중")")
+                        Text(DateFormatter.projectDateRange(startDate: project.createdAt, endDate: project.finishedAt))
                             .font(.caption)
                             .foregroundColor(.gray)
                         if selectedProject?.id == project.id {
@@ -124,12 +124,6 @@ struct ProjectSelector: View {
         selectedProject = newProject
         newProjectName = ""
         isAddingProject = false
-    }
-
-    private func dateString(_ date: Date) -> String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy.MM.dd"
-        return formatter.string(from: date)
     }
 }
 
