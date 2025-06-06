@@ -65,7 +65,7 @@ struct OnboardingView: View {
                         hideKeyboard()
                     }
 
-                    OnboardingDateField(
+                    UserGoalDateField(
                         targetDate: $formState.targetDate,
                         isDateSelected: $formState.isDateSelected,
                         isSheetPresented: $isSheetPresented,

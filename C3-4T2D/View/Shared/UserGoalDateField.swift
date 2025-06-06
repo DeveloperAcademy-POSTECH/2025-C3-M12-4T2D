@@ -1,5 +1,5 @@
 //
-//  OnboardingDateField.swift
+//  UserGoalDateField.swift
 //  C3-4T2D
 //
 //  Created by bishoe on 6/5/25.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct OnboardingDateField: View {
+struct UserGoalDateField: View {
     @Binding var targetDate: Date
     @Binding var isDateSelected: Bool
     @Binding var isSheetPresented: Bool
