@@ -18,17 +18,38 @@ struct CreateView: View {
     @State private var showDatePicker = false
     @State private var showExitAlert = false
 
-    @State private var selectedProject: Project? = nil
-    @State private var descriptionText: String = ""
+    @State private var selectedProject: Project?
+    @State private var descriptionText: String
     @FocusState private var isFocused: Bool
 
-    @State private var selectedDate = Date()
+    @State private var selectedDate: Date
     @State private var selectedStage: ProcessStage = .idea
 
     @Binding var createPickedImage: UIImage?
+    var initialProject: Project? = nil
+    var initialMemo: String = ""
+    var initialDate: Date = Date()
+    var editingPost: Post? = nil
 
     private var hasUnsavedChanges: Bool {
         selectedProject != nil || createPickedImage != nil || !descriptionText.isEmpty
+    }
+
+    init(
+        createPickedImage: Binding<UIImage?>,
+        initialProject: Project? = nil,
+        initialMemo: String = "",
+        initialDate: Date = Date(),
+        editingPost: Post? = nil
+    ) {
+        self._createPickedImage = createPickedImage
+        self.initialProject = initialProject
+        self.initialMemo = initialMemo
+        self.initialDate = initialDate
+        self.editingPost = editingPost
+        _selectedProject = State(initialValue: editingPost?.project ?? initialProject)
+        _descriptionText = State(initialValue: editingPost?.memo ?? initialMemo)
+        _selectedDate = State(initialValue: editingPost?.createdAt ?? initialDate)
     }
 
     var body: some View {
@@ -70,12 +91,22 @@ struct CreateView: View {
                                 imageUrl = filename
                             }
                         }
-                        let post = Post(
-                            postImageUrl: imageUrl,
-                            memo: descriptionText,
-                            project: project
-                        )
-                        context.insert(post)
+                        if let editingPost = editingPost {
+                            // 수정 모드: 기존 포스트 덮어쓰기
+                            editingPost.memo = descriptionText
+                            editingPost.project = project
+                            editingPost.createdAt = selectedDate
+                            editingPost.postImageUrl = imageUrl
+                        } else {
+                            // 신규 작성
+                            let post = Post(
+                                postImageUrl: imageUrl,
+                                memo: descriptionText,
+                                project: project,
+                                createdAt: selectedDate
+                            )
+                            context.insert(post)
+                        }
                         do {
                             try context.save()
                             print("포스트 저장 성공")

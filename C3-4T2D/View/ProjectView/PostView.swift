@@ -12,6 +12,8 @@ struct PostView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(Router.self) private var router
     @State private var showDeleteAlert = false
+    @State private var showEdit = false
+    @State private var editImage: UIImage? = nil
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
@@ -26,11 +28,24 @@ struct PostView: View {
                 Spacer()
                 // ... (더보기 버튼 등)
                 Menu {
-                    Button("편집", action: { /* 수정 액션: 비워둠 */ })
+                    Button("편집", action: {
+                        // 이미지 파일이 있으면 미리 로드
+                        if let imageUrl = post.postImageUrl, !imageUrl.isEmpty {
+                            let url = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent(imageUrl)
+                            if let data = try? Data(contentsOf: url), let uiImage = UIImage(data: data) {
+                                editImage = uiImage
+                            } else {
+                                editImage = nil
+                            }
+                        } else {
+                            editImage = nil
+                        }
+                        showEdit = true
+                    })
                     Button("삭제", role: .destructive, action: { showDeleteAlert = true })
                 } label: {
                     Image(systemName: "ellipsis")
-                        .font(.system(size: 20))
+                        .font(.system(size: 22))
                         .foregroundColor(.gray)
                         .contentShape(Rectangle())
                 }
@@ -67,11 +82,22 @@ struct PostView: View {
                 modelContext.delete(post)
                 try? modelContext.save()
                 if let project = project, (project.postList.count == 0) {
-                    // 포스트가 0개면 메인으로 이동
                     router.navigateToRoot()
-                } // else: 리스트에 남아있음 (dismiss 호출 안 함)
+                }
             }
             Button("취소", role: .cancel) {}
+        }
+        .fullScreenCover(isPresented: $showEdit) {
+            CreateView(
+                createPickedImage: Binding(
+                    get: { editImage },
+                    set: { editImage = $0 }
+                ),
+                initialProject: post.project,
+                initialMemo: post.memo ?? "",
+                initialDate: post.createdAt,
+                editingPost: post
+            )
         }
     }
 }
