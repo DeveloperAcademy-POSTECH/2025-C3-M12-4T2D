@@ -8,6 +8,10 @@ import SwiftUI
 
 struct PostView: View {
     let post: Post
+    @Environment(\.modelContext) private var modelContext
+    @Environment(\.dismiss) private var dismiss
+    @Environment(Router.self) private var router
+    @State private var showDeleteAlert = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
@@ -22,13 +26,13 @@ struct PostView: View {
                 Spacer()
                 // ... (더보기 버튼 등)
                 Menu {
-                    Button("편집", action: { /* 편집 액션 */ })
-                    Button("삭제", role: .destructive, action: { /* 삭제 액션 */ })
+                    Button("편집", action: { /* 수정 액션: 비워둠 */ })
+                    Button("삭제", role: .destructive, action: { showDeleteAlert = true })
                 } label: {
                     Image(systemName: "ellipsis")
                         .font(.system(size: 20))
                         .foregroundColor(.gray)
-                        .padding(.trailing, 2)
+                        .contentShape(Rectangle())
                 }
             }
             // 날짜
@@ -43,6 +47,7 @@ struct PostView: View {
                     .frame(maxWidth: .infinity)
                     .clipped()
                     .padding(.horizontal, -20)
+                    .allowsHitTesting(false)
             }
 
             // 메모(설명)
@@ -56,6 +61,18 @@ struct PostView: View {
 
         }
         .padding(.horizontal, 20)
+        .alert("정말 삭제하시겠습니까?", isPresented: $showDeleteAlert) {
+            Button("삭제", role: .destructive) {
+                let project = post.project
+                modelContext.delete(post)
+                try? modelContext.save()
+                if let project = project, (project.postList.count == 0) {
+                    // 포스트가 0개면 메인으로 이동
+                    router.navigateToRoot()
+                } // else: 리스트에 남아있음 (dismiss 호출 안 함)
+            }
+            Button("취소", role: .cancel) {}
+        }
     }
 }
 
