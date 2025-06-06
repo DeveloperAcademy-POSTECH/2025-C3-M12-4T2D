@@ -10,13 +10,17 @@
 // 우측 상단 '+' 버튼 항상 활성화, 버튼 선택시에만 TextField 노출
 
 import SwiftUI
+import SwiftData
 
 struct ProjectSelector: View {
+    @Environment(\.modelContext) private var context
+    @Query private var projects: [Project]
+    @Binding var selectedProject: Project?
+
     @State private var isAddingProject = false
     @State private var newProjectName = ""
-    @State private var projects: [String] = []
     @FocusState private var isTextFieldFocuesed: Bool
-    @State private var projectToDelete: String? = nil
+    @State private var projectToDelete: Project? = nil
     @State private var showDeleteConfirmation = false
 
     var body: some View {
@@ -61,13 +65,23 @@ struct ProjectSelector: View {
 
             // 프로젝트 리스트
             List {
-                ForEach(projects, id: \.self) { project in
+                ForEach(projects.sorted { $0.createdAt > $1.createdAt }) { project in
                     HStack {
-                        Text(project)
+                        Text(project.projectTitle)
                             .lineLimit(1)
                         Spacer()
+                        Text("\(dateString(project.createdAt)) ~ \(project.finishedAt != nil ? dateString(project.finishedAt!) : "진행중")")
+                            .font(.caption)
+                            .foregroundColor(.gray)
+                        if selectedProject?.id == project.id {
+                            Image(systemName: "checkmark")
+                                .foregroundColor(.prime1)
+                        }
                     }
                     .contentShape(Rectangle())
+                    .onTapGesture {
+                        selectedProject = project
+                    }
                     .swipeActions(edge: .trailing, allowsFullSwipe: false) {
                         Button {
                             projectToDelete = project
@@ -76,7 +90,6 @@ struct ProjectSelector: View {
                             Label("삭제", systemImage: "trash")
                         }
                         .tint(.red)
-
                     }.listRowInsets(EdgeInsets())
                 }
             }
@@ -91,7 +104,8 @@ struct ProjectSelector: View {
         .confirmationDialog("정말 삭제하시겠습니까?", isPresented: $showDeleteConfirmation, titleVisibility: .visible) {
             Button("삭제", role: .destructive) {
                 if let project = projectToDelete {
-                    deleteProject(project)
+                    context.delete(project)
+                    try? context.save()
                 }
                 projectToDelete = nil
             }
@@ -101,21 +115,29 @@ struct ProjectSelector: View {
         }
     }
 
-    // 공백인 경우 프로젝트 추가 불가
     private func addProjectIfValid() {
         let trimmedName = newProjectName.trimmingCharacters(in: .whitespacesAndNewlines)
         guard isAddingProject, !trimmedName.isEmpty else { return }
 
-        projects.append(trimmedName)
+        // 기존 진행중인 프로젝트 완료 처리
+        if let current = projects.first(where: { $0.finishedAt == nil }) {
+            current.finishedAt = Date()
+        }
+        let newProject = Project(projectTitle: trimmedName)
+        context.insert(newProject)
+        try? context.save()
+        selectedProject = newProject
         newProjectName = ""
         isAddingProject = false
     }
 
-    private func deleteProject(_ project: String) {
-        projects.removeAll { $0 == project }
+    private func dateString(_ date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy.MM.dd"
+        return formatter.string(from: date)
     }
 }
 
 #Preview {
-    ProjectSelector()
+    ProjectSelector(selectedProject: .constant(nil))
 }

@@ -16,7 +16,7 @@ struct CreateView: View {
     @State private var isPresentingCamera = false
     @State private var showDatePicker = false
 
-    @State private var projTitle: String = ""
+    @State private var selectedProject: Project? = nil
     @State private var descriptionText: String = ""
     @FocusState private var isFocused: Bool
 
@@ -33,7 +33,7 @@ struct CreateView: View {
             ScrollView {
                 VStack(spacing: 0) {
                     // 프로젝트명
-                    CreateProjTitle(projTitle: $projTitle, showProjectSelector: $showProjectSelector)
+                    CreateProjTitle(projTitle: .constant(selectedProject?.projectTitle ?? ""), showProjectSelector: $showProjectSelector)
                         .padding(.bottom, 20)
                     // 날짜 선택
                     CreateDate(selectedDate: $selectedDate, showDatePicker: $showDatePicker)
@@ -53,19 +53,25 @@ struct CreateView: View {
 
                     // 작성 완료 동작
                     Button(action: {
-                        let project = Project(projectTitle: projTitle, finishedAt: selectedDate)
-                        context.insert(project)
-
+                        guard let project = selectedProject else { return }
+                        var imageUrl: String? = nil
+                        if let image = createPickedImage {
+                            if let data = image.jpegData(compressionQuality: 0.8) {
+                                let filename = UUID().uuidString + ".jpg"
+                                let url = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent(filename)
+                                try? data.write(to: url)
+                                imageUrl = filename
+                            }
+                        }
                         let post = Post(
-                            postImageUrl: nil,
+                            postImageUrl: imageUrl,
                             memo: descriptionText,
                             project: project
                         )
                         context.insert(post)
-
                         do {
                             try context.save()
-                            print("프로젝트 및 포스트 저장 성공")
+                            print("포스트 저장 성공")
                         } catch {
                             print("저장 실패: \(error)")
                         }
@@ -75,9 +81,10 @@ struct CreateView: View {
                             .foregroundColor(.white)
                             .frame(maxWidth: .infinity)
                             .frame(height: 52)
-                            .background(Color.prime1)
+                            .background((selectedProject != nil && (!descriptionText.isEmpty || createPickedImage != nil)) ? Color.prime1 : Color.gray)
                             .cornerRadius(8)
                     }
+                    .disabled(selectedProject == nil || (descriptionText.isEmpty && createPickedImage == nil))
                 }
                 .padding(.horizontal, 20)
             }
@@ -93,7 +100,7 @@ struct CreateView: View {
             }
         }
         .sheet(isPresented: $showProjectSelector) {
-            ProjectSelector()
+            ProjectSelector(selectedProject: $selectedProject)
                 .presentationDetents([.medium, .large])
         }
         .onTapGesture {

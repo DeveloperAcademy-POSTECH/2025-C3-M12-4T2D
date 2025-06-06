@@ -10,13 +10,43 @@ import SwiftUI
 // 리스트뷰
 struct PostListCard: View {
     let project: Project
+    
+    private var latestPost: Post? {
+        project.postList.sorted { $0.createdAt > $1.createdAt }.first
+    }
+    
+    private var imagePostCount: Int {
+        project.postList.filter { $0.postImageUrl != nil && !$0.postImageUrl!.isEmpty }.count
+    }
+    
+    private var memoPostCount: Int {
+        project.postList.filter { $0.memo != nil && !$0.memo!.isEmpty }.count
+    }
 
     var body: some View {
         HStack(spacing: 15) {
-            Image("tmpImage")
-                .resizable()
-                .frame(width: 100, height: 70)
-                .cornerRadius(5)
+            if let post = latestPost, let imageUrl = post.postImageUrl, !imageUrl.isEmpty {
+                let url = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent(imageUrl)
+                if let data = try? Data(contentsOf: url), let uiImage = UIImage(data: data) {
+                    Image(uiImage: uiImage)
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .frame(width: 100, height: 70)
+                        .clipped()
+                        .cornerRadius(5)
+                } else {
+                    placeholderView
+                }
+            } else if let post = latestPost, let memo = post.memo, !memo.isEmpty {
+                Text(memo)
+                    .font(.system(size: 12, weight: .medium))
+                    .foregroundColor(.black)
+                    .frame(width: 100, height: 70)
+                    .background(Color.gray.opacity(0.3))
+                    .cornerRadius(5)
+            } else {
+                placeholderView
+            }
 
             VStack(alignment: .leading, spacing: 5) {
                 Text(project.projectTitle)
@@ -45,7 +75,7 @@ struct PostListCard: View {
                         Image("note")
                             .resizable()
                             .frame(width: 14, height: 14)
-                        Text("12")
+                        Text("\(memoPostCount)")
                             .font(.system(size: 14, weight: .semibold))
                     }
 
@@ -53,7 +83,7 @@ struct PostListCard: View {
                         Image("pallet")
                             .resizable()
                             .frame(width: 14, height: 14)
-                        Text("112")
+                        Text("\(imagePostCount)")
                             .font(.system(size: 14, weight: .semibold))
                     }
                 }
@@ -62,5 +92,12 @@ struct PostListCard: View {
             Spacer()
         }
         Divider()
+    }
+    
+    private var placeholderView: some View {
+        Rectangle()
+            .fill(Color.gray.opacity(0.3))
+            .frame(width: 100, height: 70)
+            .cornerRadius(5)
     }
 }
