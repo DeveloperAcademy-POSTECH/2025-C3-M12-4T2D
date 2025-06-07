@@ -162,23 +162,20 @@ struct MainView: View {
                             Spacer(minLength: 0)
                         }
                         .padding(.vertical, 20)
-
-
                     }
                     .background(Color.white)
                     .cornerRadius(15, corners: [.topLeft, .topRight])
                     .padding(.top, -16)
                     .frame(minHeight: UIScreen.main.bounds.height)
                 }
-                .onAppear {
-                    print(showCreate)
+//                .onAppear {
 
-                    //            MARK: 한번만 실행시키고 주석처리해주시면 됩니다 !
+                //            MARK: 한번만 실행시키고 주석처리해주시면 됩니다 !
 
-                    //  DummyDataManager.createDummyData(context: modelContext, projects: allProjects)
-                    //           이거는 테스트할때만! swiftData초기화를 위해서 사용합니다.
+                //  DummyDataManager.createDummyData(context: modelContext, projects: allProjects)
+                //           이거는 테스트할때만! swiftData초기화를 위해서 사용합니다.
 //                    SwiftDataManager.deleteAllData(context: modelContext)
-                }
+//                }
             }
         }
         .fullScreenCover(isPresented: $showCamera) {
