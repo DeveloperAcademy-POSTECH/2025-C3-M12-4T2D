@@ -14,7 +14,7 @@ struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.scenePhase) private var scenePhase
 
-    @State private var showingSplash = true
+    @State private var showSplash = true
 
     var body: some View {
         ZStack {
@@ -49,22 +49,18 @@ struct ContentView: View {
             }
             .environment(router)
 
-            // 매번 앱 실행시 스플래시 보여주기
-            if showingSplash {
+            // 스플래시 화면 표시
+            if showSplash {
                 SplashView()
                     .zIndex(999)
                     .onAppear {
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
                             withAnimation(.easeOut(duration: 0.5)) {
-                                showingSplash = false
+                                showSplash = false
                             }
                         }
                     }
             }
-        }
-        .onAppear {
-            // 백그라운드에서 돌아올 때 안보이게 처리
-            showingSplash = true
         }
         .onChange(of: scenePhase) { _, newPhase in
             if newPhase == .active {
