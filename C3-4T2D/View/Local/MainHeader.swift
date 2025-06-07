@@ -42,24 +42,24 @@ struct MainHeader: View {
                                 .background(Color.white)
                                 .cornerRadius(5)
                         }
-                        HStack(spacing: 16) {
-                            HStack(spacing: 4) {
+                        HStack(spacing: 10) {
+                            HStack(spacing: 3) {
                                 Image("fire")
                                     .resizable()
-                                    .frame(width: 20, height: 20)
-                                Text("\(streakNum)").font(.system(size: 15, weight: .semibold))
+                                    .frame(width: 19, height: 19)
+                                Text("\(streakNum)").font(.system(size: 14, weight: .semibold))
                             }
-                            HStack(spacing: 4) {
+                            HStack(spacing: 3) {
                                 Image("note")
                                     .resizable()
-                                    .frame(width: 20, height: 20)
-                                Text("\(projectCount)").font(.system(size: 15, weight: .semibold))
+                                    .frame(width: 18, height: 18)
+                                Text("\(projectCount)").font(.system(size: 14, weight: .semibold))
                             }
-                            HStack(spacing: 4) {
+                            HStack(spacing: 3) {
                                 Image("pallet")
                                     .resizable()
-                                    .frame(width: 20, height: 20)
-                                Text("\(postCount)").font(.system(size: 15, weight: .semibold))
+                                    .frame(width: 18, height: 18)
+                                Text("\(postCount)").font(.system(size: 14, weight: .semibold))
                             }
                         }
                     }

@@ -11,12 +11,18 @@ struct ImageView: View {
     let image: String
 
     var body: some View {
-//        Rectangle()
-        Image(image)
-            .resizable()
-            .frame(width: .infinity, height: 300)
-//            .border(Color.gray)
-
-//        UIScreen.main.bounds.width
+        if let url = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent(image),
+           let data = try? Data(contentsOf: url),
+           let uiImage = UIImage(data: data) {
+            Image(uiImage: uiImage)
+                .resizable()
+                .scaledToFill()
+                .frame(maxWidth: .infinity, maxHeight: 300)
+                .clipped()
+        } else {
+            Rectangle()
+                .foregroundColor(.gray.opacity(0.3))
+                .frame(maxWidth: .infinity, maxHeight: 300)
+        }
     }
 }

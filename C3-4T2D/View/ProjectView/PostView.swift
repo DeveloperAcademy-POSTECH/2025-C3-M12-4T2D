@@ -8,19 +8,96 @@ import SwiftUI
 
 struct PostView: View {
     let post: Post
+    @Environment(\.modelContext) private var modelContext
+    @Environment(\.dismiss) private var dismiss
+    @Environment(Router.self) private var router
+    @State private var showDeleteAlert = false
+    @State private var showEdit = false
+    @State private var editImage: UIImage? = nil
 
     var body: some View {
-        VStack(spacing: 10) {
-            // 제목
-            ProjectTitleView(
-                title: post.memo ?? "새 포스트",
-                date: post.createdAt.formatted(date: .abbreviated, time: .shortened)
-            )
-            // 이미지, 있을 때만 !
+        VStack(alignment: .leading, spacing: 10) {
+            // 스테이지 미리 준비
+            HStack(alignment: .center, spacing: 8) {
+//                if let stage = post.stage?.rawValue {
+//                    Text(stage ?? "과정 없음")
+//                        .font(.system(size: 24, weight: .bold))
+//                }
+                Text("채색(1)")
+                    .font(.system(size: 19, weight: .bold))
+                Spacer()
+                // ... (더보기 버튼 등)
+                Menu {
+                    Button("편집", action: {
+                        // 이미지 파일이 있으면 미리 로드
+                        if let imageUrl = post.postImageUrl, !imageUrl.isEmpty {
+                            let url = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent(imageUrl)
+                            if let data = try? Data(contentsOf: url), let uiImage = UIImage(data: data) {
+                                editImage = uiImage
+                            } else {
+                                editImage = nil
+                            }
+                        } else {
+                            editImage = nil
+                        }
+                        showEdit = true
+                    })
+                    Button("삭제", role: .destructive, action: { showDeleteAlert = true })
+                } label: {
+                    Image(systemName: "ellipsis")
+                        .font(.system(size: 22))
+                        .foregroundColor(.gray)
+                        .contentShape(Rectangle())
+                }
+            }
+            // 날짜
+            Text(post.createdAt.formatted(date: .numeric, time: .shortened))
+                .font(.subheadline)
+                .foregroundColor(.gray)
+                .padding(.bottom, 4)
+
+            // 이미지
             if let imageUrl = post.postImageUrl {
                 ImageView(image: imageUrl)
+                    .frame(maxWidth: .infinity)
+                    .clipped()
+                    .padding(.horizontal, -20)
+                    .allowsHitTesting(false)
             }
+
+            // 메모(설명)
+            if let memo = post.memo, !memo.isEmpty {
+                Text(memo)
+                    .font(.body)
+                    .padding(.top, 8)
+            }
+
             LikeCommentBar()
+
+        }
+        .padding(.horizontal, 20)
+        .alert("정말 삭제하시겠습니까?", isPresented: $showDeleteAlert) {
+            Button("삭제", role: .destructive) {
+                let project = post.project
+                modelContext.delete(post)
+                try? modelContext.save()
+                if let project = project, (project.postList.count == 0) {
+                    router.navigateToRoot()
+                }
+            }
+            Button("취소", role: .cancel) {}
+        }
+        .fullScreenCover(isPresented: $showEdit) {
+            CreateView(
+                createPickedImage: Binding(
+                    get: { editImage },
+                    set: { editImage = $0 }
+                ),
+                initialProject: post.project,
+                initialMemo: post.memo ?? "",
+                initialDate: post.createdAt,
+                editingPost: post
+            )
         }
     }
 }

@@ -20,13 +20,12 @@ final class Post {
     // Project와 연결된 부분
     var project: Project?
 
-    init(postImageUrl: String? = nil, memo: String? = nil, order: Int = 0, project: Project? = nil) {
+    init(postImageUrl: String? = nil, memo: String? = nil, order: Int = 0, project: Project? = nil, createdAt: Date = Date()) {
         self.id = UUID()
         self.postImageUrl = postImageUrl
         self.memo = memo
         self.order = order
-        // 필수 -> 결국project안에 post가 포함되는 구조
         self.project = project
-        self.createdAt = Date()
+        self.createdAt = createdAt
     }
 }
