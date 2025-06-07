@@ -13,9 +13,9 @@ struct MainHeader: View {
                 HStack(alignment: .center, spacing: 12) {
                     Image("profile") // 프로필 이미지 에셋명에 맞게 수정
                         .resizable()
-                        .frame(width: 50, height: 50)
+                        .frame(width: 55, height: 55)
                         .clipShape(Circle())
-                    VStack(alignment: .leading, spacing: 4) {
+                    VStack(alignment: .leading, spacing: 8) {
                         HStack(spacing: 8) {
                             Text(user?.userGoal ?? "목표를 입력하세요")
                                 .font(.system(size: 16, weight: .semibold))
@@ -27,24 +27,24 @@ struct MainHeader: View {
                                 .background(Color.white)
                                 .cornerRadius(5)
                         }
-                        HStack(spacing: 16) {
-                            HStack(spacing: 4) {
+                        HStack(spacing: 10) {
+                            HStack(spacing: 3) {
                                 Image("fire")
                                     .resizable()
-                                    .frame(width: 20, height: 20)
-                                Text("\(streakNum)").font(.system(size: 15, weight: .semibold))
+                                    .frame(width: 19, height: 19)
+                                Text("\(streakNum)").font(.system(size: 14, weight: .semibold))
                             }
-                            HStack(spacing: 4) {
+                            HStack(spacing: 3) {
                                 Image("note")
                                     .resizable()
-                                    .frame(width: 20, height: 20)
-                                Text("\(projectCount)").font(.system(size: 15, weight: .semibold))
+                                    .frame(width: 18, height: 18)
+                                Text("\(projectCount)").font(.system(size: 14, weight: .semibold))
                             }
-                            HStack(spacing: 4) {
+                            HStack(spacing: 3) {
                                 Image("pallet")
                                     .resizable()
-                                    .frame(width: 20, height: 20)
-                                Text("\(postCount)").font(.system(size: 15, weight: .semibold))
+                                    .frame(width: 18, height: 18)
+                                Text("\(postCount)").font(.system(size: 14, weight: .semibold))
                             }
                         }
                     }
