@@ -24,10 +24,10 @@ class Router {
     }
 }
 
-// 일단은 들어가게 될 ProjectView들을 임시로 선언해주었는데, 얼마든지 유동적으로 변경이 가능함
 enum Destination: Hashable {
     case onBoardingView
     case mainView
+    case splashView2
     case ProjectListView(Project)
 
     /* projectDetailView(Project) 이런식으로 나중에 필요에따라 데이터 넘겨주기도 가능함 */

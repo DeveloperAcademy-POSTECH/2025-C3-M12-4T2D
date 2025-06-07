@@ -219,9 +219,9 @@ struct MainView: View {
             }
             Button("취소", role: .cancel) {}
         }
+        .navigationBarBackButtonHidden(true)
     }
 }
-
 
 // Divider()
 //     .overlay(

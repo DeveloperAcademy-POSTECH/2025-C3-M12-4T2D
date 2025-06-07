@@ -15,8 +15,11 @@ class ProfileImageManager: ObservableObject {
     @Published var showErrorAlert = false
     @Published var errorMessage = ""
     @Published var selectedPhotoItem: PhotosPickerItem? = nil
+    @Published var hasImageChanged = false
     
-    func processSelectedPhoto(users: [User], modelContext: ModelContext) {
+    private var originalImageData: Data? = nil
+    
+    func processSelectedPhoto() {
         Task {
             DispatchQueue.main.async {
                 self.isLoadingImage = true
@@ -31,16 +34,7 @@ class ProfileImageManager: ObservableObject {
                         // 정사각형 크롭
                         let croppedImage = self.cropToSquare(image: image)
                         self.profileImage = croppedImage
-                        
-                        if let user = users.first,
-                           let imageData = croppedImage.jpegData(compressionQuality: 0.8)
-                        {
-                            SwiftDataManager.updateUserProfileImage(
-                                context: modelContext,
-                                user: user,
-                                profileImageData: imageData
-                            )
-                        }
+                        self.hasImageChanged = true
                         
                         self.isLoadingImage = false
                         // 선택된 아이템 초기화 (재선택 가능하도록)
@@ -79,21 +73,40 @@ class ProfileImageManager: ObservableObject {
         return UIImage(cgImage: cgImage, scale: image.scale, orientation: image.imageOrientation)
     }
     
-    func deleteProfileImage(users: [User], modelContext: ModelContext) {
+    func deleteProfileImage() {
         profileImage = nil
-        
-        if let user = users.first {
-            SwiftDataManager.updateUserProfileImage(
-                context: modelContext,
-                user: user,
-                profileImageData: nil
-            )
-        }
+        hasImageChanged = true
     }
     
     func loadUserProfileImage(from user: User) {
+        originalImageData = user.profileImageData
         if let imageData = user.profileImageData {
             profileImage = UIImage(data: imageData)
+        } else {
+            profileImage = nil
         }
+        hasImageChanged = false
+    }
+    
+    func resetToOriginal(from user: User) {
+        loadUserProfileImage(from: user)
+    }
+    
+    func saveImageChanges(users: [User], modelContext: ModelContext) {
+        guard hasImageChanged, let user = users.first else { return }
+        
+        var imageData: Data? = nil
+        if let image = profileImage {
+            imageData = image.jpegData(compressionQuality: 0.8)
+        }
+        
+        SwiftDataManager.updateUserProfileImage(
+            context: modelContext,
+            user: user,
+            profileImageData: imageData
+        )
+        
+        originalImageData = imageData
+        hasImageChanged = false
     }
 }

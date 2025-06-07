@@ -23,10 +23,13 @@ struct OnboardingView: View {
             context: modelContext,
             nickname: formState.nickname,
             goal: formState.goal,
-            remainingDays: remainingDays
+            remainingDays: remainingDays,
+            targetDate: formState.targetDate
         )
         do {
             try modelContext.save()
+            // 온보딩 완료 후 SplashView2로 이동
+            router.navigate(to: .splashView2)
         } catch {
             print("Error saving user: \(error)")
         }
