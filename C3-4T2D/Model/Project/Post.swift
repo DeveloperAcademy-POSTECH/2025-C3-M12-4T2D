@@ -17,6 +17,7 @@ final class Post {
     // 사용자 지정 순서 -> 유저가 혹여나 순서를 잘못올렸을때 사용 (아직 활용 X )
     var order: Int
     var createdAt: Date
+    var comments: [Comment] = []
 
     // Project와 연결된 부분
     var project: Project?
