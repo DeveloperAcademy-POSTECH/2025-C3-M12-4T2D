@@ -40,7 +40,7 @@ struct CreateHeader: View {
             }) {
                 Text("임시저장")
                     .font(.system(size: 14))
-                    .foregroundColor(.gray)
+                    .foregroundColor(.white)
                     .frame(width: 60, alignment: .leading)
             }
         }

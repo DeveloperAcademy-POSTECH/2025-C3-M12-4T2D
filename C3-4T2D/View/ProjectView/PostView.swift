@@ -99,16 +99,7 @@ struct PostView: View {
             Button("취소", role: .cancel) {}
         }
         .fullScreenCover(isPresented: $showEdit) {
-            CreateView(
-                createPickedImage: Binding(
-                    get: { editImage },
-                    set: { editImage = $0 }
-                ),
-                initialProject: post.project,
-                initialMemo: post.memo ?? "",
-                initialDate: post.createdAt,
-                editingPost: post
-            )
+            EditView(editingPost: post)
         }
         .onAppear {
             comments = post.comments
