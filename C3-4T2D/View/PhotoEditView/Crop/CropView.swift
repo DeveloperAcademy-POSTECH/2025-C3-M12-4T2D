@@ -79,14 +79,6 @@ struct CropView: View {
                 viewModel.lastOffset = viewModel.offset
             }
 
-        // 회전 제스처
-        let rotationGesture = RotationGesture()
-            .onChanged { value in
-                viewModel.angle = viewModel.lastAngle + value
-            }
-            .onEnded { _ in
-                viewModel.lastAngle = viewModel.angle
-            }
 
         // MARK: - 뷰 레이아웃 구조
 
@@ -192,10 +184,9 @@ struct CropView: View {
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            // 이미지에 제스처(확대, 드래그, 회전) 동시 적용
+            // 이미지에 제스처(확대, 드래그) 동시 적용
             .simultaneousGesture(magnificationGesture)
             .simultaneousGesture(dragGesture)
-            .simultaneousGesture(configuration.rotateImage ? rotationGesture : nil)
         }
         .background(configuration.colors.background)
     }

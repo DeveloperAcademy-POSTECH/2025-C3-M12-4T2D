@@ -83,20 +83,26 @@ class CropViewModel: ObservableObject {
         let imageSize = image.size
 
         // 이미지가 화면에 표시된 영역의 크기 대비 실제 픽셀 크기 비율
-        let scaleX = imageSize.width / displayedImageSize.width
-        let scaleY = imageSize.height / displayedImageSize.height
+        let factor = min(
+            imageSize.width / displayedImageSize.width,
+            imageSize.height / displayedImageSize.height
+        )
 
         // 마스크의 크기를 이미지 픽셀 기준으로 변환
-        let cropWidth = maskSize.width * scaleX / scale
-        let cropHeight = maskSize.height * scaleY / scale
+        let centerX = imageSize.width / 2
+        let centerY = imageSize.height / 2
 
         // 이미지 중앙에서 offset을 반영해 crop center 위치 결정
-        let centerX = imageSize.width / 2 + offset.width * scaleX / scale
-        let centerY = imageSize.height / 2 + offset.height * scaleY / scale
+        let cropWidth = (maskSize.width * factor) / scale
+        let cropHeight = (maskSize.height * factor) / scale
+        
+        let offsetX = offset.width * factor / scale
+        let offsetY = offset.height * factor / scale
+
 
         let cropRect = CGRect(
-            x: centerX - cropWidth / 2,
-            y: centerY - cropHeight / 2,
+            x: centerX - cropWidth / 2 - offsetX,
+            y: centerY - cropHeight / 2 - offsetY,
             width: cropWidth,
             height: cropHeight
         )
