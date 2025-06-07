@@ -14,7 +14,7 @@ struct CreateDate: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text("과정 기록일")
-                .font(.title3.weight(.bold))
+                .font(.system(size: 15, weight: .bold))
                 .foregroundColor(.black)
 
             Button {
@@ -22,10 +22,10 @@ struct CreateDate: View {
             } label: {
                 HStack(spacing: 6) {
                     Image(systemName: "calendar")
-                        .font(.system(size: 17))
+                        .font(.system(size: 15, weight: .semibold))
 
                     Text(formattedDate(date: selectedDate))
-                        .font(.system(size: 17))
+                        .font(.system(size: 15, weight: .semibold))
 
                     Spacer()
 

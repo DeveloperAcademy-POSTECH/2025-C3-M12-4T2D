@@ -13,7 +13,7 @@ struct CreatePhoto: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             Text("진행 과정")
-                .font(.title3.weight(.bold))
+                .font(.system(size: 15, weight: .bold))
                 .foregroundColor(.black)
                 .padding(.bottom, 8)
 

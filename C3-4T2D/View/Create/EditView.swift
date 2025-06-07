@@ -45,7 +45,7 @@ struct EditView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            CreateHeader(showExitAlert: $showExitAlert, hasUnsavedChanges: hasUnsavedChanges)
+            CreateHeader(showExitAlert: $showExitAlert, hasUnsavedChanges: hasUnsavedChanges, isEditing: true)
                 .padding(.bottom, 12)
                 .padding(.horizontal, 20)
 
