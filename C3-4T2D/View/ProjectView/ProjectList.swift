@@ -25,7 +25,7 @@ struct ProjectList: View {
                     PostView(post: post,project: project)
                 }
             }
-        }.navigationTitle(project.projectTitle) // Header에 프로젝트 title 노출
+        }
     }
 }
 
