@@ -15,7 +15,7 @@ struct ContentView: View {
     @Environment(\.scenePhase) private var scenePhase
 
     @State private var showingSplash = true
-    @AppStorage("splashCompleted") private var splashCompleted = false
+    // 매번 앱 실행시 스플래시를 보여주기 위해 AppStorage 제거
 
     var body: some View {
         ZStack {
@@ -50,8 +50,8 @@ struct ContentView: View {
             }
             .environment(router)
 
-            // 앱 최초 실행시 ? 매번 실행시 ?
-            if showingSplash && !splashCompleted {
+            // 매번 앱 실행시 스플래시 보여주기
+            if showingSplash {
                 SplashView()
                     .zIndex(999)
                     .onAppear {
@@ -59,18 +59,19 @@ struct ContentView: View {
                             withAnimation(.easeOut(duration: 0.5)) {
                                 showingSplash = false
                             }
-                            splashCompleted = true
                         }
                     }
             }
         }
         .onAppear {
-            if !splashCompleted {
-                showingSplash = true
-            }
+            // 백그라운드에서 돌아올 때도 스플래시가 보이지 않도록 설정
+            showingSplash = true
         }
-        .onChange(of: scenePhase) { newPhase in
+        .onChange(of: scenePhase) { oldPhase, newPhase in
             if newPhase == .active {
+                // 백그라운드에서 포그라운드로 돌아올 때는 스플래시를 보여주지 않음
+                // 앱이 완전히 종료된 후 재실행될 때만 스플래시가 표시됨
+                
                 if let user = users.first {
                     let now = Date()
                     if let last = user.lastVisitAt {

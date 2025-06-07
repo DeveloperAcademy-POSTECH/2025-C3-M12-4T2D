@@ -11,6 +11,7 @@ import SwiftUI
 import UIKit
 
 struct ProfileSettingView: View {
+    // 편집 데이터
     @State private var nickname: String = ""
     @State private var goal: String = ""
     @State private var targetDate: Date = .init()
@@ -18,6 +19,13 @@ struct ProfileSettingView: View {
     @State private var isPhotoActionSheetPresented = false
     @State private var isDateSelected = false
     @State private var showPhotoPicker = false
+    @State private var showCancelAlert = false
+    
+    // 편집 전 데이터 (취소 시 복원용)
+    @State private var originalNickname: String = ""
+    @State private var originalGoal: String = ""
+    @State private var originalTargetDate: Date = .init()
+    @State private var originalIsDateSelected = false
     
     @StateObject private var imageManager = ProfileImageManager()
     @FocusState private var focusedField: TextFieldType?
@@ -33,6 +41,13 @@ struct ProfileSettingView: View {
             !goal.isOverMaxLength(maxLength: 20) &&
             isDateSelected &&
             targetDate.isValidTargetDate()
+    }
+    
+    private var hasChanges: Bool {
+        nickname != originalNickname ||
+            goal != originalGoal ||
+            targetDate != originalTargetDate ||
+            imageManager.hasImageChanged
     }
     
     var body: some View {
@@ -62,7 +77,22 @@ struct ProfileSettingView: View {
         }
         .navigationTitle("프로필 수정")
         .navigationBarTitleDisplayMode(.inline)
+        .navigationBarBackButtonHidden(true)
         .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button(action: {
+                    if hasChanges {
+                        showCancelAlert = true
+                    } else {
+                        router.navigateBack()
+                    }
+                }) {
+                    Image(systemName: "chevron.left")
+                        .font(.system(size: 17, weight: .medium))
+                        .foregroundColor(.blue)
+                }
+            }
+            
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button("저장하기") {
                     saveUserInfo()
@@ -81,7 +111,7 @@ struct ProfileSettingView: View {
         .confirmationDialog("프로필 사진 편집", isPresented: $isPhotoActionSheetPresented, titleVisibility: .visible) {
             if imageManager.profileImage != nil {
                 Button("사진 삭제", role: .destructive) {
-                    imageManager.deleteProfileImage(users: users, modelContext: modelContext)
+                    imageManager.deleteProfileImage()
                 }
             }
             Button("사진 변경") {
@@ -101,8 +131,22 @@ struct ProfileSettingView: View {
         }
         .onChange(of: imageManager.selectedPhotoItem) { newValue in
             if newValue != nil {
-                imageManager.processSelectedPhoto(users: users, modelContext: modelContext)
+                imageManager.processSelectedPhoto()
             }
+        }
+        .gesture(
+            // 스와이프로 뒤로가기 비활성화
+            DragGesture()
+                .onEnded { _ in
+                }
+        )
+        .alert("변경사항이 있습니다", isPresented: $showCancelAlert) {
+            Button("저장하지않고 나가기", role: .destructive) {
+                cancelEditing()
+            }
+            Button("이어서 작성하기", role: .cancel) {}
+        } message: {
+            Text("저장되지 않은 변경사항이 있습니다.")
         }
     }
 }
@@ -118,18 +162,17 @@ private extension ProfileSettingView {
         
         let remainingDays = targetDate.remainingDaysFromToday
         
-        var profileImageData: Data?
-        if let image = imageManager.profileImage {
-            profileImageData = image.jpegData(compressionQuality: 0.8)
-        }
+        // 이미지 변경사항 저장
+        imageManager.saveImageChanges(users: users, modelContext: modelContext)
         
+        // 사용자 정보 업데이트 (이미지 제외)
         SwiftDataManager.updateUserInfo(
             context: modelContext,
             user: user,
             nickname: nickname,
             goal: goal,
             remainingDays: remainingDays,
-            profileImageData: profileImageData
+            profileImageData: nil
         )
         
         router.navigateBack()
@@ -138,6 +181,12 @@ private extension ProfileSettingView {
     func loadUserInfo() {
         guard let user = users.first else { return }
         
+        // 편집 전 데이터 백업
+        originalNickname = user.nickname
+        originalGoal = user.userGoal
+        originalIsDateSelected = true
+        
+        // 편집중 데이터 초기화
         nickname = user.nickname
         goal = user.userGoal
         
@@ -145,8 +194,24 @@ private extension ProfileSettingView {
         
         // remainingDays를 기반 -> targetDate 계산
         let calendar = Calendar.current
-        targetDate = calendar.date(byAdding: .day, value: user.remainingDays, to: Date()) ?? Date()
+        let calculatedDate = calendar.date(byAdding: .day, value: user.remainingDays, to: Date()) ?? Date()
+        originalTargetDate = calculatedDate
+        targetDate = calculatedDate
         isDateSelected = true
+    }
+
+    /// 편집전 데이터로 돌려놓기
+    func cancelEditing() {
+        nickname = originalNickname
+        goal = originalGoal
+        targetDate = originalTargetDate
+        isDateSelected = originalIsDateSelected
+        
+        if let user = users.first {
+            imageManager.resetToOriginal(from: user)
+        }
+        
+        router.navigateBack()
     }
     
     func hideKeyboard() {
