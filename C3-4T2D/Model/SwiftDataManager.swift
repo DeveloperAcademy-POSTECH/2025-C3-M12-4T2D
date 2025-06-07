@@ -18,8 +18,8 @@ enum SwiftDataManager {
     }
 
     /// 프로젝트에 포스트 추가
-    static func addPost(to project: Project, context: ModelContext, imageUrl: String? = nil, memo: String? = nil) {
-        let post = Post(postImageUrl: imageUrl, memo: memo, project: project) // project 무조건 필수
+    static func addPost(to project: Project, context: ModelContext, imageUrl: String? = nil, memo: String? = nil, postStage: ProcessStage = .idea) {
+        let post = Post(postImageUrl: imageUrl, memo: memo, project: project, postStage: postStage) // project 무조건 필수
         project.postList.append(post)
         context.insert(post)
     }
