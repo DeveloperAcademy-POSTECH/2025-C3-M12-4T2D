@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct MainHeader: View {
+    @Environment(Router.self) var router
     var user: User?
     var streakNum: Int
     var projectCount: Int
@@ -11,11 +12,25 @@ struct MainHeader: View {
                 .ignoresSafeArea(edges: .top)
             VStack(alignment: .leading, spacing: 0) {
                 HStack(alignment: .center, spacing: 12) {
-                    Image("profile") // 프로필 이미지 에셋명에 맞게 수정
-                        .resizable()
-                        .frame(width: 55, height: 55)
-                        .clipShape(Circle())
-                    VStack(alignment: .leading, spacing: 8) {
+                    Button {
+                        router.navigate(to: .profileSettingView)
+                    } label: {
+                        if let imageData = user?.profileImageData,
+                           let uiImage = UIImage(data: imageData) {
+                            Image(uiImage: uiImage)
+                                .resizable()
+                                .scaledToFill()
+                                .frame(width: 50, height: 50)
+                                .clipShape(Circle())
+                        } else {
+                            Image("profile") // 기본 프로필 이미지
+                                .resizable()
+                                .scaledToFill()
+                                .frame(width: 50, height: 50)
+                                .clipShape(Circle())
+                        }
+                    }
+                    VStack(alignment: .leading, spacing: 4) {
                         HStack(spacing: 8) {
                             Text(user?.userGoal ?? "목표를 입력하세요")
                                 .font(.system(size: 16, weight: .semibold))
@@ -49,7 +64,6 @@ struct MainHeader: View {
                         }
                     }
                     Spacer()
-
                 }
                 .padding(.top, 24)
                 .padding(.horizontal, 20)
