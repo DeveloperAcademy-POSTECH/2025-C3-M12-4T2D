@@ -6,6 +6,7 @@ struct MainHeader: View {
     var streakNum: Int
     var projectCount: Int
     var postCount: Int
+    @Binding var showProfileSetting: Bool
     var body: some View {
         ZStack(alignment: .top) {
             Color(hex: "FFD55C")
@@ -13,7 +14,7 @@ struct MainHeader: View {
             VStack(alignment: .leading, spacing: 0) {
                 HStack(alignment: .center, spacing: 12) {
                     Button {
-                        router.navigate(to: .profileSettingView)
+                        showProfileSetting = true
                     } label: {
                         if let imageData = user?.profileImageData,
                            let uiImage = UIImage(data: imageData) {

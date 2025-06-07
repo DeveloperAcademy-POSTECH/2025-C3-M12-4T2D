@@ -17,6 +17,7 @@ struct MainView: View {
     @State private var showCreate: Bool = false
     @State private var showActionSheet: Bool = false
     @State private var showSortSheet: Bool = false
+    @State private var showProfileSetting: Bool = false
 
 
     @State private var mainPickedImage: UIImage? // MainView의 pickedImage라서 mainPickedImage
@@ -57,7 +58,7 @@ struct MainView: View {
 
             ScrollView(.vertical, showsIndicators: false) {
                 VStack(spacing: 0) {
-                    MainHeader(user: currentUser, streakNum: streakNum, projectCount: projectCount, postCount: postCount)
+                    MainHeader(user: currentUser, streakNum: streakNum, projectCount: projectCount, postCount: postCount, showProfileSetting: $showProfileSetting)
                         .background(Color.clear)
 
                     VStack(spacing: 0) {
@@ -220,6 +221,10 @@ struct MainView: View {
             Button("취소", role: .cancel) {}
         }
         .navigationBarBackButtonHidden(true)
+
+        .fullScreenCover(isPresented: $showProfileSetting) {
+            ProfileSettingView()
+        }
     }
 }
 

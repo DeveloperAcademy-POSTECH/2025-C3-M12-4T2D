@@ -23,7 +23,7 @@ struct CreateHeader: View {
                 }
             }) {
                 Image(systemName: "xmark")
-                    .font(.system(size: 18, weight: .bold))
+                    .font(.system(size: 20, weight: .semibold))
                     .foregroundColor(.black)
                     .frame(width: 60, alignment: .leading)
             }

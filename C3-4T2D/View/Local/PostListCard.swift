@@ -31,7 +31,7 @@ struct PostListCard: View {
                     let url = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent(imageUrl)
                     if let data = try? Data(contentsOf: url), let uiImage = UIImage(data: data) {
                         Image(uiImage: uiImage)
-                            .resizable()
+                .resizable()
                             .aspectRatio(contentMode: .fill)
                             .frame(width: 100, height: 70)
                             .clipped()
@@ -43,9 +43,9 @@ struct PostListCard: View {
                     Text(memo)
                         .font(.system(size: 12, weight: .medium))
                         .foregroundColor(.black)
-                        .frame(width: 100, height: 70)
+                .frame(width: 100, height: 70)
                         .background(Color.gray.opacity(0.3))
-                        .cornerRadius(5)
+                .cornerRadius(5)
                 } else {
                     placeholderView
                 }
@@ -56,7 +56,7 @@ struct PostListCard: View {
 
             VStack(alignment: .leading, spacing: 5) {
                 Text(project.projectTitle)
-                    .font(.system(size: 17, weight: .bold))
+                    .font(.system(size: 16, weight: .bold))
                     .lineLimit(1)
 
                 HStack {
