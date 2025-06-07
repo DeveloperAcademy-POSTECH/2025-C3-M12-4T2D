@@ -32,6 +32,9 @@ struct SplashView: View {
 
             Spacer()
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(.white)
+        .ignoresSafeArea()
         .onAppear {
             animate = true
         }

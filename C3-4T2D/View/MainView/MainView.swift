@@ -209,9 +209,9 @@ struct MainView: View {
                 Button(order.rawValue) { sortOrder = order }
             }
         }
+        .navigationBarBackButtonHidden(true)
     }
 }
-
 
 // Divider()
 //     .overlay(
