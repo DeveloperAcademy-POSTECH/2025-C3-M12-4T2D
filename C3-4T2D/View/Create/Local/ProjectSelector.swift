@@ -24,6 +24,7 @@ struct ProjectSelector: View {
     @State private var showDeleteConfirmation = false
     @State private var showPostDeleteConfirmation = false
     @State private var postCountToDelete: Int = 0
+    @State private var showEmptyProjectAlert = false
 
     var body: some View {
         VStack {
@@ -43,7 +44,14 @@ struct ProjectSelector: View {
                     .foregroundColor(!newProjectName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? .prime1 : .gray1)
                     .disabled(newProjectName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
                 } else {
-                    Button(action: { isAddingProject = true }) {
+                    Button(action: {
+                        // 가장 최신 프로젝트가 비어있는지 확인
+                        if let latest = projects.sorted(by: { $0.createdAt > $1.createdAt }).first, latest.postList.isEmpty {
+                            showEmptyProjectAlert = true
+                        } else {
+                            isAddingProject = true
+                        }
+                    }) {
                         Image(systemName: "plus")
                             .foregroundColor(.prime1)
                     }
@@ -135,6 +143,11 @@ struct ProjectSelector: View {
                     projectToDelete = nil
                 }
             }
+        }
+        .alert("한 번에 한 프로젝트만 진행할 수 있어요.", isPresented: $showEmptyProjectAlert) {
+            Button("확인", role: .cancel) {}
+        } message: {
+            Text("진행중인 프로젝트가 비어 있어서 새 프로젝트를 추가할 수 없어요")
         }
     }
 
