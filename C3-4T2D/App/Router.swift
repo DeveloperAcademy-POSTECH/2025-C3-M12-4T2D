@@ -34,5 +34,5 @@ enum Destination: Hashable {
     case projectDetailView
     case postDetailView
     case createView
-    case settingsView
+    case profileSettingView
 }

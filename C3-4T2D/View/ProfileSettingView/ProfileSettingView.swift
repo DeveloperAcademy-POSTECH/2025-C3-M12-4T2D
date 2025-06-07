@@ -5,294 +5,152 @@
 //  Created by 서연 on 6/5/25.
 //
 
-
+import PhotosUI
+import SwiftData
 import SwiftUI
 import UIKit
 
 struct ProfileSettingView: View {
-    
     @State private var nickname: String = ""
     @State private var goal: String = ""
-    @State private var targetDate: Date = Date()
+    @State private var targetDate: Date = .init()
     @State private var isSheetPresented = false
     @State private var isPhotoActionSheetPresented = false
-    @State private var profileImage: UIImage? = nil
     @State private var isDateSelected = false
-    @FocusState private var focusedField: Field?
+    @State private var showPhotoPicker = false
     
-    @Environment(\.dismiss) var dismiss //헤더
+    @StateObject private var imageManager = ProfileImageManager()
+    @FocusState private var focusedField: TextFieldType?
     
-    enum Field {
-        case nickname
-        case goal
-    }
-    
-    @State private var hasTriggeredNicknameHaptic = false
-    @State private var hasTriggeredGoalHaptic = false
-    
-    private func triggerHaptic() {
-        let generator = UIImpactFeedbackGenerator(style: .light)
-        generator.impactOccurred()
-    }
-    
+    @Environment(Router.self) var router
+    @Environment(\.modelContext) private var modelContext
+    @Query var users: [User]
 
-    
-    var nicknameIsOverLimit: Bool { nickname.count > 10 }
-    var goalIsOverLimit: Bool { goal.count > 20 }
-    
-    var nicknameLineColor: Color {
-        if nickname.isEmpty { return .prime3 }
-        return nicknameIsOverLimit ? Color("Alert_red01") : .prime1
+    private var isFormValid: Bool {
+        !nickname.isEmpty &&
+            !nickname.isOverMaxLength(maxLength: 10) &&
+            !goal.isEmpty &&
+            !goal.isOverMaxLength(maxLength: 20) &&
+            isDateSelected &&
+            targetDate.isValidTargetDate()
     }
     
-    var goalLineColor: Color {
-        if goal.isEmpty { return .prime3 }
-        return goalIsOverLimit ? Color("Alert_red01") : .prime1
-    }
-    private var formattedDate: String {
-        DateFormatter.koreanDate.string(from: targetDate)
-    }
-    
-    private var mainContent: some View {
-        ZStack(alignment: .top) {
-            
+    var body: some View {
+        ScrollView {
             VStack(alignment: .leading, spacing: 20) {
-                
-                ZStack {
-                    Circle()
-                        .fill(Color.white)
-                        .frame(width: 120, height: 120)
-                    
-                    if let image = profileImage {
-                        Image(uiImage: image)
-                            .resizable()
-                            .scaledToFill()
-                            .frame(width: 70, height: 70)
-                            .clipShape(Circle())
-                    } else {
-                        Image("profile")
-                            .resizable()
-                            .scaledToFill()
-                            .frame(width: 120, height: 120)
-                            .clipShape(Circle())
-                    }
-                }
-                .background(
-                    Circle()
-                        .fill(Color.prime1)
-                        .frame(width: 125, height: 125)
-                )
-                .overlay(
-                    Button(action: {
+                ProfileImageSection(
+                    profileImage: imageManager.profileImage,
+                    isLoadingImage: imageManager.isLoadingImage,
+                    onTap: {
                         isPhotoActionSheetPresented = true
-                    }) {
-                        ZStack {
-                            Circle()
-                                .fill(Color.white)
-                                .frame(width: 30, height: 30)
-                            
-                            Image(systemName: "camera")
-                                .foregroundColor(.white)
-                                .scaledToFill()
-                                .padding(5)
-                                .background(Circle().fill(Color.prime2))
-                        }
-                    },
-                    alignment: .bottomTrailing
+                    }
                 )
-                .frame(maxWidth: .infinity, alignment: .center)
                 
-                // 닉네임
-                VStack(alignment: .leading, spacing: 5) {
-                    Text("닉네임")
-                        .font(.callout)
-                        .fontWeight(.semibold)
-                        .foregroundColor(.gray4)
-                    
-                    VStack(spacing: 5) {
-                        HStack {
-                            TextField("닉네임을 적어주세요", text: $nickname)
-                                .font(.system(size: 17))
-                                .textFieldStyle(PlainTextFieldStyle())
-                                .foregroundColor(.black)
-                                .focused($focusedField, equals: .nickname)
-                                .submitLabel(.next)
-                                .onSubmit {
-                                    focusedField = .goal
-                                }
-                            
-                            if !nickname.isEmpty {
-                                if nicknameIsOverLimit {
-                                    Button(action: { nickname = "" }) {
-                                        Image(systemName: "x.circle")
-                                            .foregroundColor(Color("Alert_red01"))
-                                    }
-                                } else {
-                                    Image(systemName: "checkmark.circle")
-                                        .foregroundColor(.prime1)
-                                }
-                            }
-                        }
-                        
-                        Rectangle()
-                            .frame(height: 2)
-                            .foregroundColor(nicknameLineColor)
-                        
-                        HStack {
-                            Spacer()
-                            Text("\(nickname.count)/10")
-                                .font(.caption2)
-                                .foregroundColor(nicknameIsOverLimit ? Color("Alert_red01") : .prime1)
-                        }
-                        .padding(.top, 2)
-                    }
-                }
-                
-                // 입시 목표
-                VStack(alignment: .leading, spacing: 5) {
-                    Text("입시 목표")
-                        .font(.callout)
-                        .fontWeight(.semibold)
-                        .foregroundColor(.gray4)
-                    
-                    VStack(spacing: 5) {
-                        HStack {
-                            TextField("가고 싶은 학교나 원하는 입시 목표를 적어주세요", text: $goal)
-                                .font(.system(size: 17))
-                                .textFieldStyle(PlainTextFieldStyle())
-                                .foregroundColor(.black)
-                                .focused($focusedField, equals: .goal)
-                                .submitLabel(.done)
-                                .onSubmit {
-                                    hideKeyboard()
-                                }
-                            
-                            if !goal.isEmpty {
-                                if goalIsOverLimit {
-                                    Button(action: { goal = "" }) {
-                                        Image(systemName: "x.circle")
-                                            .foregroundColor(Color("Alert_red01"))
-                                    }
-                                } else {
-                                    Image(systemName: "checkmark.circle")
-                                        .foregroundColor(.prime1)
-                                }
-                            }
-                        }
-                        
-                        Rectangle()
-                            .frame(height: 2)
-                            .foregroundColor(goalLineColor)
-                        
-                        HStack {
-                            Spacer()
-                            Text("\(goal.count)/20")
-                                .font(.caption2)
-                                .foregroundColor(goalIsOverLimit ? Color("Alert_red01") : .prime1)
-                        }
-                        .padding(.top, 2)
-                    }
-                }
-                
-                
-                VStack(alignment: .leading, spacing: 5) {
-                    Text("목표 달성 예정일")
-                        .font(.callout)
-                        .fontWeight(.semibold)
-                        .foregroundColor(.gray4)
-                    
-                    Button(action: {
-                        hideKeyboard()
-                        isSheetPresented = true
-                    }) {
-                        VStack(spacing: 5){
-                            HStack {
-                                Text(formattedDate)
-                                    .font(.system(size: 17))
-                                    .foregroundColor(isDateSelected ? .black : Color(hex: "C7C7C9"))
-                                Spacer()
-                                if isDateSelected {
-                                    Image(systemName: "checkmark.circle")
-                                        .foregroundColor(.prime1)
-                                }
-                            }
-                            Rectangle()
-                                .frame(height: 2)
-                                .foregroundColor(isDateSelected ? .prime1 : Color.prime3)
-                        }
-                    }
-                }
+                UserInfoFormSection(
+                    nickname: $nickname,
+                    goal: $goal,
+                    targetDate: $targetDate,
+                    isDateSelected: $isDateSelected,
+                    isSheetPresented: $isSheetPresented,
+                    focusedField: $focusedField,
+                    hideKeyboard: hideKeyboard
+                )
                 
                 Spacer().frame(height: 200)
             }
             .padding(.horizontal, 20)
-            .ignoresSafeArea(.keyboard, edges: .bottom)
-            .onTapGesture { hideKeyboard () }
-            .onChange(of: nickname) { newValue in
-                if newValue.count > 10 && !hasTriggeredNicknameHaptic {
-                    triggerHaptic()
-                    hasTriggeredNicknameHaptic = true
-                } else if newValue.count <= 10 {
-                    hasTriggeredNicknameHaptic = false
+        }
+        .navigationTitle("프로필 수정")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button("저장하기") {
+                    saveUserInfo()
+                }
+                .foregroundColor(isFormValid ? .prime1 : .gray2)
+                .font(.system(size: 17, weight: .semibold))
+                .disabled(!isFormValid)
+            }
+        }
+        .onAppear {
+            loadUserInfo()
+        }
+        .onTapGesture {
+            hideKeyboard()
+        }
+        .confirmationDialog("프로필 사진 편집", isPresented: $isPhotoActionSheetPresented, titleVisibility: .visible) {
+            if imageManager.profileImage != nil {
+                Button("사진 삭제", role: .destructive) {
+                    imageManager.deleteProfileImage(users: users, modelContext: modelContext)
                 }
             }
-            .onChange(of: goal) { newValue in
-                if newValue.count > 20 && !hasTriggeredGoalHaptic {
-                    triggerHaptic()
-                    hasTriggeredGoalHaptic = true
-                } else if newValue.count <= 20 {
-                    hasTriggeredGoalHaptic = false
-                }
+            Button("사진 변경") {
+                showPhotoPicker = true
             }
-            .sheet(isPresented: $isSheetPresented) {
-                DatePickerSheet(
-                    selectedDate: $targetDate,
-                    isPresented: $isSheetPresented
-                )
-                .presentationDetents([.medium])
-                .onDisappear {
-                    isDateSelected = true
-                }
+            Button("취소", role: .cancel) {}
+        }
+        .photosPicker(
+            isPresented: $showPhotoPicker,
+            selection: $imageManager.selectedPhotoItem,
+            matching: .images
+        )
+        .alert("오류", isPresented: $imageManager.showErrorAlert) {
+            Button("확인") {}
+        } message: {
+            Text(imageManager.errorMessage)
+        }
+        .onChange(of: imageManager.selectedPhotoItem) { newValue in
+            if newValue != nil {
+                imageManager.processSelectedPhoto(users: users, modelContext: modelContext)
             }
         }
     }
+}
+
+private extension ProfileSettingView {
+    func saveUserInfo() {
+        guard let user = users.first else { return }
+        
+        guard isFormValid else {
+            print("유효성 검사 실패")
+            return
+        }
+        
+        let remainingDays = targetDate.remainingDaysFromToday
+        
+        var profileImageData: Data?
+        if let image = imageManager.profileImage {
+            profileImageData = image.jpegData(compressionQuality: 0.8)
+        }
+        
+        SwiftDataManager.updateUserInfo(
+            context: modelContext,
+            user: user,
+            nickname: nickname,
+            goal: goal,
+            remainingDays: remainingDays,
+            profileImageData: profileImageData
+        )
+        
+        router.navigateBack()
+    }
     
-    var body: some View {
-        NavigationStack {
-            mainContent
-                .navigationTitle("프로필 수정")
-                .navigationBarTitleDisplayMode(.inline)
-                .font(.system(size: 17, weight: .bold))
-                .toolbar {
-                    ToolbarItem(placement: .navigationBarLeading) {
-                        Button(action: {
-                            dismiss()
-                        }) {
-                            Image(systemName: "chevron.left")
-                                .foregroundColor(.black)
-                                .bold()
-                        }
-                    }
-                    ToolbarItem(placement: .navigationBarTrailing) {
-                        Button("저장하기") {
-                            // 저장 액션 구현 예정
-                        }
-                        .foregroundColor(.prime1)
-                        .font(.system(size: 17, weight: .semibold))
-                    }
-                }
-        }
-        .padding(.top, 0)
-        .ignoresSafeArea(.container, edges: .top)
-        .confirmationDialog("프로필 사진 편집", isPresented: $isPhotoActionSheetPresented, titleVisibility: .visible) {
-            Button("사진 삭제", role: .destructive) {
-                profileImage = nil
-            }
-            Button("사진 변경") {
-                // 추후 포토피커 연결 필요
-            }
-            Button("취소", role: .cancel) { }
-        }
+    func loadUserInfo() {
+        guard let user = users.first else { return }
+        
+        nickname = user.nickname
+        goal = user.userGoal
+        
+        imageManager.loadUserProfileImage(from: user)
+        
+        // remainingDays를 기반 -> targetDate 계산
+        let calendar = Calendar.current
+        targetDate = calendar.date(byAdding: .day, value: user.remainingDays, to: Date()) ?? Date()
+        isDateSelected = true
+    }
+    
+    func hideKeyboard() {
+        focusedField = nil
     }
 }
 
