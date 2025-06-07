@@ -26,33 +26,9 @@ struct C3_4T2DApp: App {
     }()
 
     var body: some Scene {
-//        WindowGroup {
-//            CropView()
-//        }
-//        .modelContainer(sharedModelContainer)
-        
         WindowGroup {
-            if let image = UIImage(named: "tmpImage") {
-                CropView(
-                    image: image,
-                    configuration: CropConfiguration(
-                        maxMagnificationScale: 5,
-                        maskRadius: 150,
-                        cropImageCircular: false,
-                        rotateImage: true,
-                        zoomSensitivity: 1.0,
-                        rectAspectRatio: 5.0 / 4.0,
-                        texts: .init(),
-                        fonts: .init(),
-                        colors: .init()
-                    ),
-                    onComplete: { result in
-                        print("✅ Cropped result: \(String(describing: result))")
-                    }
-                )
-            } else {
-                Text("❌ 이미지 로드 실패: tmpImage not found")
-            }
+            ContentView()
         }
+        .modelContainer(sharedModelContainer)
     }
 }
