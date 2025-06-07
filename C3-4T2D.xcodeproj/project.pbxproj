@@ -272,10 +272,10 @@
 				INFOPLIST_FILE = "$(SRCROOT)/C3-4T2D/Info.plist";
 				INFOPLIST_KEY_NSCameraUsageDescription = "작품을 촬영하여 기록하기 위해 카메라 접근이 필요합니다.";
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "편집된 작품을 사진 앨범에 저장하기 위해 접근 권한이 필요합니다.";
-				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "작품 사진을 앨범에서 불러와 저장하고 기록하기 위해 사진 라이브러리 접근이 필요";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "작품 사진을 앨범에서 불러와 저장하고 기록하기 위해 사진 라이브러리 접근이 필요합니다.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -303,10 +303,10 @@
 				INFOPLIST_FILE = "$(SRCROOT)/C3-4T2D/Info.plist";
 				INFOPLIST_KEY_NSCameraUsageDescription = "작품을 촬영하여 기록하기 위해 카메라 접근이 필요합니다.";
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "편집된 작품을 사진 앨범에 저장하기 위해 접근 권한이 필요합니다.";
-				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "작품 사진을 앨범에서 불러와 저장하고 기록하기 위해 사진 라이브러리 접근이 필요";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "작품 사진을 앨범에서 불러와 저장하고 기록하기 위해 사진 라이브러리 접근이 필요합니다.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftData
+import SwiftUI
 
 @Model
 final class Post {
@@ -27,5 +28,14 @@ final class Post {
         self.order = order
         self.project = project
         self.createdAt = createdAt
+    }
+
+    // 포스트 삭제 시 프로젝트도 0개면 삭제
+    static func delete(_ post: Post, context: ModelContext) {
+        let project = post.project
+        context.delete(post)
+        if let project = project, project.postList.count <= 1 { // 삭제 전 1개면, 삭제 후 0개
+            context.delete(project)
+        }
     }
 }

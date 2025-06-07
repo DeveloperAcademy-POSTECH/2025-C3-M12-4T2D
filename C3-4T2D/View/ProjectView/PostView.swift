@@ -45,7 +45,7 @@ struct PostView: View {
                     Button("삭제", role: .destructive, action: { showDeleteAlert = true })
                 } label: {
                     Image(systemName: "ellipsis")
-                        .font(.system(size: 22))
+                        .font(.system(size: 20))
                         .foregroundColor(.gray)
                         .contentShape(Rectangle())
                 }
@@ -78,10 +78,10 @@ struct PostView: View {
         .padding(.horizontal, 20)
         .alert("정말 삭제하시겠습니까?", isPresented: $showDeleteAlert) {
             Button("삭제", role: .destructive) {
-                let project = post.project
-                modelContext.delete(post)
+                let isLastPost = post.project?.postList.count == 1
+                Post.delete(post, context: modelContext)
                 try? modelContext.save()
-                if let project = project, (project.postList.count == 0) {
+                if isLastPost {
                     router.navigateToRoot()
                 }
             }
