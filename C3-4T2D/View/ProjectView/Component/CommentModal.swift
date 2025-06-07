@@ -8,12 +8,10 @@
 import SwiftUI
 
 struct CommentModal: View {
-    
+    @Binding var comments: [Comment]
     @State private var commentText = ""
-    @State private var comments: [String] = []
-    @State private var commentTimestamps: [String: Date] = [:]
+    @State private var commentTimestamps: [UUID: Date] = [:]
 
-    
     var body: some View {
         VStack(){
             HStack(){
@@ -21,19 +19,15 @@ struct CommentModal: View {
                     .font(.title3).fontWeight(.bold)
             }
             Spacer()
-            
             List {
-                ForEach(comments, id: \.self) { comment in
+                ForEach(comments) { comment in
                     VStack(alignment: .leading, spacing: 4) {
-                        Text(comment)
+                        Text(comment.text)
                             .font(.body)
                             .foregroundColor(.grayBlack)
-                        
-                        if let timestamp = commentTimestamps[comment] {
-                            Text(DateFormatter.timestampFormatter.string(from: timestamp))
-                                .font(.caption2).fontWeight(.regular)
-                                .foregroundColor(.gray2)
-                        }
+                        Text(DateFormatter.timestampFormatter.string(from: comment.timestamp))
+                            .font(.caption2).fontWeight(.regular)
+                            .foregroundColor(.gray2)
                     }
                     .listRowInsets(EdgeInsets())
                     .padding(.vertical, 10)
@@ -50,9 +44,7 @@ struct CommentModal: View {
             }
             .listStyle(.plain)
             .frame(maxWidth: .infinity)
-            
             Spacer()
-            
             HStack {
                 TextField("", text: $commentText, prompt: Text("댓글을 입력하세요").foregroundColor(.white), axis: .vertical)
                     .padding(.vertical, 13)
@@ -64,7 +56,6 @@ struct CommentModal: View {
                     .onSubmit {
                         addCommentIfValid()
                     }
-                
                 Button(action: {
                     addCommentIfValid()
                 }) {
@@ -81,25 +72,19 @@ struct CommentModal: View {
         .onTapGesture { hideKeyboard() }
         .background(.grayWhite)
     }
-    
     // 공백인 경우 코멘트 추가 불가
     private func addCommentIfValid() {
         let trimmedText = commentText.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmedText.isEmpty else { return }
-
-        comments.append(trimmedText)
-        commentTimestamps[trimmedText] = Date()
+        let newComment = Comment(text: trimmedText, timestamp: Date())
+        comments.append(newComment)
         commentText = ""
     }
-
-    private func deleteComment(_ comment: String) {
-        comments.removeAll { $0 == comment }
-        commentTimestamps.removeValue(forKey: comment)
+    private func deleteComment(_ comment: Comment) {
+        comments.removeAll { $0.id == comment.id }
     }
 }
 
-
-
 #Preview {
-    CommentModal()
+    CommentModal(comments: .constant([]))
 }

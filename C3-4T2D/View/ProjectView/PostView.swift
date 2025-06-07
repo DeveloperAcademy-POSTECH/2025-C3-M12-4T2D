@@ -14,6 +14,8 @@ struct PostView: View {
     @State private var showDeleteAlert = false
     @State private var showEdit = false
     @State private var editImage: UIImage? = nil
+    @State private var showCommentModal = false
+    @State private var comments: [Comment] = []
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
@@ -72,7 +74,15 @@ struct PostView: View {
                     .padding(.top, 8)
             }
 
-            LikeCommentBar()
+            LikeCommentBar(commentCount: comments.count, onCommentTap: { showCommentModal = true })
+            .sheet(isPresented: $showCommentModal, onDismiss: {
+                post.comments = comments
+                try? modelContext.save()
+            }) {
+                CommentModal(comments: $comments)
+                    .presentationDetents([.medium, .large])
+                    .presentationDragIndicator(.visible)
+            }
 
         }
         .padding(.horizontal, 20)
@@ -98,6 +108,9 @@ struct PostView: View {
                 initialDate: post.createdAt,
                 editingPost: post
             )
+        }
+        .onAppear {
+            comments = post.comments
         }
     }
 }
