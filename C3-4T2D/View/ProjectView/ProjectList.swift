@@ -11,6 +11,7 @@ import SwiftUI
 struct ProjectList: View {
     let project: Project
     @Query private var posts: [Post]
+    @Environment(\.dismiss) var dismiss
 
     init(_ project: Project) {
         self.project = project
@@ -22,8 +23,15 @@ struct ProjectList: View {
         ScrollView {
             LazyVStack(spacing: 25) {
                 ForEach(posts, id: \.id) { post in
-                    PostView(post: post,project: project)
+                    PostView(post: post, project: project)
                 }
+                .navigationBarBackButtonHidden(true)
+                .navigationBarItems(leading: Button(action: {
+                    dismiss()
+                }) {
+                    Image(systemName: "chevron.left")
+                        .foregroundStyle(.black)
+                })
             }
         }
     }
