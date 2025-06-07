@@ -18,17 +18,19 @@ final class Post {
     var order: Int
     var createdAt: Date
     var comments: [Comment] = []
+    var postStage: ProcessStage
 
     // Project와 연결된 부분
     var project: Project?
 
-    init(postImageUrl: String? = nil, memo: String? = nil, order: Int = 0, project: Project? = nil, createdAt: Date = Date()) {
+    init(postImageUrl: String? = nil, memo: String? = nil, order: Int = 0, project: Project? = nil, createdAt: Date = Date(), postStage: ProcessStage = .idea) {
         self.id = UUID()
         self.postImageUrl = postImageUrl
         self.memo = memo
         self.order = order
         self.project = project
         self.createdAt = createdAt
+        self.postStage = postStage
     }
 
     // 포스트 삭제 시 프로젝트도 0개면 삭제
