@@ -23,7 +23,7 @@ struct ActiveProjectCard: View {
                             .font(.system(size: 17, weight: .bold))
                         Image(systemName: "chevron.right")
                             .foregroundColor(.black)
-                            .font(.system(size: 17, weight: .bold))
+                            .font(.system(size: 17, weight: .semibold))
                     }
                 }
                 HStack(spacing: 8) {

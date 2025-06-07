@@ -32,7 +32,7 @@ struct ProjectSectionCard: View {
 
                             Text(project.finishedAt == nil ? "진행중" : "완료")
                                 .font(.system(size: 11, weight: .medium))
-                                .padding(.horizontal, 8)
+                                .padding(.horizontal, 4)
                                 .padding(.vertical, 2)
                                 .background(project.finishedAt == nil ? Color.green.opacity(0.2) : Color.gray.opacity(0.2))
                                 .foregroundColor(project.finishedAt == nil ? .green : .gray)

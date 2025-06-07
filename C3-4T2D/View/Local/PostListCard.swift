@@ -56,7 +56,7 @@ struct PostListCard: View {
 
             VStack(alignment: .leading, spacing: 5) {
                 Text(project.projectTitle)
-                    .font(.system(size: 16, weight: .bold))
+                    .font(.system(size: 17, weight: .bold))
                     .lineLimit(1)
 
                 HStack {
