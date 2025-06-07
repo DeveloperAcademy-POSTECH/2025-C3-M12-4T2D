@@ -77,6 +77,7 @@ struct PostView: View {
                 .font(.subheadline)
                 .foregroundColor(.gray)
                 .padding(.bottom, 4)
+                .padding(.top, -12)
 
             // 이미지
             if let imageUrl = post.postImageUrl {

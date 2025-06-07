@@ -20,10 +20,10 @@ struct ActiveProjectCard: View {
                     HStack(spacing: 4) {
                         Text(project.projectTitle)
                             .foregroundColor(.black)
-                            .font(.system(size: 18, weight: .bold))
+                            .font(.system(size: 17, weight: .bold))
                         Image(systemName: "chevron.right")
                             .foregroundColor(.black)
-                            .font(.system(size: 18, weight: .bold))
+                            .font(.system(size: 17, weight: .bold))
                     }
                 }
                 HStack(spacing: 8) {

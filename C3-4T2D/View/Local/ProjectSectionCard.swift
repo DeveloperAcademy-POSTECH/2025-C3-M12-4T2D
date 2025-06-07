@@ -19,7 +19,7 @@ struct ProjectSectionCard: View {
                     HStack {
                     VStack(alignment: .leading, spacing: 4) {
                         Text(project.projectTitle)
-                            .font(.system(size: 18, weight: .bold))
+                            .font(.system(size: 17, weight: .bold))
                             .foregroundColor(.black)
 
                         HStack {
