@@ -14,16 +14,18 @@ final class User {
     var nickname: String
     var userGoal: String
     var remainingDays: Int // D-Day
+    var targetDate: Date // 목표 날짜 -> 정적값입니다
     var profileImageData: Data?
     var streakNum: Int
     var createdAt: Date
     var lastVisitAt: Date? // 마지막 접속 시각
 
-    init(nickname: String, userGoal: String, remainingDays: Int, profileImageData: Data? = nil, streakNum: Int = 0, lastVisitAt: Date? = nil) {
+    init(nickname: String, userGoal: String, remainingDays: Int, targetDate: Date, profileImageData: Data? = nil, streakNum: Int = 0, lastVisitAt: Date? = nil) {
         self.id = UUID()
         self.nickname = nickname
         self.userGoal = userGoal
         self.remainingDays = remainingDays
+        self.targetDate = targetDate
         self.profileImageData = profileImageData
         self.streakNum = streakNum
         self.createdAt = Date()

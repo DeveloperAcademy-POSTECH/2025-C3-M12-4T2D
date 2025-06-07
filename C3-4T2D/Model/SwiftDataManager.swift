@@ -25,8 +25,8 @@ enum SwiftDataManager {
     }
 
     /// 유저 생성
-    static func createUser(context: ModelContext, nickname: String, goal: String, remainingDays: Int, profileImageData: Data? = nil) -> User {
-        let user = User(nickname: nickname, userGoal: goal, remainingDays: remainingDays, profileImageData: profileImageData)
+    static func createUser(context: ModelContext, nickname: String, goal: String, remainingDays: Int, targetDate: Date, profileImageData: Data? = nil) -> User {
+        let user = User(nickname: nickname, userGoal: goal, remainingDays: remainingDays, targetDate: targetDate, profileImageData: profileImageData)
         context.insert(user)
         return user
     }
