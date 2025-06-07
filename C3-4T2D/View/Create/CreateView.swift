@@ -60,28 +60,34 @@ struct CreateView: View {
                 .padding(.bottom, 12)
                 .padding(.horizontal, 20)
 
-            ScrollView {
-                VStack(spacing: 0) {
-                    // 프로젝트명
-                    CreateProjTitle(projTitle: .constant(selectedProject?.projectTitle ?? ""), showProjectSelector: $showProjectSelector)
-                        .padding(.bottom, 20)
-                    // 날짜 선택
-                    CreateDate(selectedDate: $selectedDate, showDatePicker: $showDatePicker)
-                        .padding(.bottom, 20)
-                    // 진행 단계
-                    CreateProcess(selectedStage: $selectedStage)
-                        .padding(.bottom, 20)
+            ZStack(alignment: .bottom) {
+                ScrollView {
+                    VStack(spacing: 0) {
+                        // 프로젝트명
+                        CreateProjTitle(projTitle: .constant(selectedProject?.projectTitle ?? ""), showProjectSelector: $showProjectSelector)
+                            .padding(.bottom, 20)
+                        // 날짜 선택
+                        CreateDate(selectedDate: $selectedDate, showDatePicker: $showDatePicker)
+                            .padding(.bottom, 20)
+                        // 진행 단계
+                        CreateProcess(selectedStage: $selectedStage)
+                            .padding(.bottom, 20)
 
-                    // 사진 업로드
-//                    CreatePhoto(isPresentingCamera: $isPresentingCamera)
-                    CreatePhoto(isPresentingCamera: $isPresentingCamera, pickedImage: $createPickedImage)
-                        .padding(.bottom, 20)
+                        // 사진 업로드
+                        CreatePhoto(isPresentingCamera: $isPresentingCamera, pickedImage: $createPickedImage)
+                            .padding(.bottom, 20)
 
-                    // 메모 입력
-                    CreateMemo(descriptionText: $descriptionText)
-                        .padding(.bottom, 24)
+                        // 메모 입력
+                        CreateMemo(descriptionText: $descriptionText)
+                            .padding(.bottom, 24)
+                    }
+                    .padding(.horizontal, 20)
+                    .padding(.bottom, 80) // 버튼 공간 확보
+                }
+                .scrollDismissesKeyboard(.immediately)
 
-                    // 작성 완료 동작
+                // 작성 완료 버튼
+                VStack {
                     Button(action: {
                         guard let project = selectedProject else { return }
                         var imageUrl: String? = nil
@@ -129,10 +135,11 @@ struct CreateView: View {
                             .cornerRadius(8)
                     }
                     .disabled(selectedProject == nil || (descriptionText.isEmpty && createPickedImage == nil))
+                    .padding(.horizontal, 20)
+                    .padding(.vertical, 16)
+                    .background(Color.white)
                 }
-                .padding(.horizontal, 20)
             }
-            .scrollDismissesKeyboard(.immediately)
         }
         .fullScreenCover(isPresented: $isPresentingCamera) {
             ZStack {
