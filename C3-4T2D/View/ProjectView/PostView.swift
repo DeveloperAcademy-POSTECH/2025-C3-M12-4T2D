@@ -81,7 +81,7 @@ struct PostView: View {
                 try? modelContext.save()
             }) {
                 CommentModal(comments: $comments)
-                    .presentationDetents([.medium, .large])
+                    .presentationDetents([.medium])
                     .presentationDragIndicator(.visible)
             }
 
