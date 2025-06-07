@@ -188,9 +188,12 @@ struct MainView: View {
             }
         }
         .fullScreenCover(isPresented: $showCamera) {
-            CameraView { image in
-                mainPickedImage = image
-                showCamera = false
+            ZStack {
+                Color.black.ignoresSafeArea()
+                CameraView { image in
+                    mainPickedImage = image
+                    showCamera = false
+                }
             }
             .onDisappear {
                 showCreate = true
