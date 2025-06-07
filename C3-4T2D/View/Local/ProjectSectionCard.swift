@@ -40,9 +40,10 @@ struct ProjectSectionCard: View {
                         }
                     }
                     Spacer()
-                    Image(systemName: "chevron.right")
-                        .foregroundColor(.gray)
-                        .font(.system(size: 20, weight: .semibold))
+                        // 의미없는 쉐브론 주석처리
+//                    Image(systemName: "chevron.right")
+//                        .foregroundColor(.gray)
+//                        .font(.system(size: 20, weight: .semibold))
                     }
                     .padding(.horizontal, 20)
                 }
