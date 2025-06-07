@@ -51,6 +51,8 @@ struct CreateView: View {
         _selectedProject = State(initialValue: editingPost?.project ?? initialProject)
         _descriptionText = State(initialValue: editingPost?.memo ?? initialMemo)
         _selectedDate = State(initialValue: editingPost?.createdAt ?? initialDate)
+        // 수정: editingPost의 postStage를 초기값으로 설정
+        _selectedStage = State(initialValue: editingPost?.postStage ?? .idea)
     }
 
     var body: some View {
@@ -98,13 +100,16 @@ struct CreateView: View {
                             editingPost.project = project
                             editingPost.createdAt = selectedDate
                             editingPost.postImageUrl = imageUrl
+                            editingPost.postStage = selectedStage
+                            
                         } else {
                             // 신규 작성
                             let post = Post(
                                 postImageUrl: imageUrl,
                                 memo: descriptionText,
                                 project: project,
-                                createdAt: selectedDate
+                                createdAt: selectedDate,
+                                postStage: selectedStage
                             )
                             context.insert(post)
                         }

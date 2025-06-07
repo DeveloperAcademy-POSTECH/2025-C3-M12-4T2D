@@ -22,12 +22,19 @@ struct PostView: View {
         VStack(alignment: .leading, spacing: 10) {
             // 스테이지 미리 준비
             HStack(alignment: .center, spacing: 8) {
-//                if let stage = post.stage?.rawValue {
-//                    Text(stage ?? "과정 없음")
-//                        .font(.system(size: 24, weight: .bold))
-//                }
+                // 프로젝트 제목
                 Text(project.projectTitle)
                     .font(.system(size: 19, weight: .bold))
+
+                // 진행 단계
+                Text(post.postStage.rawValue)
+                    .font(.system(size: 11, weight: .medium))
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 2)
+                    .background(.prime4)
+                    .foregroundColor(.gray3)
+                    .cornerRadius(4)
+
                 Spacer()
                 // ... (더보기 버튼 등)
                 Menu {
@@ -76,15 +83,14 @@ struct PostView: View {
             }
 
             LikeCommentBar(commentCount: comments.count, onCommentTap: { showCommentModal = true })
-            .sheet(isPresented: $showCommentModal, onDismiss: {
-                post.comments = comments
-                try? modelContext.save()
-            }) {
-                CommentModal(comments: $comments)
-                    .presentationDetents([.medium, .large])
-                    .presentationDragIndicator(.visible)
-            }
-
+                .sheet(isPresented: $showCommentModal, onDismiss: {
+                    post.comments = comments
+                    try? modelContext.save()
+                }) {
+                    CommentModal(comments: $comments)
+                        .presentationDetents([.medium])
+                        .presentationDragIndicator(.visible)
+                }
         }
         .padding(.horizontal, 20)
         .alert("정말 삭제하시겠습니까?", isPresented: $showDeleteAlert) {
@@ -117,5 +123,5 @@ struct PostView: View {
 }
 
 // #Preview {
-//    ProjectView()
+//    PostView()
 // }

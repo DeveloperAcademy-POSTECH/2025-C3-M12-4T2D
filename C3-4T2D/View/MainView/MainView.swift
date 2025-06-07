@@ -240,8 +240,8 @@ struct RoundedCorner: Shape {
         return Path(path.cgPath)
     }
 }
-
-#Preview {
-    MainView()
-        .environment(Router())
-}
+//
+//#Preview {
+//    MainView()
+//        .environment(Router())
+//}

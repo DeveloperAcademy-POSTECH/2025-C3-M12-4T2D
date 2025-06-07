@@ -5,7 +5,7 @@
 //  Created by Hwnag Seyeon on 6/2/25.
 //
 
-enum ProcessStage: String, CaseIterable, Identifiable {
+enum ProcessStage: String, CaseIterable, Identifiable, Codable {
     case idea = "아이디어"
     case sketch = "스케치"
     case coloring = "채색"
