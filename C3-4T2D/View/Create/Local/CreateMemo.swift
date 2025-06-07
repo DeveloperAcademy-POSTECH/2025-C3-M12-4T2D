@@ -14,13 +14,13 @@ struct CreateMemo: View {
     var body: some View {
         VStack(alignment: .leading) {
             Text("과정에 관한 설명")
-                .font(.title3.weight(.bold))
+                .font(.system(size: 15, weight: .bold))
                 .foregroundColor(.black)
                 .padding(.bottom, 8)
 
             ZStack(alignment: .topLeading) {
                 if descriptionText.isEmpty && !isFocused {
-                    Text("과정에 대하여 남기고 싶은 내용이 있으면 적어주세요")
+                    Text("과정에 대하여 남기고 싶은 내용이 있으면 적어주세요.")
                         .foregroundColor(.gray)
                         .padding(.top, 12)
                         .padding(.leading, 8)

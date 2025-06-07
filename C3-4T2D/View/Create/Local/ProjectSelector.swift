@@ -37,10 +37,10 @@ struct ProjectSelector: View {
                 Spacer()
 
                 if isAddingProject {
-                    Button("추가") {
+                    Button("완료") {
                         addProjectIfValid()
                     }
-                    .font(.subheadline.weight(.regular))
+                    .font(.system(size: 16, weight: .semibold))
                     .foregroundColor(!newProjectName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? .prime1 : .gray1)
                     .disabled(newProjectName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
                 } else {
@@ -53,24 +53,41 @@ struct ProjectSelector: View {
                         }
                     }) {
                         Image(systemName: "plus")
+                            .font(.system(size: 20, weight: .medium))
                             .foregroundColor(.prime1)
+                            .contentShape(Rectangle())
                     }
                 }
             }
 
             // 프로젝트 추가
             if isAddingProject {
-                TextField("새로운 프로젝트명을 입력해주세요", text: $newProjectName)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .focused($isTextFieldFocuesed)
-                    .onAppear {
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                            isTextFieldFocuesed = true
+                VStack(spacing: 4) {
+                    TextField("새로운 프로젝트명을 입력해주세요", text: $newProjectName)
+                        .focused($isTextFieldFocuesed)
+                        .font(.system(size: 16))
+                        .padding(.vertical, 8)
+                        .background(
+                            Rectangle()
+                                .fill(Color.clear)
+                                .frame(height: 1)
+                                .overlay(
+                                    Rectangle()
+                                        .fill(isTextFieldFocuesed ? Color.prime1 : Color.gray.opacity(0.3))
+                                        .frame(height: 1)
+                                        .offset(y: 20)
+                                )
+                        )
+                        .onAppear {
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                                isTextFieldFocuesed = true
+                            }
                         }
-                    }
-                    .onSubmit {
-                        addProjectIfValid()
-                    }
+                        .onSubmit {
+                            addProjectIfValid()
+                        }
+                }
+                .padding(.top, 8)
             }
 
             // 프로젝트 리스트
@@ -78,6 +95,7 @@ struct ProjectSelector: View {
                 ForEach(projects.sorted { $0.createdAt > $1.createdAt }) { project in
                     HStack {
                         Text(project.projectTitle)
+                            .font(.system(size: 16, weight: .medium))
                             .lineLimit(1)
                         Spacer()
                         Text(DateFormatter.projectDateRange(startDate: project.createdAt, endDate: project.finishedAt))
@@ -132,7 +150,7 @@ struct ProjectSelector: View {
             Button("취소", role: .cancel) {
                 projectToDelete = nil
             }
-            Button("네, 모두 삭제", role: .destructive) {
+            Button("삭제", role: .destructive) {
                 if let project = projectToDelete {
                     let postsToDelete = Array(project.postList)
                     for post in postsToDelete {

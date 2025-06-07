@@ -46,11 +46,11 @@ struct CommentModal: View {
             .frame(maxWidth: .infinity)
             Spacer()
             HStack {
-                TextField("", text: $commentText, prompt: Text("댓글을 입력하세요").foregroundColor(.white), axis: .vertical)
-                    .padding(.vertical, 13)
-                    .padding(.horizontal, 21)
-                    .background(Color.black.opacity(0.7))
-                    .cornerRadius(23.5)
+                TextField("", text: $commentText, prompt: Text("코멘트를 입력하세요.").foregroundColor(.white), axis: .vertical)
+                    .padding(.vertical, 10)
+                    .padding(.horizontal, 20)
+                    .background(Color.black.opacity(0.3))
+                    .cornerRadius(20)
                     .foregroundColor(.white)
                     .padding(.trailing, 8)
                     .onSubmit {
@@ -60,10 +60,11 @@ struct CommentModal: View {
                     addCommentIfValid()
                 }) {
                     Image(systemName: "arrow.up")
-                        .padding(14)
+                        .font(.system(size: 17, weight: .bold))
+                        .padding(11)
                         .background(.prime1)
                         .foregroundColor(.white)
-                        .cornerRadius(23.5)
+                        .cornerRadius(23)
                 }
             }
         }

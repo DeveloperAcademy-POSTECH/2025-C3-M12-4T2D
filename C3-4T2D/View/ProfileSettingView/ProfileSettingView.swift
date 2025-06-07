@@ -10,6 +10,47 @@ import SwiftData
 import SwiftUI
 import UIKit
 
+struct ProfileSettingHeader: View {
+    @Environment(\.dismiss) private var dismiss
+    @Binding var showCancelAlert: Bool
+    let hasChanges: Bool
+    let isFormValid: Bool
+    let onSave: () -> Void
+
+    var body: some View {
+        HStack {
+            Button(action: {
+                if hasChanges {
+                    showCancelAlert = true
+                } else {
+                    dismiss()
+                }
+            }) {
+                Image(systemName: "xmark")
+                    .font(.system(size: 20, weight: .semibold))
+                    .foregroundColor(.black)
+                    .frame(width: 60, alignment: .leading)
+            }
+            Spacer()
+            Text("프로필 수정")
+                .font(.title3.weight(.bold))
+                .foregroundColor(.black)
+            Spacer()
+            Button(action: {
+                onSave()
+            }) {
+                Text("완료")
+                    .font(.system(size: 16, weight: .semibold))
+                    .foregroundColor(isFormValid ? Color.prime1 : Color.gray2)
+            }
+            .disabled(!isFormValid)
+            .frame(width: 60, alignment: .trailing)
+        }
+        .padding(.top, 16)
+        .padding(.bottom, 12)
+    }
+}
+
 struct ProfileSettingView: View {
     // 편집 데이터
     @State private var nickname: String = ""
@@ -32,6 +73,7 @@ struct ProfileSettingView: View {
     
     @Environment(Router.self) var router
     @Environment(\.modelContext) private var modelContext
+    @Environment(\.dismiss) private var dismiss
     @Query var users: [User]
 
     private var isFormValid: Bool {
@@ -53,6 +95,14 @@ struct ProfileSettingView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
+                ProfileSettingHeader(
+                    showCancelAlert: $showCancelAlert,
+                    hasChanges: hasChanges,
+                    isFormValid: isFormValid,
+                    onSave: saveUserInfo
+                )
+                .padding(.bottom, 12)
+                .padding(.horizontal, 20)
                 ProfileImageSection(
                     profileImage: imageManager.profileImage,
                     isLoadingImage: imageManager.isLoadingImage,
@@ -70,10 +120,10 @@ struct ProfileSettingView: View {
                     focusedField: $focusedField,
                     hideKeyboard: hideKeyboard
                 )
+                .padding(.horizontal, 20)
                 
                 Spacer().frame(height: 200)
             }
-            .padding(.horizontal, 20)
         }
         .navigationTitle("프로필 수정")
         .navigationBarTitleDisplayMode(.inline)
@@ -94,11 +144,11 @@ struct ProfileSettingView: View {
             }
             
             ToolbarItem(placement: .navigationBarTrailing) {
-                Button("저장하기") {
+                Button("완료") {
                     saveUserInfo()
                 }
                 .foregroundColor(isFormValid ? .prime1 : .gray2)
-                .font(.system(size: 17, weight: .semibold))
+                .font(.system(size: 16, weight: .semibold))
                 .disabled(!isFormValid)
             }
         }
@@ -134,14 +184,8 @@ struct ProfileSettingView: View {
                 imageManager.processSelectedPhoto()
             }
         }
-        .gesture(
-            // 스와이프로 뒤로가기 비활성화
-            DragGesture()
-                .onEnded { _ in
-                }
-        )
         .alert("변경사항이 있습니다", isPresented: $showCancelAlert) {
-            Button("저장하지않고 나가기", role: .destructive) {
+            Button("저장하지 않고 나가기", role: .destructive) {
                 cancelEditing()
             }
             Button("이어서 작성하기", role: .cancel) {}
@@ -175,7 +219,7 @@ private extension ProfileSettingView {
             profileImageData: nil
         )
         
-        router.navigateBack()
+        dismiss()
     }
     
     func loadUserInfo() {
@@ -211,7 +255,7 @@ private extension ProfileSettingView {
             imageManager.resetToOriginal(from: user)
         }
         
-        router.navigateBack()
+        dismiss()
     }
     
     func hideKeyboard() {

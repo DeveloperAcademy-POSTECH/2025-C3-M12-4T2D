@@ -6,6 +6,20 @@
 //
 import SwiftUI
 
+struct EnableSwipeBackGesture: UIViewControllerRepresentable {
+    func makeUIViewController(context: Context) -> UIViewController {
+        let controller = UIViewController()
+        DispatchQueue.main.async {
+            if let navigationController = controller.navigationController {
+                navigationController.interactivePopGestureRecognizer?.isEnabled = true
+                navigationController.interactivePopGestureRecognizer?.delegate = nil
+            }
+        }
+        return controller
+    }
+    func updateUIViewController(_ uiViewController: UIViewController, context: Context) {}
+}
+
 struct PostView: View {
     let post: Post
     let project: Project
@@ -38,7 +52,7 @@ struct PostView: View {
                 Spacer()
                 // ... (더보기 버튼 등)
                 Menu {
-                    Button("편집", action: {
+                    Button(action: {
                         // 이미지 파일이 있으면 미리 로드
                         if let imageUrl = post.postImageUrl, !imageUrl.isEmpty {
                             let url = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent(imageUrl)
@@ -51,13 +65,25 @@ struct PostView: View {
                             editImage = nil
                         }
                         showEdit = true
-                    })
-                    Button("삭제", role: .destructive, action: { showDeleteAlert = true })
+                    }) {
+                        HStack {
+                            Image(systemName: "pencil")
+                            Text("편집")
+                        }
+                    }
+                    Button(role: .destructive, action: { showDeleteAlert = true }) {
+                        HStack {
+                            Image(systemName: "trash")
+                            Text("삭제")
+                        }
+                    }
                 } label: {
                     Image(systemName: "ellipsis")
-                        .font(.system(size: 20))
+                        .font(.system(size: 22))
                         .foregroundColor(.gray)
+                        .frame(width: 44, height: 44)
                         .contentShape(Rectangle())
+                        .padding(.trailing, -12)
                 }
             }
             // 날짜
@@ -65,6 +91,7 @@ struct PostView: View {
                 .font(.subheadline)
                 .foregroundColor(.gray)
                 .padding(.bottom, 4)
+                .padding(.top, -12)
 
             // 이미지
             if let imageUrl = post.postImageUrl {
@@ -110,6 +137,10 @@ struct PostView: View {
         .onAppear {
             comments = post.comments
         }
+        .background(
+            EnableSwipeBackGesture()
+                .frame(width: 0, height: 0)
+        )
     }
 }
 

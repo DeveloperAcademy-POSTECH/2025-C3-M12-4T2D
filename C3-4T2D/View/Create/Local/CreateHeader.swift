@@ -11,6 +11,7 @@ struct CreateHeader: View {
     @Environment(\.dismiss) private var dismiss
     @Binding var showExitAlert: Bool  // 추가: 종료 확인 알림 상태를 바인딩으로 받음
     let hasUnsavedChanges: Bool  // 추가: 작성 중인 내용이 있는지 여부
+    let isEditing: Bool  // 추가: 수정 모드인지 여부
 
     var body: some View {
         HStack {
@@ -22,14 +23,14 @@ struct CreateHeader: View {
                 }
             }) {
                 Image(systemName: "xmark")
-                    .font(.system(size: 18, weight: .bold))
+                    .font(.system(size: 20, weight: .semibold))
                     .foregroundColor(.black)
                     .frame(width: 60, alignment: .leading)
             }
 
             Spacer()
 
-            Text("과정 기록하기")
+            Text(isEditing ? "과정 수정하기" : "과정 기록하기")
                 .font(.title3.weight(.bold))
                 .foregroundColor(.black)
 
