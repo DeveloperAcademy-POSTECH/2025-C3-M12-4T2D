@@ -66,21 +66,21 @@ struct MainHeader: View {
                     }
                     Spacer()
                 }
-                .padding(.top, 24)
+                .padding(.top, 10)
                 .padding(.horizontal, 20)
                 .padding(.bottom, 8)
             }
             VStack {
-                Spacer()
-                Image("head")
-                    .resizable()
-                    .scaledToFill()
-                    .frame(maxWidth: .infinity)
-                    .frame(height: 42)
-                    .clipped()
-                    .offset(y: 0)
+//                Spacer()
+//                Image("head")
+//                    .resizable()
+//                    .scaledToFill()
+//                    .frame(maxWidth: .infinity)
+//                    .frame(height: 42)
+//                    .clipped()
+//                    .offset(y: 0)
             }
         }
-        .frame(height: 130)
+        .frame(height: 80)
     }
 }

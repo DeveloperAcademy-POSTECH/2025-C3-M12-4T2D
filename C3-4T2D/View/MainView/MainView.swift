@@ -54,13 +54,12 @@ struct MainView: View {
 
     var body: some View {
         ZStack(alignment: .top) {
-            Color(hex: "FFD55C").ignoresSafeArea()
-
+            Color.white.ignoresSafeArea()
+            MainHeader(user: currentUser, streakNum: streakNum, projectCount: projectCount, postCount: postCount, showProfileSetting: $showProfileSetting)
+                .zIndex(1)
             ScrollView(.vertical, showsIndicators: false) {
                 VStack(spacing: 0) {
-                    MainHeader(user: currentUser, streakNum: streakNum, projectCount: projectCount, postCount: postCount, showProfileSetting: $showProfileSetting)
-                        .background(Color.clear)
-
+                    Spacer().frame(height: 100)
                     VStack(spacing: 0) {
                         HStack {
                             Text("진행중인 과정")
@@ -175,14 +174,6 @@ struct MainView: View {
                     .padding(.top, -16)
                     .frame(minHeight: UIScreen.main.bounds.height)
                 }
-//                .onAppear {
-
-                //            MARK: 한번만 실행시키고 주석처리해주시면 됩니다 !
-
-                //  DummyDataManager.createDummyData(context: modelContext, projects: allProjects)
-                //           이거는 테스트할때만! swiftData초기화를 위해서 사용합니다.
-//                    SwiftDataManager.deleteAllData(context: modelContext)
-//                }
             }
         }
         .fullScreenCover(isPresented: $showCamera) {
