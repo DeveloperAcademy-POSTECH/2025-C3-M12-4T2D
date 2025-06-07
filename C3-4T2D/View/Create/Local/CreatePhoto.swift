@@ -12,12 +12,15 @@ struct CreatePhoto: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
+
+
             Text("진행 과정")
                 .font(.title3.weight(.bold))
                 .foregroundColor(.black)
                 .padding(.bottom, 8)
 
             VStack(spacing: 0) {
+
                 if let image = pickedImage {
                     // 이미지가 있으면 보여주기
                     Image(uiImage: image)
@@ -36,9 +39,12 @@ struct CreatePhoto: View {
                                 .background(Color.prime3)
                                 .clipShape(Circle())
                         }
+
                     }
                     .padding(.top, 8)
                 }
+
+
             }
             .frame(maxWidth: .infinity)
         }

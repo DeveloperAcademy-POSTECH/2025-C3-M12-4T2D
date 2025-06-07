@@ -54,6 +54,7 @@ struct CreateView: View {
         _selectedStage = State(initialValue: editingPost?.postStage ?? .idea)
     }
 
+
     var body: some View {
         VStack(spacing: 0) {
             CreateHeader(showExitAlert: $showExitAlert, hasUnsavedChanges: hasUnsavedChanges)
@@ -74,6 +75,7 @@ struct CreateView: View {
 
                     // 사진 업로드
 //                    CreatePhoto(isPresentingCamera: $isPresentingCamera)
+
                     CreatePhoto(isPresentingCamera: $isPresentingCamera, pickedImage: $createPickedImage)
                         .padding(.bottom, 20)
 
@@ -128,7 +130,9 @@ struct CreateView: View {
                             .background((selectedProject != nil && (!descriptionText.isEmpty || createPickedImage != nil)) ? Color.prime1 : Color.gray)
                             .cornerRadius(8)
                     }
+
                     .disabled(selectedProject == nil || (descriptionText.isEmpty && createPickedImage == nil))
+
                 }
                 .padding(.horizontal, 20)
             }
