@@ -196,7 +196,11 @@ struct MainView: View {
                 }
             }
             .onDisappear {
-                showCreate = true
+                if mainPickedImage != nil {
+                    showCreate = true
+                } else {
+                    showCreate = false
+                }
             }
         }
         .fullScreenCover(isPresented: $showCreate) {
