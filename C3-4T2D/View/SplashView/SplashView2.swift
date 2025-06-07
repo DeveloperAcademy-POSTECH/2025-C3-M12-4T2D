@@ -9,10 +9,17 @@ import SwiftData
 import SwiftUI
 
 struct SplashView2: View {
-//    @Environment(Router.self) var router
+    @Environment(Router.self) var router
 
     @Query private var users: [User]
     var currentUser: User { users.first! }
+
+    var formattedTargetDate: String {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "ko_KR")
+        formatter.dateFormat = "yyyy년 M월 d일"
+        return formatter.string(from: currentUser.targetDate)
+    }
 
     var body: some View {
         ZStack(alignment: .bottom) {
@@ -46,7 +53,7 @@ struct SplashView2: View {
                             .bold()
                     }
                     VStack(alignment: .leading, spacing: 5) {
-                        Text("\(currentUser.remainingDays)까지")
+                        Text("\(formattedTargetDate)까지")
                             .font(.system(size: 17, weight: .semibold))
                             .foregroundColor(.gray3)
                         Text("\(currentUser.userGoal)")
@@ -81,7 +88,10 @@ struct SplashView2: View {
 
             VStack {
                 Spacer()
-                Button(action: {}) {
+                Button(action: {
+                    // 일반적인 전진 애니메이션으로 MainView로 이동
+                    router.navigate(to: .mainView)
+                }) {
                     Text("시작하기")
                         .font(.headline)
                         .foregroundColor(.orange)
@@ -95,10 +105,12 @@ struct SplashView2: View {
             }
             .zIndex(2)
         }
+        .navigationBarBackButtonHidden(true)
     }
 }
 
 #Preview {
-    SplashView2().modelContainer(for: [User.self, Project.self, Post.self], inMemory: true)
+    SplashView2()
+        .modelContainer(for: [User.self, Project.self, Post.self], inMemory: true)
         .environment(Router())
 }
