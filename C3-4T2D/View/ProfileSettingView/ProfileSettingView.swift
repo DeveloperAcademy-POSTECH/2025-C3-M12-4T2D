@@ -89,7 +89,7 @@ struct ProfileSettingView: View {
                 }) {
                     Image(systemName: "chevron.left")
                         .font(.system(size: 17, weight: .medium))
-                        .foregroundColor(.blue)
+                        .foregroundColor(.black)
                 }
             }
             
