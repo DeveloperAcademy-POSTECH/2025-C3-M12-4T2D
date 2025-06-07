@@ -21,9 +21,9 @@ struct ActiveProjectCard: View {
                         Text(project.projectTitle)
                             .foregroundColor(.black)
                             .font(.system(size: 17, weight: .bold))
-                        Image(systemName: "chevron.right")
-                            .foregroundColor(.black)
-                            .font(.system(size: 17, weight: .semibold))
+//                        Image(systemName: "chevron.right")
+//                            .foregroundColor(.black)
+//                            .font(.system(size: 17, weight: .semibold))
                     }
                 }
                 HStack(spacing: 8) {

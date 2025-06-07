@@ -77,13 +77,13 @@ struct PostListCard: View {
                 }
 
                 HStack(spacing: 12) {
-                    HStack(spacing: 4) {
-                        Image("note")
-                            .resizable()
-                            .frame(width: 14, height: 14)
-                        Text("\(memoPostCount)")
-                            .font(.system(size: 14, weight: .semibold))
-                    }
+//                    HStack(spacing: 4) {
+//                        Image("note")
+//                            .resizable()
+//                            .frame(width: 14, height: 14)
+//                        Text("\(memoPostCount)")
+//                            .font(.system(size: 14, weight: .semibold))
+//                    }
 
                     HStack(spacing: 4) {
                         Image("pallet")
