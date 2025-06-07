@@ -98,6 +98,8 @@ struct CreateView: View {
                             editingPost.project = project
                             editingPost.createdAt = selectedDate
                             editingPost.postImageUrl = imageUrl
+                            editingPost.postStage = selectedStage
+                            
                         } else {
                             // 신규 작성
                             let post = Post(
@@ -105,6 +107,7 @@ struct CreateView: View {
                                 memo: descriptionText,
                                 project: project,
                                 createdAt: selectedDate
+                                postStage: selectedStage
                             )
                             context.insert(post)
                         }
