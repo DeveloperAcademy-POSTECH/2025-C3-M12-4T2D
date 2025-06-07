@@ -43,7 +43,7 @@ struct OnboardingView: View {
                 VStack(alignment: .leading, spacing: 20) {
                     OnboardingBanner()
 
-                    OnboardingTextField(
+                    UserInfoTextField(
                         title: "닉네임",
                         placeholder: "닉네임을 적어주세요",
                         text: $formState.nickname,
@@ -54,7 +54,7 @@ struct OnboardingView: View {
                         focusedField = .goal
                     }
 
-                    OnboardingTextField(
+                    UserInfoTextField(
                         title: "입시 목표",
                         placeholder: "가고 싶은 학교나 원하는 입시 목표를 적어주세요",
                         text: $formState.goal,
@@ -65,7 +65,7 @@ struct OnboardingView: View {
                         hideKeyboard()
                     }
 
-                    OnboardingDateField(
+                    UserGoalDateField(
                         targetDate: $formState.targetDate,
                         isDateSelected: $formState.isDateSelected,
                         isSheetPresented: $isSheetPresented,
