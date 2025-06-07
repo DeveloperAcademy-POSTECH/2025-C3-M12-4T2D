@@ -22,7 +22,7 @@ struct ProjectList: View {
         ScrollView {
             LazyVStack(spacing: 25) {
                 ForEach(posts, id: \.id) { post in
-                    PostView(post: post)
+                    PostView(post: post,project: project)
                 }
             }
         }.navigationTitle(project.projectTitle) // Header에 프로젝트 title 노출
