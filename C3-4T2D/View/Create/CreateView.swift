@@ -26,6 +26,7 @@ struct CreateView: View {
     @State private var selectedStage: ProcessStage = .idea
 
     @Binding var createPickedImage: UIImage?
+    @State private var localImage: UIImage?
     var initialProject: Project? = nil
     var initialMemo: String = ""
     var initialDate: Date = Date()
@@ -72,7 +73,7 @@ struct CreateView: View {
 
                     // 사진 업로드
 //                    CreatePhoto(isPresentingCamera: $isPresentingCamera)
-                    CreatePhoto(isPresentingCamera: $isPresentingCamera, pickedImage: $createPickedImage)
+                    CreatePhoto(isPresentingCamera: $isPresentingCamera, pickedImage: $localImage)
                         .padding(.bottom, 20)
 
                     // 메모 입력
@@ -162,6 +163,7 @@ struct CreateView: View {
                     selectedProject = current
                 }
             }
+            localImage = createPickedImage
         }
     }
 }
