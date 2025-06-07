@@ -8,6 +8,7 @@ import SwiftUI
 
 struct PostView: View {
     let post: Post
+    let project: Project
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
     @Environment(Router.self) private var router
@@ -23,7 +24,7 @@ struct PostView: View {
 //                    Text(stage ?? "과정 없음")
 //                        .font(.system(size: 24, weight: .bold))
 //                }
-                Text("채색(1)")
+                Text(project.projectTitle)
                     .font(.system(size: 19, weight: .bold))
                 Spacer()
                 // ... (더보기 버튼 등)

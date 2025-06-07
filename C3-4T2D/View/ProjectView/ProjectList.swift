@@ -11,6 +11,7 @@ import SwiftUI
 struct ProjectList: View {
     let project: Project
     @Query private var posts: [Post]
+    @Environment(\.dismiss) var dismiss
 
     init(_ project: Project) {
         self.project = project
@@ -20,12 +21,31 @@ struct ProjectList: View {
 
     var body: some View {
         ScrollView {
-            LazyVStack(spacing: 25) {
-                ForEach(posts, id: \.id) { post in
-                    PostView(post: post)
+            if posts.isEmpty {
+                VStack(spacing: 10) {
+                    Image(systemName: "tray")
+                        .font(.system(size: 50))
+                        .foregroundStyle(.gray)
+                    Text("아직 작성된 포스트가 없어요")
+                        .font(.subheadline)
+                        .foregroundStyle(.gray)
+                }
+                .padding(.top, 100)
+            } else {
+                LazyVStack(spacing: 25) {
+                    ForEach(posts, id: \.id) { post in
+                        PostView(post: post, project: project)
+                    }
                 }
             }
-        }.navigationTitle(project.projectTitle) // Header에 프로젝트 title 노출
+        }
+        .navigationBarBackButtonHidden(true)
+        .navigationBarItems(leading: Button(action: {
+            dismiss()
+        }) {
+            Image(systemName: "chevron.left")
+                .foregroundStyle(.black)
+        })
     }
 }
 
