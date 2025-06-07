@@ -1,19 +1,40 @@
 import SwiftUI
 
 struct GridImageCard: View {
-    let project: Project
+    @Environment(Router.self) var router
+    let post: Post
 
     var body: some View {
-        Rectangle()
-            .fill(Color.gray.opacity(0.3))
-            .aspectRatio(1, contentMode: .fit)
-            .cornerRadius(8)
-            .overlay(
-                // 못 불러왔을때의 기본이미지도 필요할듯
-                Image(project.postList[project.postList.count - 1].postImageUrl ?? "tmpImage")
-                    .resizable()
-                    .aspectRatio(contentMode: .fill)
-            )
-            .clipped()
+        GeometryReader { geometry in
+            ZStack {
+                Rectangle()
+                    .fill(Color.gray.opacity(0.3))
+                
+                Group {
+                    if let imageUrl = post.postImageUrl, !imageUrl.isEmpty {
+                        let url = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent(imageUrl)
+                        if let data = try? Data(contentsOf: url), let uiImage = UIImage(data: data) {
+                            Image(uiImage: uiImage)
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                                .frame(width: geometry.size.width, height: geometry.size.width)
+                                .clipped()
+                        }
+                    } else {
+                        Text(post.memo ?? "")
+                            .font(.system(size: 15, weight: .medium))
+                            .foregroundColor(.black)
+                            .multilineTextAlignment(.center)
+                            .padding(8)
+                    }
+                }
+                .onTapGesture {
+                    if let project = post.project {
+                        router.navigate(to: .ProjectListView(project))
+                    }
+                }
+            }
+        }
+        .aspectRatio(1, contentMode: .fit)
     }
 }

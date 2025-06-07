@@ -20,7 +20,7 @@ struct CameraView: UIViewControllerRepresentable {
         let picker = UIImagePickerController()
         // 바로 촬영 모드 실행
         picker.sourceType = .camera
-        // 델리게이트로 설정해 이벤트(사진 선택) 처리
+        picker.allowsEditing = true
         picker.delegate = context.coordinator
         return picker
     }

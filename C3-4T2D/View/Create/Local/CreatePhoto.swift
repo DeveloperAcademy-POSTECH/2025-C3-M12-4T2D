@@ -8,30 +8,43 @@ import SwiftUI
 
 struct CreatePhoto: View {
     @Binding var isPresentingCamera: Bool
+    @Binding var pickedImage: UIImage? // 원래 사용하던 pickedImage라서 pickedImage로 유지
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            
+
+
             Text("진행 과정")
                 .font(.title3.weight(.bold))
                 .foregroundColor(.black)
                 .padding(.bottom, 8)
 
             VStack(spacing: 0) {
-               
-                Button(action: {
-                    isPresentingCamera = true
-                }) {
-                    VStack {
-                        Image(systemName: "plus")
-                            .font(.system(size: 24, weight: .bold))
-                            .foregroundColor(.white)
-                            .frame(width: 64, height: 64)
-                            .background(Color.prime3)
-                            .clipShape(Circle())
+
+                if let image = pickedImage {
+                    // 이미지가 있으면 보여주기
+                    Image(uiImage: image)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(height: 200)
+                } else { // 이미지가 없을 때 보여지는 뷰
+                    Button(action: {
+                        isPresentingCamera = true
+                    }) {
+                        VStack {
+                            Image(systemName: "plus")
+                                .font(.system(size: 24, weight: .bold))
+                                .foregroundColor(.white)
+                                .frame(width: 64, height: 64)
+                                .background(Color.prime3)
+                                .clipShape(Circle())
+                        }
+
                     }
+                    .padding(.top, 8)
                 }
-                .padding(.top, 8)
+
+
             }
             .frame(maxWidth: .infinity)
         }

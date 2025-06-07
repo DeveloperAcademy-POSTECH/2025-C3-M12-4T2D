@@ -12,7 +12,9 @@ import SwiftUI
 struct C3_4T2DApp: App {
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
-            Item.self,
+            Project.self,
+            Post.self,
+            User.self
         ])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
 

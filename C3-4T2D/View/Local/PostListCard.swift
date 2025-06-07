@@ -9,19 +9,55 @@ import SwiftUI
 
 // 리스트뷰
 struct PostListCard: View {
+    @Environment(Router.self) var router
     let project: Project
+    
+    private var latestPost: Post? {
+        project.postList.sorted { $0.createdAt > $1.createdAt }.first
+    }
+    
+    private var imagePostCount: Int {
+        project.postList.filter { $0.postImageUrl != nil && !$0.postImageUrl!.isEmpty }.count
+    }
+    
+    private var memoPostCount: Int {
+        project.postList.filter { $0.memo != nil && !$0.memo!.isEmpty }.count
+    }
 
     var body: some View {
         HStack(spacing: 15) {
-            Image("tmpImage")
-                .resizable()
-                .frame(width: 100, height: 70)
-                .cornerRadius(5)
+            Group {
+                if let post = latestPost, let imageUrl = post.postImageUrl, !imageUrl.isEmpty {
+                    let url = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent(imageUrl)
+                    if let data = try? Data(contentsOf: url), let uiImage = UIImage(data: data) {
+                        Image(uiImage: uiImage)
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .frame(width: 100, height: 70)
+                            .clipped()
+                            .cornerRadius(5)
+                    } else {
+                        placeholderView
+                    }
+                } else if let post = latestPost, let memo = post.memo, !memo.isEmpty {
+                    Text(memo)
+                        .font(.system(size: 12, weight: .medium))
+                        .foregroundColor(.black)
+                        .frame(width: 100, height: 70)
+                        .background(Color.gray.opacity(0.3))
+                        .cornerRadius(5)
+                } else {
+                    placeholderView
+                }
+            }
+            .onTapGesture {
+                router.navigate(to: .ProjectListView(project))
+            }
 
             VStack(alignment: .leading, spacing: 5) {
                 Text(project.projectTitle)
-                    .font(.system(size: 17, weight: .semibold))
-                    .lineLimit(2)
+                    .font(.system(size: 16, weight: .bold))
+                    .lineLimit(1)
 
                 HStack {
                     Text(DateFormatter.projectDateRange(
@@ -42,27 +78,32 @@ struct PostListCard: View {
 
                 HStack(spacing: 12) {
                     HStack(spacing: 4) {
-                        Image(systemName: "folder.fill")
-                            .foregroundColor(.orange)
-                            .font(.system(size: 12))
-                        Text("12")
-                            .font(.system(size: 12, weight: .semibold))
+                        Image("note")
+                            .resizable()
+                            .frame(width: 14, height: 14)
+                        Text("\(memoPostCount)")
+                            .font(.system(size: 14, weight: .semibold))
                     }
 
                     HStack(spacing: 4) {
-                        Image(systemName: "person.fill")
-                            .foregroundColor(.orange)
-                            .font(.system(size: 12, weight: .semibold))
-                        Text("112")
-                            .font(.system(size: 14, weight: .medium))
+                        Image("pallet")
+                            .resizable()
+                            .frame(width: 14, height: 14)
+                        Text("\(imagePostCount)")
+                            .font(.system(size: 14, weight: .semibold))
                     }
                 }
-
-                Spacer()
             }
 
             Spacer()
         }
         Divider()
+    }
+    
+    private var placeholderView: some View {
+        Rectangle()
+            .fill(Color.gray.opacity(0.3))
+            .frame(width: 100, height: 70)
+            .cornerRadius(5)
     }
 }

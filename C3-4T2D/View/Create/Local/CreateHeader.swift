@@ -9,11 +9,17 @@ import SwiftUI
 
 struct CreateHeader: View {
     @Environment(\.dismiss) private var dismiss
+    @Binding var showExitAlert: Bool  // 추가: 종료 확인 알림 상태를 바인딩으로 받음
+    let hasUnsavedChanges: Bool  // 추가: 작성 중인 내용이 있는지 여부
 
     var body: some View {
         HStack {
             Button(action: {
-                dismiss() // 창 닫기
+                if hasUnsavedChanges {
+                    showExitAlert = true
+                } else {
+                    dismiss()
+                }
             }) {
                 Image(systemName: "xmark")
                     .font(.system(size: 18, weight: .bold))
@@ -34,7 +40,7 @@ struct CreateHeader: View {
             }) {
                 Text("임시저장")
                     .font(.system(size: 14))
-                    .foregroundColor(.gray)
+                    .foregroundColor(.white)
                     .frame(width: 60, alignment: .leading)
             }
         }
