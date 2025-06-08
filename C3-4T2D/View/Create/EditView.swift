@@ -6,7 +6,7 @@ struct EditView: View {
     @Environment(\.dismiss) private var dismiss
 
     @State private var showProjectSelector = false
-    @State private var isPresentingCamera = false
+    @State private var showCameraEdit = false  // 🔥 통합 카메라-편집 뷰
     @State private var showDatePicker = false
     @State private var showExitAlert = false
 
@@ -31,6 +31,8 @@ struct EditView: View {
         _selectedProject = State(initialValue: editingPost.project)
         _descriptionText = State(initialValue: editingPost.memo ?? "")
         _selectedDate = State(initialValue: editingPost.createdAt)
+        _selectedStage = State(initialValue: editingPost.postStage)
+        
         if let imageUrl = editingPost.postImageUrl, !imageUrl.isEmpty {
             let url = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent(imageUrl)
             if let data = try? Data(contentsOf: url), let uiImage = UIImage(data: data) {
@@ -61,60 +63,39 @@ struct EditView: View {
                     CreateProcess(selectedStage: $selectedStage)
                         .padding(.bottom, 20)
 
-                    // 사진 업로드
-                    CreatePhoto(isPresentingCamera: $isPresentingCamera, pickedImage: $pickedImage)
-                        .padding(.bottom, 20)
+                    // 사진 업로드 - 단순화된 인터페이스
+                    CreatePhoto(
+                        isPresentingCamera: $showCameraEdit,
+                        pickedImage: $pickedImage
+                    )
+                    .padding(.bottom, 20)
 
                     // 메모 입력
                     CreateMemo(descriptionText: $descriptionText)
                         .padding(.bottom, 24)
 
-                    // 수정 완료 동작
-                    Button(action: {
-                        guard let project = selectedProject else { return }
-                        var imageUrl: String? = editingPost.postImageUrl
-                        if let image = pickedImage {
-                            if let data = image.jpegData(compressionQuality: 0.8) {
-                                let filename = UUID().uuidString + ".jpg"
-                                let url = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent(filename)
-                                try? data.write(to: url)
-                                imageUrl = filename
-                            }
-                        }
-                        // 수정 모드: 기존 포스트 덮어쓰기
-                        editingPost.memo = descriptionText
-                        editingPost.project = project
-                        editingPost.createdAt = selectedDate
-                        editingPost.postImageUrl = imageUrl
-                        do {
-                            try context.save()
-                            print("포스트 수정 성공")
-                            dismiss()
-                        } catch {
-                            print("수정 실패: \(error)")
-                        }
-                    }) {
+                    // 수정 완료 버튼
+                    Button(action: updatePost) {
                         Text("수정 완료")
                             .font(.system(size: 16, weight: .bold))
                             .foregroundColor(.white)
                             .frame(maxWidth: .infinity)
                             .frame(height: 52)
-                            .background((selectedProject != nil && (!descriptionText.isEmpty || pickedImage != nil)) ? Color.prime1 : Color.gray)
+                            .background(isPostValid ? Color.prime1 : Color.gray)
                             .cornerRadius(8)
                     }
-                    .disabled(selectedProject == nil || (descriptionText.isEmpty && pickedImage == nil))
+                    .disabled(!isPostValid)
                 }
                 .padding(.horizontal, 20)
             }
             .scrollDismissesKeyboard(.immediately)
         }
-        .fullScreenCover(isPresented: $isPresentingCamera) {
-            ZStack {
-                Color.black.ignoresSafeArea()
-                CameraView { image in
-                    pickedImage = image
-                    isPresentingCamera = false
-                }
+        // 🔥 핵심: 통합 카메라-편집 뷰
+        .fullScreenCover(isPresented: $showCameraEdit) {
+            CameraEditView { editedImage in
+                // 편집 완료된 이미지 저장
+                pickedImage = editedImage
+                print("✅ 이미지 편집 완료: \(editedImage?.size.debugDescription ?? "nil")")
             }
         }
         .sheet(isPresented: $showProjectSelector) {
@@ -133,4 +114,39 @@ struct EditView: View {
             Text("정말 종료하시겠어요?")
         }
     }
-} 
+    
+    // MARK: - Computed Properties
+    private var isPostValid: Bool {
+        selectedProject != nil && (!descriptionText.isEmpty || pickedImage != nil)
+    }
+    
+    // MARK: - Private Methods
+    private func updatePost() {
+        guard let project = selectedProject else { return }
+        
+        var imageUrl: String? = editingPost.postImageUrl
+        if let image = pickedImage {
+            if let data = image.jpegData(compressionQuality: 0.8) {
+                let filename = UUID().uuidString + ".jpg"
+                let url = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent(filename)
+                try? data.write(to: url)
+                imageUrl = filename
+            }
+        }
+        
+        // 기존 포스트 업데이트
+        editingPost.memo = descriptionText
+        editingPost.project = project
+        editingPost.createdAt = selectedDate
+        editingPost.postImageUrl = imageUrl
+        editingPost.postStage = selectedStage
+        
+        do {
+            try context.save()
+            print("✅ 포스트 수정 성공")
+            dismiss()
+        } catch {
+            print("❌ 수정 실패: \(error)")
+        }
+    }
+}

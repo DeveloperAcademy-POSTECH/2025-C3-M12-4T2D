@@ -8,13 +8,12 @@
 import SwiftData
 import SwiftUI
 
-// 이미지 저장은 swiftdata 연결 아직 전
 struct CreateView: View {
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
 
     @State private var showProjectSelector = false
-    @State private var isPresentingCamera = false
+    @State private var showCameraEdit = false  // 🔥 통합 카메라-편집 뷰
     @State private var showDatePicker = false
     @State private var showExitAlert = false
 
@@ -50,10 +49,8 @@ struct CreateView: View {
         _selectedProject = State(initialValue: editingPost?.project ?? initialProject)
         _descriptionText = State(initialValue: editingPost?.memo ?? initialMemo)
         _selectedDate = State(initialValue: editingPost?.createdAt ?? initialDate)
-        // 수정: editingPost의 postStage를 초기값으로 설정
         _selectedStage = State(initialValue: editingPost?.postStage ?? .idea)
     }
-
 
     var body: some View {
         VStack(spacing: 0) {
@@ -73,78 +70,39 @@ struct CreateView: View {
                     CreateProcess(selectedStage: $selectedStage)
                         .padding(.bottom, 20)
 
-                    // 사진 업로드
-//                    CreatePhoto(isPresentingCamera: $isPresentingCamera)
-
-                    CreatePhoto(isPresentingCamera: $isPresentingCamera, pickedImage: $createPickedImage)
-                        .padding(.bottom, 20)
+                    // 🔥 사진 업로드 - 애니메이션 제거, 고정 높이 설정
+                    CreatePhoto(
+                        isPresentingCamera: $showCameraEdit,
+                        pickedImage: $createPickedImage
+                    )
+                    .padding(.bottom, 20)
 
                     // 메모 입력
                     CreateMemo(descriptionText: $descriptionText)
                         .padding(.bottom, 24)
 
-                    // 작성 완료 동작
-                    Button(action: {
-                        guard let project = selectedProject else { return }
-                        var imageUrl: String? = nil
-                        if let image = createPickedImage {
-                            if let data = image.jpegData(compressionQuality: 0.8) {
-                                let filename = UUID().uuidString + ".jpg"
-                                let url = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent(filename)
-                                try? data.write(to: url)
-                                imageUrl = filename
-                            }
-                        }
-                        if let editingPost = editingPost {
-                            // 수정 모드: 기존 포스트 덮어쓰기
-                            editingPost.memo = descriptionText
-                            editingPost.project = project
-                            editingPost.createdAt = selectedDate
-                            editingPost.postImageUrl = imageUrl
-                            editingPost.postStage = selectedStage
-                            
-                        } else {
-                            // 신규 작성
-                            let post = Post(
-                                postImageUrl: imageUrl,
-                                memo: descriptionText,
-                                project: project,
-                                createdAt: selectedDate,
-                                postStage: selectedStage
-                            )
-                            context.insert(post)
-                        }
-                        do {
-                            try context.save()
-                            print("포스트 저장 성공")
-                            dismiss()
-                        } catch {
-                            print("저장 실패: \(error)")
-                        }
-                    }) {
+                    // 작성 완료 버튼
+                    Button(action: savePost) {
                         Text("작성 완료")
                             .font(.system(size: 16, weight: .bold))
                             .foregroundColor(.white)
                             .frame(maxWidth: .infinity)
                             .frame(height: 52)
-                            .background((selectedProject != nil && (!descriptionText.isEmpty || createPickedImage != nil)) ? Color.prime1 : Color.gray)
+                            .background(isPostValid ? Color.prime1 : Color.gray)
                             .cornerRadius(8)
                     }
-
-                    .disabled(selectedProject == nil || (descriptionText.isEmpty && createPickedImage == nil))
-
+                    .disabled(!isPostValid)
                 }
                 .padding(.horizontal, 20)
             }
             .scrollDismissesKeyboard(.immediately)
         }
-        .fullScreenCover(isPresented: $isPresentingCamera) {
-            ZStack {
-                Color.black.ignoresSafeArea() // 흰 여백 덮기
-                CameraView { image in
-                    createPickedImage = image
-                    isPresentingCamera = false
-                }
+        // 🔥 단순화된 카메라 뷰 - 오버레이 제거
+        .fullScreenCover(isPresented: $showCameraEdit) {
+            CameraEditView { editedImage in
+                // 🔥 즉시 이미지 할당 (딜레이 제거)
+                createPickedImage = editedImage
+                print("✅ 이미지 즉시 적용: \(editedImage?.size.debugDescription ?? "nil")")
             }
         }
         .sheet(isPresented: $showProjectSelector) {
@@ -173,8 +131,51 @@ struct CreateView: View {
             }
         }
     }
+    
+    // MARK: - Computed Properties
+    private var isPostValid: Bool {
+        selectedProject != nil && (!descriptionText.isEmpty || createPickedImage != nil)
+    }
+    
+    // MARK: - Private Methods
+    private func savePost() {
+        guard let project = selectedProject else { return }
+        
+        var imageUrl: String? = nil
+        if let image = createPickedImage {
+            if let data = image.jpegData(compressionQuality: 0.8) {
+                let filename = UUID().uuidString + ".jpg"
+                let url = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent(filename)
+                try? data.write(to: url)
+                imageUrl = filename
+            }
+        }
+        
+        if let editingPost = editingPost {
+            // 수정 모드: 기존 포스트 업데이트
+            editingPost.memo = descriptionText
+            editingPost.project = project
+            editingPost.createdAt = selectedDate
+            editingPost.postImageUrl = imageUrl
+            editingPost.postStage = selectedStage
+        } else {
+            // 신규 작성
+            let post = Post(
+                postImageUrl: imageUrl,
+                memo: descriptionText,
+                project: project,
+                createdAt: selectedDate,
+                postStage: selectedStage
+            )
+            context.insert(post)
+        }
+        
+        do {
+            try context.save()
+            print("✅ 포스트 저장 성공")
+            dismiss()
+        } catch {
+            print("❌ 저장 실패: \(error)")
+        }
+    }
 }
-
-// #Preview {
-//    CreateView()
-// }

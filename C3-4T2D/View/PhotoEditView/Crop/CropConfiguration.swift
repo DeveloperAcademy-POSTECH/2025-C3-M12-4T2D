@@ -8,29 +8,26 @@
 import CoreGraphics
 import SwiftUI
 
-/// 자르기 동작을 구성하는 설정 구조체
+/// 이미지 크롭 뷰의 동작과 스타일을 구성하는 설정
 public struct CropConfiguration {
     // MARK: - 기본 설정
+    public let maxMagnificationScale: CGFloat // 최대 확대 배율
+    public let maskRadius: CGFloat // 마스크 반경 (원형 크롭용)
+    public let cropImageCircular: Bool // 원형 크롭 여부
+    public let rotateImage: Bool // 회전 기능 활성화
+    public let zoomSensitivity: CGFloat // 줌 감도
+    public let rectAspectRatio: CGFloat // 크롭 영역 비율
 
-    public let maxMagnificationScale: CGFloat // 이미지 최대 확대 배율
-    public let maskRadius: CGFloat // 마스크 반경
-    public let cropImageCircular: Bool // 원형 자르기 여부
-    public let rotateImage: Bool // 이미지 회전 가능 여부
-    public let zoomSensitivity: CGFloat // 줌 감도 (값이 작을수록 민감함)
-    public let rectAspectRatio: CGFloat // 사각형 마스크 비율 (예: 5:4)
-
-    // MARK: - 사용자 지정 UI
-
+    // MARK: - UI 커스터마이징
     public let texts: Texts
     public let fonts: Fonts
     public let colors: Colors
 
     // MARK: - 텍스트 설정
-
     public struct Texts {
-        public let cancelButton: String? // 취소 버튼 텍스트
-        public let interactionInstructions: String? // 안내 텍스트
-        public let saveButton: String? // 저장 버튼 텍스트
+        public let cancelButton: String?
+        public let interactionInstructions: String?
+        public let saveButton: String?
 
         public init(
             cancelButton: String? = nil,
@@ -44,30 +41,28 @@ public struct CropConfiguration {
     }
 
     // MARK: - 폰트 설정
-
     public struct Fonts {
-        public let cancelButton: Font? // 취소 버튼 폰트
-        public let interactionInstructions: Font // 안내 텍스트 폰트
-        public let saveButton: Font? // 저장 버튼 폰트
+        public let cancelButton: Font?
+        public let interactionInstructions: Font
+        public let saveButton: Font?
 
         public init(
             cancelButton: Font? = nil,
             interactionInstructions: Font? = nil,
             saveButton: Font? = nil
         ) {
-            self.cancelButton = cancelButton
+            self.cancelButton = cancelButton ?? .system(size: 16, weight: .medium)
             self.interactionInstructions = interactionInstructions ?? .system(size: 16, weight: .regular)
-            self.saveButton = saveButton
+            self.saveButton = saveButton ?? .system(size: 16, weight: .bold)
         }
     }
 
     // MARK: - 색상 설정
-
     public struct Colors {
-        public let cancelButton: Color // 취소 버튼 색상
-        public let interactionInstructions: Color // 안내 텍스트 색상
-        public let saveButton: Color // 저장 버튼 색상
-        public let background: Color // 배경 색상
+        public let cancelButton: Color
+        public let interactionInstructions: Color
+        public let saveButton: Color
+        public let background: Color
 
         public init(
             cancelButton: Color = .white,
@@ -83,13 +78,12 @@ public struct CropConfiguration {
     }
 
     // MARK: - 초기화
-
     public init(
         maxMagnificationScale: CGFloat = 4.0,
         maskRadius: CGFloat = 130,
         cropImageCircular: Bool = false,
-        rotateImage: Bool = false,
-        zoomSensitivity: CGFloat = 1,
+        rotateImage: Bool = true,
+        zoomSensitivity: CGFloat = 1.0,
         rectAspectRatio: CGFloat = 5.0 / 4.0,
         texts: Texts = Texts(),
         fonts: Fonts = Fonts(),
@@ -104,5 +98,23 @@ public struct CropConfiguration {
         self.texts = texts
         self.fonts = fonts
         self.colors = colors
+    }
+}
+
+// MARK: - 편의 생성자들
+public extension CropConfiguration {
+    /// 기본 설정으로 빠른 생성
+    static var `default`: CropConfiguration {
+        CropConfiguration()
+    }
+    
+    /// 정사각형 크롭용 설정
+    static var square: CropConfiguration {
+        CropConfiguration(rectAspectRatio: 1.0)
+    }
+    
+    /// 16:9 비율 크롭용 설정
+    static var widescreen: CropConfiguration {
+        CropConfiguration(rectAspectRatio: 16.0 / 9.0)
     }
 }

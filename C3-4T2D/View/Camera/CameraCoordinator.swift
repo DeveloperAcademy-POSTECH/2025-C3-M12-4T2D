@@ -7,27 +7,27 @@
 
 import UIKit
 
+/// CameraView용 코디네이터 (현재는 CameraEditView를 주로 사용)
 class CameraCoordinator: NSObject, UINavigationControllerDelegate, UIImagePickerControllerDelegate {
-    // SwiftUI - CameraView 와 연결 및 이미지 전달 통로
     let parent: CameraView
 
     init(parent: CameraView) {
         self.parent = parent
     }
 
-    // 사진 선택 완료 처리
     func imagePickerController(_ picker: UIImagePickerController,
-                               didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any])
-    {
-        // 선택된 사진을 꺼내서 UIImage로 변환
-        if let image = info[.originalImage] as? UIImage {
-            // SwiftUI 쪽에 이미지를 넘겨줌
-            parent.didFinishPicking(image)
+                               didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
+        if let originalImage = info[.originalImage] as? UIImage {
+            DispatchQueue.main.async {
+                self.parent.didFinishPicking(originalImage)
+                self.parent.presentationMode.wrappedValue.dismiss()
+            }
         }
-        parent.presentationMode.wrappedValue.dismiss()
     }
 
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
-        parent.presentationMode.wrappedValue.dismiss()
+        DispatchQueue.main.async {
+            self.parent.presentationMode.wrappedValue.dismiss()
+        }
     }
 }
