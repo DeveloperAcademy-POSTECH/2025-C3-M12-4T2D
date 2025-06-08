@@ -13,7 +13,7 @@ struct CreateProcess: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             Text("진행 단계")
-                .font(.title3.weight(.bold))
+                .font(.system(size: 15, weight: .bold))
                 .padding(.bottom, 10)
                 HStack(spacing: 8) {
                     ForEach(ProcessStage.allCases) { stage in

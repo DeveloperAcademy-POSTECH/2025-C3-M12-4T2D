@@ -14,9 +14,10 @@ struct CreatePhoto: View {
         VStack(alignment: .leading, spacing: 0) {
             //   헤더 라인 - 제목과 메뉴
             HStack {
-                Text("진행 과정")
-                    .font(.title3.weight(.bold))
-                    .foregroundColor(.black)
+            Text("진행 과정")
+                .font(.system(size: 15, weight: .bold))
+                .foregroundColor(.black)
+                .padding(.bottom, 8)
                 
                 Spacer()
                 

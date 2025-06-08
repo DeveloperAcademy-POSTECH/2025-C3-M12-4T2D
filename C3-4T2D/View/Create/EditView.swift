@@ -47,21 +47,23 @@ struct EditView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            CreateHeader(showExitAlert: $showExitAlert, hasUnsavedChanges: hasUnsavedChanges)
+            CreateHeader(showExitAlert: $showExitAlert, hasUnsavedChanges: hasUnsavedChanges, isEditing: true)
                 .padding(.bottom, 12)
                 .padding(.horizontal, 20)
 
-            ScrollView {
-                VStack(spacing: 0) {
-                    // 프로젝트명
-                    CreateProjTitle(projTitle: .constant(selectedProject?.projectTitle ?? ""), showProjectSelector: $showProjectSelector)
-                        .padding(.bottom, 20)
-                    // 날짜 선택
-                    CreateDate(selectedDate: $selectedDate, showDatePicker: $showDatePicker)
-                        .padding(.bottom, 20)
-                    // 진행 단계
-                    CreateProcess(selectedStage: $selectedStage)
-                        .padding(.bottom, 20)
+            ZStack(alignment: .bottom) {
+                ScrollView {
+                    VStack(spacing: 0) {
+                        // 프로젝트명
+                        CreateProjTitle(projTitle: .constant(selectedProject?.projectTitle ?? ""), showProjectSelector: $showProjectSelector)
+                            .padding(.bottom, 20)
+                        // 날짜 선택
+                        CreateDate(selectedDate: $selectedDate, showDatePicker: $showDatePicker)
+                            .padding(.bottom, 20)
+                        // 진행 단계
+                        CreateProcess(selectedStage: $selectedStage)
+                            .padding(.bottom, 20)
+
 
                     // 사진 업로드 - 단순화된 인터페이스
                     CreatePhoto(
@@ -70,11 +72,16 @@ struct EditView: View {
                     )
                     .padding(.bottom, 20)
 
-                    // 메모 입력
-                    CreateMemo(descriptionText: $descriptionText)
-                        .padding(.bottom, 24)
+                        // 메모 입력
+                        CreateMemo(descriptionText: $descriptionText)
+                            .padding(.bottom, 24)
+                    }
+                    .padding(.horizontal, 20)
+                    .padding(.bottom, 80) // 버튼 공간 확보
+                }
+                .scrollDismissesKeyboard(.immediately)
 
-                    // 수정 완료 버튼
+
                     Button(action: updatePost) {
                         Text("수정 완료")
                             .font(.system(size: 16, weight: .bold))
@@ -84,11 +91,12 @@ struct EditView: View {
                             .background(isPostValid ? Color.prime1 : Color.gray)
                             .cornerRadius(8)
                     }
-                    .disabled(!isPostValid)
+                    .disabled(selectedProject == nil || (descriptionText.isEmpty && pickedImage == nil))
+                    .padding(.horizontal, 20)
+                    .padding(.vertical, 16)
+                    .background(Color.white)
                 }
-                .padding(.horizontal, 20)
             }
-            .scrollDismissesKeyboard(.immediately)
         }
         //   핵심: 통합 카메라-편집 뷰
         .fullScreenCover(isPresented: $showCameraEdit) {

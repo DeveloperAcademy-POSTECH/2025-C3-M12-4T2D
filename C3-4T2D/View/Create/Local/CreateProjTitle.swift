@@ -18,12 +18,12 @@ struct CreateProjTitle: View {
             }) {
                 VStack(alignment: .leading, spacing: 12) {
                     Text("프로젝트명")
-                        .font(.title3.weight(.bold))
+                        .font(.system(size: 15, weight: .bold))
                         .foregroundColor(.black)
 
                     HStack {
-                        Text(projTitle.isEmpty ? "프로젝트명을 선택해주세요" : projTitle)
-                            .font(.system(size: 15))
+                        Text(projTitle.isEmpty ? "프로젝트명을 선택해주세요." : projTitle)
+                            .font(.system(size: 15, weight: .semibold))
                             .foregroundColor(projTitle.isEmpty ? .gray : .black)
 
                         Spacer()

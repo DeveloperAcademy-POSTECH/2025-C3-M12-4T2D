@@ -6,6 +6,20 @@
 //
 import SwiftUI
 
+struct EnableSwipeBackGesture: UIViewControllerRepresentable {
+    func makeUIViewController(context: Context) -> UIViewController {
+        let controller = UIViewController()
+        DispatchQueue.main.async {
+            if let navigationController = controller.navigationController {
+                navigationController.interactivePopGestureRecognizer?.isEnabled = true
+                navigationController.interactivePopGestureRecognizer?.delegate = nil
+            }
+        }
+        return controller
+    }
+    func updateUIViewController(_ uiViewController: UIViewController, context: Context) {}
+}
+
 struct PostView: View {
     let post: Post
     let project: Project
@@ -77,6 +91,7 @@ struct PostView: View {
                 .font(.subheadline)
                 .foregroundColor(.gray)
                 .padding(.bottom, 4)
+                .padding(.top, -12)
 
             // 이미지
             if let imageUrl = post.postImageUrl {
@@ -122,6 +137,10 @@ struct PostView: View {
         .onAppear {
             comments = post.comments
         }
+        .background(
+            EnableSwipeBackGesture()
+                .frame(width: 0, height: 0)
+        )
     }
 }
 

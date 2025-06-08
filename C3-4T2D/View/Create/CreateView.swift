@@ -53,6 +53,7 @@ struct CreateView: View {
     }
 
     var body: some View {
+
         NavigationView { //   NavigationView 추가로 안정적인 dismiss
             VStack(spacing: 0) {
                 CreateHeader(showExitAlert: $showExitAlert, hasUnsavedChanges: hasUnsavedChanges)

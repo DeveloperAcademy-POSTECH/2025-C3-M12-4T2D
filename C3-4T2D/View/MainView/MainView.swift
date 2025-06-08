@@ -17,6 +17,7 @@ struct MainView: View {
     @State private var showCreate: Bool = false
     @State private var showActionSheet: Bool = false
     @State private var showSortSheet: Bool = false
+    @State private var showProfileSetting: Bool = false
 
     @State private var mainPickedImage: UIImage? // MainView의 pickedImage
 
@@ -51,13 +52,12 @@ struct MainView: View {
 
     var body: some View {
         ZStack(alignment: .top) {
-            Color(hex: "FFD55C").ignoresSafeArea()
-
+            Color.white.ignoresSafeArea()
+            MainHeader(user: currentUser, streakNum: streakNum, projectCount: projectCount, postCount: postCount, showProfileSetting: $showProfileSetting)
+                .zIndex(1)
             ScrollView(.vertical, showsIndicators: false) {
                 VStack(spacing: 0) {
-                    MainHeader(user: currentUser, streakNum: streakNum, projectCount: projectCount, postCount: postCount)
-                        .background(Color.clear)
-
+                    Spacer().frame(height: 100)
                     VStack(spacing: 0) {
                         HStack {
                             Text("진행중인 과정")
@@ -207,6 +207,10 @@ struct MainView: View {
             Button("취소", role: .cancel) {}
         }
         .navigationBarBackButtonHidden(true)
+
+        .fullScreenCover(isPresented: $showProfileSetting) {
+            ProfileSettingView()
+        }
     }
     
     // MARK: -   카메라 편집 결과 처리 함수

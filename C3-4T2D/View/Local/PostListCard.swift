@@ -31,7 +31,7 @@ struct PostListCard: View {
                     let url = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent(imageUrl)
                     if let data = try? Data(contentsOf: url), let uiImage = UIImage(data: data) {
                         Image(uiImage: uiImage)
-                            .resizable()
+                .resizable()
                             .aspectRatio(contentMode: .fill)
                             .frame(width: 100, height: 70)
                             .clipped()
@@ -43,9 +43,9 @@ struct PostListCard: View {
                     Text(memo)
                         .font(.system(size: 12, weight: .medium))
                         .foregroundColor(.black)
-                        .frame(width: 100, height: 70)
+                .frame(width: 100, height: 70)
                         .background(Color.gray.opacity(0.3))
-                        .cornerRadius(5)
+                .cornerRadius(5)
                 } else {
                     placeholderView
                 }
@@ -77,13 +77,13 @@ struct PostListCard: View {
                 }
 
                 HStack(spacing: 12) {
-                    HStack(spacing: 4) {
-                        Image("note")
-                            .resizable()
-                            .frame(width: 14, height: 14)
-                        Text("\(memoPostCount)")
-                            .font(.system(size: 14, weight: .semibold))
-                    }
+//                    HStack(spacing: 4) {
+//                        Image("note")
+//                            .resizable()
+//                            .frame(width: 14, height: 14)
+//                        Text("\(memoPostCount)")
+//                            .font(.system(size: 14, weight: .semibold))
+//                    }
 
                     HStack(spacing: 4) {
                         Image("pallet")
