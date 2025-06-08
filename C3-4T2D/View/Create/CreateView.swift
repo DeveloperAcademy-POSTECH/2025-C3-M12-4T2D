@@ -13,7 +13,7 @@ struct CreateView: View {
     @Environment(\.dismiss) private var dismiss
 
     @State private var showProjectSelector = false
-    @State private var showCameraEdit = false  // 🔥 통합 카메라-편집 뷰
+    @State private var showCameraEdit = false  //   통합 카메라-편집 뷰
     @State private var showDatePicker = false
     @State private var showExitAlert = false
 
@@ -70,7 +70,7 @@ struct CreateView: View {
                     CreateProcess(selectedStage: $selectedStage)
                         .padding(.bottom, 20)
 
-                    // 🔥 사진 업로드 - 애니메이션 제거, 고정 높이 설정
+                    //   사진 업로드 - 메뉴 기반 UI로 개선
                     CreatePhoto(
                         isPresentingCamera: $showCameraEdit,
                         pickedImage: $createPickedImage
@@ -97,10 +97,10 @@ struct CreateView: View {
             }
             .scrollDismissesKeyboard(.immediately)
         }
-        // 🔥 단순화된 카메라 뷰 - 오버레이 제거
+        //   단순화된 카메라 뷰 - 오버레이 제거
         .fullScreenCover(isPresented: $showCameraEdit) {
             CameraEditView { editedImage in
-                // 🔥 즉시 이미지 할당 (딜레이 제거)
+                //   즉시 이미지 할당 (딜레이 제거)
                 createPickedImage = editedImage
                 print("✅ 이미지 즉시 적용: \(editedImage?.size.debugDescription ?? "nil")")
             }

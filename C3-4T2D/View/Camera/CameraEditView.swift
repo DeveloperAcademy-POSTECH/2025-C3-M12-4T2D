@@ -43,7 +43,7 @@ struct CameraEditView: View {
             if showImagePicker {
                 Color.clear
                     .sheet(isPresented: $showImagePicker) {
-                        // 🔥 iOS 기본 카메라 사용
+                        //   iOS 기본 카메라 사용
                         ImagePickerView { image in
                             handleCameraResult(image)
                         }
@@ -109,7 +109,7 @@ struct CameraEditView: View {
             capturedImage = image
             showImagePicker = false
             
-            // 🔥 즉시 편집 단계로 전환 (딜레이 최소화)
+            //   즉시 편집 단계로 전환 (딜레이 최소화)
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                 currentStep = .editing
             }
@@ -124,7 +124,7 @@ struct CameraEditView: View {
         if let editedImage = editedImage {
             print("✅ 편집 완료: \(editedImage.size)")
             
-            // 🔥 즉시 콜백 호출하고 dismiss (깜빡임 방지)
+            //   즉시 콜백 호출하고 dismiss (깜빡임 방지)
             onComplete(editedImage)
             dismiss()
         } else {
@@ -147,7 +147,7 @@ struct ImagePickerView: UIViewControllerRepresentable {
     func makeUIViewController(context: Context) -> UIImagePickerController {
         let picker = UIImagePickerController()
         picker.sourceType = .camera
-        picker.allowsEditing = false  // 🔥 중간 편집 화면 제거
+        picker.allowsEditing = false  //   중간 편집 화면 제거
         picker.delegate = context.coordinator
         return picker
     }
@@ -166,7 +166,7 @@ struct ImagePickerView: UIViewControllerRepresentable {
         }
         
         func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-            // 🔥 원본 이미지만 가져옴 (편집 화면 건너뛰기)
+            //   원본 이미지만 가져옴 (편집 화면 건너뛰기)
             let image = info[.originalImage] as? UIImage
             parent.onImageSelected(image)
         }

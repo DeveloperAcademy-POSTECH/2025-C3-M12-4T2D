@@ -44,7 +44,7 @@ struct CropView: View {
             // 배경 이미지 편집 영역
             imageEditingArea
             
-            // 🔥 상단 버튼들을 최상위 레이어로 분리
+            //   상단 버튼들을 최상위 레이어로 분리
             VStack {
                 topControlBar
                     .zIndex(1000)  // 최상위 레이어로 설정
@@ -66,7 +66,7 @@ struct CropView: View {
             // 다시 촬영 버튼
             Button(action: {
                 print("📷 다시 촬영 버튼 클릭")
-                onComplete(nil)  // 🔥 nil을 전달해서 다시 촬영 모드로
+                onComplete(nil)  //   nil을 전달해서 다시 촬영 모드로
             }) {
                 HStack(spacing: 6) {
                     Image(systemName: "camera.fill")
@@ -80,7 +80,7 @@ struct CropView: View {
                 .background(Color.black.opacity(0.7))
                 .cornerRadius(20)
             }
-            .buttonStyle(PlainButtonStyle())  // 🔥 버튼 스타일 명시적 설정
+            .buttonStyle(PlainButtonStyle())  //   버튼 스타일 명시적 설정
             
             Spacer()
             
@@ -101,7 +101,7 @@ struct CropView: View {
                 .background(Color.white)
                 .cornerRadius(25)
             }
-            .buttonStyle(PlainButtonStyle())  // 🔥 버튼 스타일 명시적 설정
+            .buttonStyle(PlainButtonStyle())  //   버튼 스타일 명시적 설정
         }
         .padding(.horizontal, 20)
         .padding(.top, 10)
@@ -174,8 +174,8 @@ struct CropView: View {
         }
         .simultaneousGesture(magnificationGesture)
         .simultaneousGesture(dragGesture)
-        .padding(.top, 80)  // 🔥 상단 버튼 공간 확보
-        .padding(.bottom, 100)  // 🔥 하단 버튼 공간 확보
+        .padding(.top, 80)  //   상단 버튼 공간 확보
+        .padding(.bottom, 100)  //   하단 버튼 공간 확보
     }
 
     // MARK: - 하단 컨트롤 바
@@ -196,7 +196,7 @@ struct CropView: View {
                 }
                 .padding()
             }
-            .buttonStyle(PlainButtonStyle())  // 🔥 버튼 스타일 명시적 설정
+            .buttonStyle(PlainButtonStyle())  //   버튼 스타일 명시적 설정
             
             Spacer()
         }

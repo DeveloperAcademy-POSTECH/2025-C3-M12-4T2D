@@ -12,121 +12,101 @@ struct CreatePhoto: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            Text("진행 과정")
-                .font(.title3.weight(.bold))
-                .foregroundColor(.black)
-                .padding(.bottom, 8)
+            //   헤더 라인 - 제목과 메뉴
+            HStack {
+                Text("진행 과정")
+                    .font(.title3.weight(.bold))
+                    .foregroundColor(.black)
+                
+                Spacer()
+                
+                // 이미지가 있을 때만 메뉴 표시
+                if pickedImage != nil {
+                    Menu {
+                        Button(action: {
+                            isPresentingCamera = true
+                        }) {
+                            Label("다시 촬영", systemImage: "camera.fill")
+                        }
+                        
+                        Button(role: .destructive, action: {
+                            pickedImage = nil
+                        }) {
+                            Label("삭제", systemImage: "trash.fill")
+                        }
+                    } label: {
+                        Image(systemName: "ellipsis")
+                            .font(.system(size: 16, weight: .medium))
+                            .foregroundColor(.gray)
+                            .frame(width: 44, height: 44)
+                            .contentShape(Rectangle())
+                    }
+                }
+            }
+            .padding(.bottom, 8)
 
-            // 🔥 고정 높이 컨테이너로 레이아웃 밀림 방지
+            //   이미지 컨테이너 - 메뉴로 정리했으니 버튼 영역 제거
             VStack(spacing: 0) {
-                // 🔥 이미지 영역 - 고정 높이 240px
-                ZStack {
-                    // 배경 (항상 표시)
+                if let image = pickedImage {
+                    // 이미지가 있을 때 - 컨테이너 안에 완전히 맞춤
                     RoundedRectangle(cornerRadius: 8)
                         .fill(Color.gray.opacity(0.05))
                         .frame(height: 240)
-                    
-                    if let image = pickedImage {
-                        // 이미지가 있을 때
-                        VStack(spacing: 12) {
+                        .overlay(
                             Image(uiImage: image)
                                 .resizable()
                                 .scaledToFit()
-                                .frame(height: 200)
-                                .cornerRadius(8)
+                                .frame(maxHeight: 220) // 컨테이너보다 약간 작게
+                                .cornerRadius(6)
                                 .clipped()
-                            
-                            // 🔥 버튼들을 별도 영역으로 분리
-                            Spacer()
-                        }
-                    } else {
-                        // 이미지가 없을 때
-                        Button(action: {
-                            isPresentingCamera = true
-                        }) {
-                            VStack(spacing: 12) {
-                                ZStack {
-                                    Circle()
-                                        .fill(Color.prime3)
-                                        .frame(width: 64, height: 64)
-                                    
-                                    Image(systemName: "camera.fill")
-                                        .font(.system(size: 24, weight: .bold))
-                                        .foregroundColor(.white)
-                                }
-                                
-                                Text("사진 촬영하기")
-                                    .font(.system(size: 14, weight: .medium))
-                                    .foregroundColor(.gray)
-                            }
-                        }
-                    }
-                }
-                
-                // 🔥 버튼 영역 - 이미지가 있을 때만 표시, 고정 높이
-                if pickedImage != nil {
-                    HStack(spacing: 12) {
-                        // 이미지 변경 버튼
-                        Button(action: {
-                            isPresentingCamera = true
-                        }) {
-                            HStack(spacing: 6) {
-                                Image(systemName: "camera.fill")
-                                    .font(.system(size: 14, weight: .medium))
-                                Text("다시 촬영")
-                                    .font(.system(size: 14, weight: .medium))
-                            }
-                            .foregroundColor(.white)
-                            .padding(.horizontal, 16)
-                            .padding(.vertical, 8)
-                            .background(Color.prime3)
-                            .cornerRadius(6)
-                        }
-                        
-                        // 이미지 삭제 버튼
-                        Button(action: {
-                            pickedImage = nil
-                        }) {
-                            HStack(spacing: 6) {
-                                Image(systemName: "trash.fill")
-                                    .font(.system(size: 14, weight: .medium))
-                                Text("삭제")
-                                    .font(.system(size: 14, weight: .medium))
-                            }
-                            .foregroundColor(.white)
-                            .padding(.horizontal, 16)
-                            .padding(.vertical, 8)
-                            .background(Color.red)
-                            .cornerRadius(6)
-                        }
-                        
-                        Spacer()
-                    }
-                    .frame(height: 40)  // 🔥 버튼 영역 고정 높이
-                    .padding(.top, 8)
+                        )
                 } else {
-                    // 이미지가 없을 때도 같은 높이 유지
-                    Spacer()
-                        .frame(height: 48)  // 버튼 영역과 동일한 높이
+                    // 이미지가 없을 때 - 촬영 버튼
+                    RoundedRectangle(cornerRadius: 8)
+                        .fill(Color.gray.opacity(0.05))
+                        .frame(height: 240)
+                        .overlay(
+                            Button(action: {
+                                isPresentingCamera = true
+                            }) {
+                                VStack(spacing: 12) {
+                                    ZStack {
+                                        Circle()
+                                            .fill(Color.prime3)
+                                            .frame(width: 64, height: 64)
+                                        
+                                        Image(systemName: "camera.fill")
+                                            .font(.system(size: 24, weight: .bold))
+                                            .foregroundColor(.white)
+                                    }
+                                    
+                                    Text("사진 촬영하기")
+                                        .font(.system(size: 14, weight: .medium))
+                                        .foregroundColor(.gray)
+                                }
+                            }
+                        )
                 }
             }
             .frame(maxWidth: .infinity)
-            // 🔥 전체 높이 고정으로 레이아웃 안정성 확보
-            .frame(height: 300)  // 고정 높이 설정
+            //   높이 단순화 (버튼 영역 제거)
+            .frame(height: 240)
         }
     }
 }
 
 #Preview {
-    VStack {
+    VStack(spacing: 30) {
+        // 이미지 없는 상태
         CreatePhoto(
             isPresentingCamera: .constant(false),
             pickedImage: .constant(nil)
         )
         
+        // 이미지 있는 상태 (메뉴 표시됨)
         CreatePhoto(
             isPresentingCamera: .constant(false),
-            pickedImage: .constant(UIImage(systemName: "photo"))
+            pickedImage: .constant(UIImage(systemName: "photo.fill"))
         )
     }
     .padding()

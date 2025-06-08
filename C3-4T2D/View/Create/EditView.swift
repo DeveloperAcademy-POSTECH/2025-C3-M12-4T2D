@@ -6,7 +6,7 @@ struct EditView: View {
     @Environment(\.dismiss) private var dismiss
 
     @State private var showProjectSelector = false
-    @State private var showCameraEdit = false  // 🔥 통합 카메라-편집 뷰
+    @State private var showCameraEdit = false  //   통합 카메라-편집 뷰
     @State private var showDatePicker = false
     @State private var showExitAlert = false
 
@@ -90,7 +90,7 @@ struct EditView: View {
             }
             .scrollDismissesKeyboard(.immediately)
         }
-        // 🔥 핵심: 통합 카메라-편집 뷰
+        //   핵심: 통합 카메라-편집 뷰
         .fullScreenCover(isPresented: $showCameraEdit) {
             CameraEditView { editedImage in
                 // 편집 완료된 이미지 저장

@@ -230,7 +230,7 @@ extension CustomCameraViewController: AVCapturePhotoCaptureDelegate {
             return
         }
         
-        // 🔥 핵심: 사진 촬영 즉시 콜백 호출 (Optional 체크 수정)
+        //   핵심: 사진 촬영 즉시 콜백 호출 (Optional 체크 수정)
         DispatchQueue.main.async {
             if let callback = self.onImageCaptured {
                 callback(image)
