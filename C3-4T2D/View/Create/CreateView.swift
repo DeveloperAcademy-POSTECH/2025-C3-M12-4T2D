@@ -56,7 +56,7 @@ struct CreateView: View {
 
         NavigationView { //   NavigationView 추가로 안정적인 dismiss
             VStack(spacing: 0) {
-                CreateHeader(showExitAlert: $showExitAlert, hasUnsavedChanges: hasUnsavedChanges)
+                CreateHeader(showExitAlert: $showExitAlert, hasUnsavedChanges: hasUnsavedChanges, isEditing: false)
                     .padding(.bottom, 12)
                     .padding(.horizontal, 20)
 
