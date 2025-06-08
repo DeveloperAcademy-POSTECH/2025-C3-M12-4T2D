@@ -97,7 +97,7 @@ struct CreateView: View {
                             savePost()
                         }
                     }) {
-                        Text(keyboard.isKeyboardVisible ? "키보드 내리기" : "작성 완료")
+                        Text(keyboard.isKeyboardVisible ? "입력 완료" : "작성 완료")
                             .font(.system(size: 16, weight: .bold))
                             .foregroundColor(.white)
                             .frame(maxWidth: .infinity)
