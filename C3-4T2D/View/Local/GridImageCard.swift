@@ -21,11 +21,18 @@ struct GridImageCard: View {
                                 .clipped()
                         }
                     } else {
-                        Text(post.memo ?? "")
-                            .font(.system(size: 15, weight: .medium))
-                            .foregroundColor(.black)
-                            .multilineTextAlignment(.center)
-                            .padding(8)
+                        LinearGradient(
+                            gradient: Gradient(colors: [Color.prime1.opacity(0.6), Color.prime1.opacity(0.5)]),
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        )
+                        .overlay(
+                            Text(post.memo ?? "")
+                                .font(.system(size: 15, weight: .semibold))
+                                .foregroundColor(.black)
+                                .multilineTextAlignment(.center)
+                                .padding(8)
+                        )
                     }
                 }
                 .onTapGesture {

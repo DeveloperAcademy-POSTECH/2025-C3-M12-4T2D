@@ -40,12 +40,21 @@ struct PostListCard: View {
                         placeholderView
                     }
                 } else if let post = latestPost, let memo = post.memo, !memo.isEmpty {
-                    Text(memo)
-                        .font(.system(size: 12, weight: .medium))
-                        .foregroundColor(.black)
-                .frame(width: 100, height: 70)
-                        .background(Color.gray.opacity(0.3))
-                .cornerRadius(5)
+                    ZStack {
+                        LinearGradient(
+                            gradient: Gradient(colors: [Color.prime1.opacity(0.6), Color.prime1.opacity(0.5)]),
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        )
+                        .frame(width: 100, height: 70)
+                        .cornerRadius(5)
+                        Text(memo)
+                            .font(.system(size: 12, weight: .semibold))
+                            .foregroundColor(.black)
+                            .multilineTextAlignment(.center)
+                            .padding(8)
+                    }
+                    .frame(width: 100, height: 70)
                 } else {
                     placeholderView
                 }
