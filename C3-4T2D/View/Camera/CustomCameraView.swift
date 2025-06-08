@@ -2,7 +2,7 @@
 //  CustomCameraView.swift
 //  C3-4T2D
 //
-//  Created by Assistant on 6/8/25.
+//  Created by  bishoe on 6/8/25.
 //
 
 import AVFoundation
@@ -77,7 +77,7 @@ class CustomCameraViewController: UIViewController {
         setupCameraDevices()
         
         guard let camera = backCamera else {
-            print("❌ 백 카메라를 찾을 수 없습니다.")
+            print("    백 카메라를 찾을 수 없습니다.")
             return
         }
         
@@ -91,7 +91,7 @@ class CustomCameraViewController: UIViewController {
                 setupLivePreview()
             }
         } catch {
-            print("❌ 카메라 설정 오류: \(error)")
+            print("    카메라 설정 오류: \(error)")
         }
     }
     
@@ -226,7 +226,7 @@ extension CustomCameraViewController: AVCapturePhotoCaptureDelegate {
     func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
         guard let imageData = photo.fileDataRepresentation(),
               let image = UIImage(data: imageData) else {
-            print("❌ 이미지 처리 실패")
+            print("    이미지 처리 실패")
             return
         }
         

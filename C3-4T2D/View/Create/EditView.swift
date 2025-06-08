@@ -95,7 +95,7 @@ struct EditView: View {
             CameraEditView { editedImage in
                 // 편집 완료된 이미지 저장
                 pickedImage = editedImage
-                print("✅ 이미지 편집 완료: \(editedImage?.size.debugDescription ?? "nil")")
+                print("   이미지 편집 완료: \(editedImage?.size.debugDescription ?? "nil")")
             }
         }
         .sheet(isPresented: $showProjectSelector) {
@@ -143,10 +143,10 @@ struct EditView: View {
         
         do {
             try context.save()
-            print("✅ 포스트 수정 성공")
+            print("   포스트 수정 성공")
             dismiss()
         } catch {
-            print("❌ 수정 실패: \(error)")
+            print("    수정 실패: \(error)")
         }
     }
 }

@@ -56,7 +56,7 @@ struct CropView: View {
             }
         }
         .onAppear {
-            print("✂️ CropView 표시됨")
+            print("  CropView 표시됨")
         }
     }
 
@@ -65,7 +65,7 @@ struct CropView: View {
         HStack {
             // 다시 촬영 버튼
             Button(action: {
-                print("📷 다시 촬영 버튼 클릭")
+                print("  다시 촬영 버튼 클릭")
                 onComplete(nil)  //   nil을 전달해서 다시 촬영 모드로
             }) {
                 HStack(spacing: 6) {
@@ -260,9 +260,9 @@ struct CropView: View {
         let croppedImage = cropImage()
         
         if let croppedImage = croppedImage {
-            print("✅ 크롭 성공: \(croppedImage.size)")
+            print("   크롭 성공: \(croppedImage.size)")
         } else {
-            print("❌ 크롭 실패")
+            print("    크롭 실패")
         }
         
         onComplete(croppedImage)

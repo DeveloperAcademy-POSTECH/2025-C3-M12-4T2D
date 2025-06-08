@@ -2,7 +2,7 @@
 //  CameraEditTestView.swift
 //  C3-4T2D
 //
-//  Created by Assistant on 6/8/25.
+//  Created by bishoe on 6/8/25.
 //
 
 import SwiftUI
@@ -37,7 +37,7 @@ struct CameraEditTestView: View {
     // MARK: - View Components
     private var headerSection: some View {
         VStack(spacing: 8) {
-            Text("📷 ✂️ 통합 카메라-편집 테스트")
+            Text("    통합 카메라-편집 테스트")
                 .font(.title2.bold())
                 .multilineTextAlignment(.center)
             
@@ -60,7 +60,7 @@ struct CameraEditTestView: View {
                             .stroke(Color.green, lineWidth: 2)
                     )
                 
-                Text("✅ 편집 완료!")
+                Text("   편집 완료!")
                     .foregroundColor(.green)
                     .font(.headline)
                     .padding(.horizontal)
@@ -179,9 +179,9 @@ struct CameraEditTestView: View {
     private func handleImageResult(_ image: UIImage?) {
         if let image = image {
             resultImage = image
-            addLog("✅ 이미지 편집 완료 - 크기: \(image.size)")
+            addLog("   이미지 편집 완료 - 크기: \(image.size)")
         } else {
-            addLog("❌ 편집 취소됨")
+            addLog("    편집 취소됨")
         }
     }
     
