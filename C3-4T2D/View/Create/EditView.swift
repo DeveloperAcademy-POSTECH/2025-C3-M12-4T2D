@@ -80,19 +80,22 @@ struct EditView: View {
                 }
                 .scrollDismissesKeyboard(.immediately)
 
-                Button(action: updatePost) {
-                    Text("수정 완료")
-                        .font(.system(size: 16, weight: .bold))
-                        .foregroundColor(.white)
-                        .frame(maxWidth: .infinity)
-                        .frame(height: 52)
-                        .background(isPostValid ? Color.prime1 : Color.gray)
-                        .cornerRadius(8)
+                // 수정 완료 버튼
+                VStack {
+                    Button(action: updatePost) {
+                        Text("수정 완료")
+                            .font(.system(size: 16, weight: .bold))
+                            .foregroundColor(.white)
+                            .frame(maxWidth: .infinity)
+                            .frame(height: 52)
+                            .background((selectedProject != nil && (!descriptionText.isEmpty || pickedImage != nil)) ? Color.prime1 : Color.gray)
+                            .cornerRadius(8)
+                    }
+                    .disabled(selectedProject == nil || (descriptionText.isEmpty && pickedImage == nil))
+                    .padding(.horizontal, 20)
+                    .padding(.vertical, 16)
+                    .background(Color.white)
                 }
-                .disabled(selectedProject == nil || (descriptionText.isEmpty && pickedImage == nil))
-                .padding(.horizontal, 20)
-                .padding(.vertical, 16)
-                .background(Color.white)
             }
         }
         //   핵심: 통합 카메라-편집 뷰
