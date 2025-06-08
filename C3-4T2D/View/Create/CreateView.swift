@@ -12,6 +12,7 @@ struct CreateView: View {
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
 
+    @StateObject private var keyboard = KeyboardObserver()
     @State private var showProjectSelector = false
     @State private var showCameraEdit = false // 통합 카메라-편집 뷰
     @State private var showDatePicker = false
@@ -89,8 +90,14 @@ struct CreateView: View {
 
                 // 작성 완료 버튼
                 VStack {
-                    Button(action: savePost) {
-                        Text("작성 완료")
+                    Button(action: {
+                        if keyboard.isKeyboardVisible {
+                            hideKeyboard()
+                        } else {
+                            savePost()
+                        }
+                    }) {
+                        Text(keyboard.isKeyboardVisible ? "키보드 내리기" : "작성 완료")
                             .font(.system(size: 16, weight: .bold))
                             .foregroundColor(.white)
                             .frame(maxWidth: .infinity)
