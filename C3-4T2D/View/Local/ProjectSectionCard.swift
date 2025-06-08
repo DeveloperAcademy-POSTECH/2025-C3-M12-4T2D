@@ -72,12 +72,20 @@ struct ProjectSectionCard: View {
                                         .cornerRadius(8)
                                 }
                             } else {
-                                Text(post.memo ?? "")
-                                    .font(.system(size: 12, weight: .medium))
-                                    .foregroundColor(.black)
-                                    .frame(width: 140, height: 100)
-                                    .background(Color.gray.opacity(0.3))
+                                ZStack {
+                                    LinearGradient(
+                                        gradient: Gradient(colors: [Color.prime1.opacity(0.6), Color.prime1.opacity(0.5)]),
+                                        startPoint: .topLeading,
+                                        endPoint: .bottomTrailing
+                                    )
                                     .cornerRadius(8)
+                                    Text(post.memo ?? "")
+                                        .font(.system(size: 12, weight: .semibold))
+                                        .foregroundColor(.black)
+                                        .multilineTextAlignment(.center)
+                                        .padding(8)
+                                }
+                                .frame(width: 140, height: 100)
                             }
                         }
                         .onTapGesture {

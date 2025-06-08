@@ -183,7 +183,7 @@ struct MainView: View {
             }
         }
         //   CreateView - 이미지와 프로젝트 전달
-        .sheet(isPresented: $showCreate) {  //   fullScreenCover → sheet으로 변경
+        .fullScreenCover(isPresented: $showCreate) {
             CreateView(
                 createPickedImage: $mainPickedImage,
                 initialProject: currentProject

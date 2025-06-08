@@ -12,6 +12,7 @@ struct CreateView: View {
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
 
+    @StateObject private var keyboard = KeyboardObserver()
     @State private var showProjectSelector = false
     @State private var showCameraEdit = false // 통합 카메라-편집 뷰
     @State private var showDatePicker = false
@@ -53,13 +54,12 @@ struct CreateView: View {
     }
 
     var body: some View {
+        VStack(spacing: 0) {
+            CreateHeader(showExitAlert: $showExitAlert, hasUnsavedChanges: hasUnsavedChanges, isEditing: false)
+                .padding(.bottom, 12)
+                .padding(.horizontal, 20)
 
-        NavigationView { //   NavigationView 추가로 안정적인 dismiss
-            VStack(spacing: 0) {
-                CreateHeader(showExitAlert: $showExitAlert, hasUnsavedChanges: hasUnsavedChanges, isEditing: false)
-                    .padding(.bottom, 12)
-                    .padding(.horizontal, 20)
-
+            ZStack(alignment: .bottom) {
                 ScrollView {
                     VStack(spacing: 0) {
                         // 프로젝트명
@@ -82,56 +82,67 @@ struct CreateView: View {
                         // 메모 입력
                         CreateMemo(descriptionText: $descriptionText)
                             .padding(.bottom, 24)
-
-                        // 작성 완료 버튼
-                        Button(action: savePost) {
-                            Text("작성 완료")
-                                .font(.system(size: 16, weight: .bold))
-                                .foregroundColor(.white)
-                                .frame(maxWidth: .infinity)
-                                .frame(height: 52)
-                                .background(isPostValid ? Color.prime1 : Color.gray)
-                                .cornerRadius(8)
-                        }
-                        .disabled(!isPostValid)
                     }
                     .padding(.horizontal, 20)
+                    .padding(.bottom, 80) // 버튼 공간 확보
                 }
                 .scrollDismissesKeyboard(.immediately)
-            }
-            // 단순화된 카메라 뷰 - 오버레이 제거
-            .fullScreenCover(isPresented: $showCameraEdit) {
-                CameraEditView { editedImage in
-                    // 즉시 이미지 할당 (딜레이 제거)
-                    createPickedImage = editedImage
-                    print("CreateView 내부 촬영 완료: \(editedImage?.size.debugDescription ?? "nil")")
-                }
-            }
-            .sheet(isPresented: $showProjectSelector) {
-                ProjectSelector(selectedProject: $selectedProject)
-                    .presentationDetents([.medium, .large])
-            }
-            .onTapGesture {
-                hideKeyboard()
-            }
-            // onDisappear에서 이미지 초기화 제거 (MainView에서 관리)
-            .alert("작성 중인 내용이 있어요", isPresented: $showExitAlert) {
-                Button("취소", role: .cancel) {}
-                Button("종료", role: .destructive) {
-                    dismiss()
-                }
-            } message: {
-                Text("정말 종료하시겠어요?")
-            }
-            .onAppear {
-                if selectedProject == nil {
-                    if let current = try? context.fetch(SwiftDataManager.currentProject).first {
-                        selectedProject = current
+
+                // 작성 완료 버튼
+                VStack {
+                    Button(action: {
+                        if keyboard.isKeyboardVisible {
+                            hideKeyboard()
+                        } else {
+                            savePost()
+                        }
+                    }) {
+                        Text(keyboard.isKeyboardVisible ? "입력 완료" : "작성 완료")
+                            .font(.system(size: 16, weight: .bold))
+                            .foregroundColor(.white)
+                            .frame(maxWidth: .infinity)
+                            .frame(height: 52)
+                            .background((selectedProject != nil && (!descriptionText.isEmpty || createPickedImage != nil)) ? Color.prime1 : Color.gray.opacity(0.5))
+                            .cornerRadius(8)
                     }
+                    .disabled(selectedProject == nil || (descriptionText.isEmpty && createPickedImage == nil))
+                    .padding(.horizontal, 20)
+                    .padding(.vertical, 16)
+                    .background(Color.white)
                 }
             }
         }
-        .navigationBarHidden(true) // 기본 네비게이션 바 숨김
+        // 단순화된 카메라 뷰 - 오버레이 제거
+        .fullScreenCover(isPresented: $showCameraEdit) {
+            CameraEditView { editedImage in
+                // 즉시 이미지 할당 (딜레이 제거)
+                createPickedImage = editedImage
+                print("CreateView 내부 촬영 완료: \(editedImage?.size.debugDescription ?? "nil")")
+            }
+        }
+        .sheet(isPresented: $showProjectSelector) {
+            ProjectSelector(selectedProject: $selectedProject)
+                .presentationDetents([.medium, .large])
+        }
+        .onTapGesture {
+            hideKeyboard()
+        }
+        // onDisappear에서 이미지 초기화 제거 (MainView에서 관리)
+        .alert("작성 중인 내용이 있어요", isPresented: $showExitAlert) {
+            Button("취소", role: .cancel) {}
+            Button("종료", role: .destructive) {
+                dismiss()
+            }
+        } message: {
+            Text("정말 종료하시겠어요?")
+        }
+        .onAppear {
+            if selectedProject == nil {
+                if let current = try? context.fetch(SwiftDataManager.currentProject).first {
+                    selectedProject = current
+                }
+            }
+        }
     }
 
     // MARK: - Computed Properties
