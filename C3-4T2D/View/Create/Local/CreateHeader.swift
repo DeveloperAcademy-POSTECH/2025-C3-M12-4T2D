@@ -46,6 +46,5 @@ struct CreateHeader: View {
             }
         }
         .padding(.top, 16)
-        .padding(.bottom, 12)
     }
 }

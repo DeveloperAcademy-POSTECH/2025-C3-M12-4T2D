@@ -7,6 +7,7 @@
 
 import UIKit
 
+/// CameraView용 코디네이터 (현재는 CameraEditView를 주로 사용)
 class CameraCoordinator: NSObject, UINavigationControllerDelegate, UIImagePickerControllerDelegate {
     let parent: CameraView
 
@@ -15,14 +16,18 @@ class CameraCoordinator: NSObject, UINavigationControllerDelegate, UIImagePicker
     }
 
     func imagePickerController(_ picker: UIImagePickerController,
-                               didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-        if let image = info[.originalImage] as? UIImage {
-            parent.didFinishPicking(image)
+                               didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
+        if let originalImage = info[.originalImage] as? UIImage {
+            DispatchQueue.main.async {
+                self.parent.didFinishPicking(originalImage)
+                self.parent.presentationMode.wrappedValue.dismiss()
+            }
         }
-        parent.presentationMode.wrappedValue.dismiss()
     }
 
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
-        parent.presentationMode.wrappedValue.dismiss()
+        DispatchQueue.main.async {
+            self.parent.presentationMode.wrappedValue.dismiss()
+        }
     }
 }

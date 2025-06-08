@@ -13,15 +13,13 @@ struct MainView: View {
 
     @State private var selectedTabIndex: Int = 0
     @State private var sortOrder: SortOrder = .newest
-    @State private var showCamera: Bool = false
+    @State private var showCameraEdit: Bool = false  // CameraEditView 사용
     @State private var showCreate: Bool = false
     @State private var showActionSheet: Bool = false
     @State private var showSortSheet: Bool = false
     @State private var showProfileSetting: Bool = false
 
-
-    @State private var mainPickedImage: UIImage? // MainView의 pickedImage라서 mainPickedImage
-
+    @State private var mainPickedImage: UIImage? // MainView의 pickedImage
 
     var sortedProjects: [Project] {
         sortOrder.sort(projects: allProjects)
@@ -69,7 +67,7 @@ struct MainView: View {
                             if currentProject != nil {
                                 Menu {
                                     Button {
-                                        showCamera = true
+                                        showCameraEdit = true  // CameraEditView 사용
                                     } label: {
                                         HStack(spacing: 2) {
                                             Image(systemName: "camera")
@@ -77,6 +75,8 @@ struct MainView: View {
                                         }
                                     }
                                     Button {
+                                        //   과정 기록하기는 이미지 초기화하고 시작
+                                        mainPickedImage = nil
                                         showCreate = true
                                     } label: {
                                         HStack(spacing: 2) {
@@ -176,35 +176,30 @@ struct MainView: View {
                 }
             }
         }
-        .fullScreenCover(isPresented: $showCamera) {
-            ZStack {
-                Color.black.ignoresSafeArea()
-                CameraView { image in
-                    mainPickedImage = image
-                    showCamera = false
-                }
-            }
-            .onDisappear {
-                if mainPickedImage != nil {
-                    showCreate = true
-                } else {
-                    showCreate = false
-                }
+        //   CameraEditView - 바로 촬영하기용
+        .fullScreenCover(isPresented: $showCameraEdit) {
+            CameraEditView { editedImage in
+                handleCameraEditResult(editedImage)
             }
         }
-        .fullScreenCover(isPresented: $showCreate) {
-            CreateView(createPickedImage: $mainPickedImage) // 바인딩된 이미지 전달
-                .onDisappear {
-                    showCreate = false
-                }
+        //   CreateView - 이미지와 프로젝트 전달
+        .sheet(isPresented: $showCreate) {  //   fullScreenCover → sheet으로 변경
+            CreateView(
+                createPickedImage: $mainPickedImage,
+                initialProject: currentProject
+            )
         }
-
         .confirmationDialog("진행중인 과정", isPresented: $showActionSheet, titleVisibility: .visible) {
-            Button("바로 촬영하기") { showCamera = true }
-            Button("과정 기록하기") { showCreate = true }
+            Button("바로 촬영하기") { 
+                showCameraEdit = true
+            }
+            Button("과정 기록하기") { 
+                //   과정 기록하기는 이미지 초기화하고 시작
+                mainPickedImage = nil
+                showCreate = true 
+            }
             Button("취소", role: .cancel) {}
         }
-        
         .confirmationDialog("프로젝트 정렬", isPresented: $showSortSheet, titleVisibility: .visible) {
             ForEach(SortOrder.allCases, id: \.self) { order in
                 Button(order.rawValue) { sortOrder = order }
@@ -217,16 +212,31 @@ struct MainView: View {
             ProfileSettingView()
         }
     }
+    
+    // MARK: -   카메라 편집 결과 처리 함수
+    private func handleCameraEditResult(_ editedImage: UIImage?) {
+        if let editedImage = editedImage {
+            print("   MainView 바로 촬영 완료: \(editedImage.size)")
+            print("🔄 이미지를 mainPickedImage에 할당")
+            
+            //   이미지 즉시 할당
+            mainPickedImage = editedImage
+            
+            //   이미지 할당 확인 후 CreateView 표시
+            DispatchQueue.main.async {
+                if mainPickedImage != nil {
+                    print("   mainPickedImage 할당 성공: \(mainPickedImage!.size)")
+                    print("  CreateView 표시 준비")
+                    showCreate = true
+                } else {
+                    print("    mainPickedImage 할당 실패")
+                }
+            }
+        } else {
+            print("    MainView 바로 촬영 취소")
+        }
+    }
 }
-
-// Divider()
-//     .overlay(
-//         Rectangle()
-//             .fill(Color.gray)
-//             .frame(height: 12)
-//     )
-
-// // MARK: 전체 프로젝트 (탭 섹션)
 
 struct RoundedCorner: Shape {
     var radius: CGFloat = .infinity
@@ -236,8 +246,3 @@ struct RoundedCorner: Shape {
         return Path(path.cgPath)
     }
 }
-//
-//#Preview {
-//    MainView()
-//        .environment(Router())
-//}
