@@ -95,7 +95,7 @@ struct CreateView: View {
                             .foregroundColor(.white)
                             .frame(maxWidth: .infinity)
                             .frame(height: 52)
-                            .background((selectedProject != nil && (!descriptionText.isEmpty || createPickedImage != nil)) ? Color.prime1 : Color.gray)
+                            .background((selectedProject != nil && (!descriptionText.isEmpty || createPickedImage != nil)) ? Color.prime1 : Color.gray.opacity(0.5))
                             .cornerRadius(8)
                     }
                     .disabled(selectedProject == nil || (descriptionText.isEmpty && createPickedImage == nil))
