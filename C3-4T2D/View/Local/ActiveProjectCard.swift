@@ -27,7 +27,8 @@ struct ActiveProjectCard: View {
                     }
                 }
                 HStack(spacing: 8) {
-                    Text(project.createdAt, formatter: dateFormatter)
+//                    Text(project.createdAt, formatter: dateFormatter)
+                    Text(project.postList.compactMap { $0.createdAt }.min() ?? Date(), formatter: dateFormatter)
                         .font(.system(size: 11, weight: .regular))
                         .foregroundColor(.gray)
                     Text("~")

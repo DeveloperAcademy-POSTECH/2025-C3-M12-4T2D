@@ -98,7 +98,8 @@ struct ProjectSelector: View {
                             .font(.system(size: 16, weight: .medium))
                             .lineLimit(1)
                         Spacer()
-                        Text(DateFormatter.projectDateRange(startDate: project.createdAt, endDate: project.finishedAt))
+                        Text(DateFormatter.projectDateRange(startDate: project.postList.compactMap { $0.createdAt }.min() ?? Date(), endDate: project.finishedAt))
+
                             .font(.caption)
                             .foregroundColor(.gray)
                         if selectedProject?.id == project.id {
