@@ -39,7 +39,6 @@ struct MainView: View {
         }
     }
 
-    // 좋아요한 포스트만 가져오는 변수 추가
     var likedPosts: [Post] {
         let posts = sortedProjects.flatMap { $0.postList }.filter { $0.like }
         switch sortOrder {

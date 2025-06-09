@@ -5,8 +5,8 @@
 //  Created by 차원준 on 5/30/25.
 //
 
-import SwiftUI
 import SwiftData
+import SwiftUI
 
 struct LikeCommentBar: View {
     let post: Post
@@ -17,7 +17,6 @@ struct LikeCommentBar: View {
     var body: some View {
         HStack(spacing: 12) {
             Button(action: {
-                // 좋아요 상태 토글 및 저장
                 post.like.toggle()
                 try? modelContext.save()
             }) {
