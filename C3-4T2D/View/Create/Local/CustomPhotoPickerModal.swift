@@ -90,10 +90,26 @@ struct CustomPhotoPickerModal: View {
                     }
                     .frame(width: cellSize, height: cellSize)
                     // 썸네일들
-                    ForEach(thumbnails.indices, id: \.self) { idx in
-                        let image = thumbnails[idx]
-                        Button(action: { onPhotoPicked(image) }) {
-                            Image(uiImage: image)
+                    ForEach(photoAssets.indices, id: \.self) { idx in
+                        let asset = photoAssets[idx]
+                        Button(action: {
+                            let manager = PHImageManager.default()
+                            let options = PHImageRequestOptions()
+                            options.deliveryMode = .highQualityFormat
+                            options.isSynchronous = false
+                            options.resizeMode = .none
+                            manager.requestImage(
+                                for: asset,
+                                targetSize: PHImageManagerMaximumSize,
+                                contentMode: .aspectFit,
+                                options: options
+                            ) { image, _ in
+                                if let image = image {
+                                    onPhotoPicked(image)
+                                }
+                            }
+                        }) {
+                            Image(uiImage: thumbnails[idx])
                                 .resizable()
                                 .scaledToFill()
                                 .frame(width: cellSize, height: cellSize)
