@@ -109,7 +109,7 @@ struct PostView: View {
                     .padding(.top, 8)
             }
 
-            LikeCommentBar(commentCount: comments.count, onCommentTap: { showCommentModal = true })
+            LikeCommentBar(post: post, commentCount: comments.count, onCommentTap: { showCommentModal = true })
                 .sheet(isPresented: $showCommentModal, onDismiss: {
                     post.comments = comments
                     try? modelContext.save()
