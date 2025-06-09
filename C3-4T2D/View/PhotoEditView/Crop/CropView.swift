@@ -63,14 +63,16 @@ struct CropView: View {
     // MARK: - 상단 컨트롤 바
     private var topControlBar: some View {
         HStack {
-            // 다시 촬영 버튼
+            // 취소/다시 촬영 버튼
             Button(action: {
-                print("  다시 촬영 버튼 클릭")
-                onComplete(nil)  //   nil을 전달해서 다시 촬영 모드로
+                print("  다시 촬영/취소 버튼 클릭")
+                onComplete(nil)
             }) {
                 HStack(spacing: 6) {
-                    Image(systemName: "camera.fill")
-                        .font(.system(size: 14, weight: .medium))
+                    if configuration.texts.cancelButton != "취소" {
+                        Image(systemName: "camera.fill")
+                            .font(.system(size: 14, weight: .medium))
+                    }
                     Text(configuration.texts.cancelButton ?? "다시 촬영")
                         .font(.system(size: 16, weight: .medium))
                 }
@@ -80,7 +82,7 @@ struct CropView: View {
                 .background(Color.black.opacity(0.7))
                 .cornerRadius(20)
             }
-            .buttonStyle(PlainButtonStyle())  //   버튼 스타일 명시적 설정
+            .buttonStyle(PlainButtonStyle())
             
             Spacer()
             
