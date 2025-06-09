@@ -13,7 +13,7 @@ struct MainView: View {
 
     @State private var selectedTabIndex: Int = 0
     @State private var sortOrder: SortOrder = .newest
-    @State private var showCameraEdit: Bool = false  // CameraEditView 사용
+    @State private var showCameraEdit: Bool = false // CameraEditView 사용
     @State private var showCreate: Bool = false
     @State private var showActionSheet: Bool = false
     @State private var showSortSheet: Bool = false
@@ -31,6 +31,16 @@ struct MainView: View {
 
     var allPostForGrid: [Post] {
         let posts = sortedProjects.flatMap { $0.postList }
+        switch sortOrder {
+        case .newest:
+            return posts.sorted { $0.createdAt > $1.createdAt }
+        case .oldest:
+            return posts.sorted { $0.createdAt < $1.createdAt }
+        }
+    }
+
+    var likedPosts: [Post] {
+        let posts = sortedProjects.flatMap { $0.postList }.filter { $0.like }
         switch sortOrder {
         case .newest:
             return posts.sorted { $0.createdAt > $1.createdAt }
@@ -67,7 +77,7 @@ struct MainView: View {
                             if currentProject != nil {
                                 Menu {
                                     Button {
-                                        showCameraEdit = true  // CameraEditView 사용
+                                        showCameraEdit = true // CameraEditView 사용
                                     } label: {
                                         HStack(spacing: 2) {
                                             Image(systemName: "camera")
@@ -123,15 +133,24 @@ struct MainView: View {
                                         Image(systemName: "chevron.down").font(.system(size: 22, weight: .semibold))
                                     }
                                 }.foregroundColor(.black)
+
                                 Spacer()
                                 HStack(spacing: 12) {
                                     ForEach(TabType.allCases, id: \.self) { tab in
                                         Button {
                                             selectedTabIndex = tab.rawValue
                                         } label: {
-                                            Image(tab.imageName(isSelected: selectedTabIndex == tab.rawValue))
-                                                .resizable()
-                                                .frame(width: 20, height: 20)
+                                            if tab == .heart {
+                                                // 시스템 아이콘 사용
+                                                Image(tab.imageName(isSelected: selectedTabIndex == tab.rawValue))
+                                                    .resizable()
+                                                    .frame(width: 20, height: 20)
+                                            } else {
+                                                // 기존 이미지 사용
+                                                Image(tab.imageName(isSelected: selectedTabIndex == tab.rawValue))
+                                                    .resizable()
+                                                    .frame(width: 20, height: 20)
+                                            }
                                         }
                                     }
                                 }
@@ -154,13 +173,26 @@ struct MainView: View {
                                         }
                                     }
                                     .padding(.horizontal, 20)
-                                case 2: // 3x3 그리드뷰
-                                    LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 4), count: 3), spacing: 4) {
-                                        ForEach(allPostForGrid) { post in
-                                            GridImageCard(post: post)
+                                case 2: // 좋아요 그리드뷰
+                                    if likedPosts.isEmpty {
+                                        VStack(spacing: 16) {
+                                            Image(systemName: "heart")
+                                                .font(.system(size: 50))
+                                                .foregroundColor(.gray.opacity(0.5))
+                                            Text("좋아요한 포스트가 없습니다")
+                                                .font(.system(size: 16))
+                                                .foregroundColor(.gray)
                                         }
+                                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                                        .padding(.top, 50)
+                                    } else {
+                                        LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 4), count: 3), spacing: 4) {
+                                            ForEach(likedPosts) { post in
+                                                GridImageCard(post: post)
+                                            }
+                                        }
+                                        .padding(.horizontal, 20)
                                     }
-                                    .padding(.horizontal, 20)
                                 default:
                                     EmptyView()
                                 }
@@ -190,13 +222,13 @@ struct MainView: View {
             )
         }
         .confirmationDialog("진행중인 과정", isPresented: $showActionSheet, titleVisibility: .visible) {
-            Button("바로 촬영하기") { 
+            Button("바로 촬영하기") {
                 showCameraEdit = true
             }
-            Button("과정 기록하기") { 
+            Button("과정 기록하기") {
                 //   과정 기록하기는 이미지 초기화하고 시작
                 mainPickedImage = nil
-                showCreate = true 
+                showCreate = true
             }
             Button("취소", role: .cancel) {}
         }
@@ -207,21 +239,21 @@ struct MainView: View {
             Button("취소", role: .cancel) {}
         }
         .navigationBarBackButtonHidden(true)
-
         .fullScreenCover(isPresented: $showProfileSetting) {
             ProfileSettingView()
         }
     }
-    
+
     // MARK: -   카메라 편집 결과 처리 함수
+
     private func handleCameraEditResult(_ editedImage: UIImage?) {
         if let editedImage = editedImage {
             print("   MainView 바로 촬영 완료: \(editedImage.size)")
             print("🔄 이미지를 mainPickedImage에 할당")
-            
+
             //   이미지 즉시 할당
             mainPickedImage = editedImage
-            
+
             //   이미지 할당 확인 후 CreateView 표시
             DispatchQueue.main.async {
                 if mainPickedImage != nil {

@@ -9,13 +9,13 @@ import Foundation
 enum TabType: Int, CaseIterable {
     case line = 0
     case list = 1
-    case grid = 2
+    case heart = 2 // grid에서 heart로 변경
 
     var activeImage: String {
         switch self {
         case .line: return "line_on"
         case .list: return "list_on"
-        case .grid: return "grid_on"
+        case .heart: return "grid_on" 
         }
     }
 
@@ -23,7 +23,7 @@ enum TabType: Int, CaseIterable {
         switch self {
         case .line: return "line_off"
         case .list: return "list_off"
-        case .grid: return "grid_off"
+        case .heart: return "grid_off"
         }
     }
 
