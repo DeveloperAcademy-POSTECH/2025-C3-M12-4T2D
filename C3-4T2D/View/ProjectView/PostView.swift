@@ -61,7 +61,7 @@ struct PostView: View {
                 }
             }
             // 날짜
-            Text(post.createdAt.formatted(date: .numeric, time: .shortened))
+            Text(DateFormatter.timestampFormatter.string(from: post.createdAt))
                 .font(.subheadline)
                 .foregroundColor(.gray)
                 .padding(.bottom, 4)

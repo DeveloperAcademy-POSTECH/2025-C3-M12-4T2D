@@ -57,7 +57,7 @@ struct CreateDate: View {
             let today = formatter.string(from: date)
             return "오늘, \(today)"
         } else {
-            formatter.dateFormat = "M월 d일 (E)"
+            formatter.dateFormat = "yyyy년 M월 d일 (E)"
             return formatter.string(from: date)
         }
     }
