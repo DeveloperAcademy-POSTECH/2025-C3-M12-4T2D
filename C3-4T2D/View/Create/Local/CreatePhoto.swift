@@ -5,10 +5,20 @@
 //  Created by Hwnag Seyeon on 5/30/25.
 //
 import SwiftUI
+import PhotosUI
+
+enum CropSource {
+    case camera, album
+}
 
 struct CreatePhoto: View {
     @Binding var isPresentingCamera: Bool
     @Binding var pickedImage: UIImage?
+
+    @State private var showCustomPhotoPicker = false
+    @State private var showCropView = false
+    @State private var imageToCrop: UIImage? = nil
+    @State private var cropSource: CropSource = .album
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -62,31 +72,70 @@ struct CreatePhoto: View {
                                 .clipped()
                         )
                 } else {
-                    // 이미지가 없을 때 - 촬영 버튼
+                    // 이미지가 없을 때 - 사진 추가 버튼
                     RoundedRectangle(cornerRadius: 8)
                         .fill(Color.gray.opacity(0.05))
                         .frame(height: 240)
                         .overlay(
                             Button(action: {
-                                isPresentingCamera = true
+                                showCustomPhotoPicker = true
                             }) {
                                 VStack(spacing: 12) {
                                     ZStack {
                                         Circle()
                                             .fill(Color.prime3)
                                             .frame(width: 64, height: 64)
-                                        
-                                        Image(systemName: "camera.fill")
+                                        Image(systemName: "plus")
                                             .font(.system(size: 24, weight: .bold))
                                             .foregroundColor(.white)
                                     }
-                                    
-                                    Text("사진 촬영하기")
+                                    Text("사진 추가")
                                         .font(.system(size: 14, weight: .medium))
                                         .foregroundColor(.gray)
                                 }
                             }
                         )
+                        .sheet(isPresented: $showCustomPhotoPicker, onDismiss: {
+                            if imageToCrop != nil {
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.18) {
+                                    showCropView = true
+                                }
+                            }
+                        }) {
+                            CustomPhotoPickerModal(
+                                isPresented: $showCustomPhotoPicker,
+                                onPhotoPicked: { image in
+                                    cropSource = .album
+                                    imageToCrop = image
+                                    showCustomPhotoPicker = false
+                                },
+                                onCameraTapped: {
+                                    cropSource = .camera
+                                    isPresentingCamera = true
+                                    showCustomPhotoPicker = false
+                                }
+                            )
+                        }
+                        .fullScreenCover(isPresented: Binding(
+                            get: { showCropView && imageToCrop != nil },
+                            set: { newValue in showCropView = newValue }
+                        )) {
+                            if let image = imageToCrop {
+                                CropView(
+                                    image: image,
+                                    configuration: CropConfiguration(
+                                        texts: .init(cancelButton: cropSource == .album ? "취소" : "다시 촬영")
+                                    ),
+                                    onComplete: { cropped in
+                                        if let cropped = cropped {
+                                            pickedImage = cropped
+                                        }
+                                        showCropView = false
+                                        imageToCrop = nil
+                                    }
+                                )
+                            }
+                        }
                 }
             }
             .frame(maxWidth: .infinity)
