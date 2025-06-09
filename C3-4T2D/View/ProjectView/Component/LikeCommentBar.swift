@@ -32,7 +32,7 @@ struct LikeCommentBar: View {
                     Image("comment")
                         .resizable()
                         .frame(width: 24, height: 24)
-                    Text("\(commentCount)22")
+                    Text("\(commentCount)")
                         .font(.system(size: 15))
                         .fontWeight(.semibold)
                         .foregroundColor(.gray3)
