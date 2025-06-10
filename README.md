@@ -178,10 +178,3 @@
 
 </div>
 
----
-
-<div align="center">
-
-**Made with ❤️ by Team 4T2D**
-
-</div>
