@@ -13,13 +13,15 @@ struct MainView: View {
 
     @State private var selectedTabIndex: Int = 0
     @State private var sortOrder: SortOrder = .newest
-    @State private var showCameraEdit: Bool = false  // CameraEditView 사용
+    @State private var showCameraEdit: Bool = false // CameraEditView 사용
     @State private var showCreate: Bool = false
     @State private var showActionSheet: Bool = false
     @State private var showSortSheet: Bool = false
     @State private var showProfileSetting: Bool = false
 
     @State private var mainPickedImage: UIImage? // MainView의 pickedImage
+
+    @State private var offset: CGFloat = 0
 
     var sortedProjects: [Project] {
         sortOrder.sort(projects: allProjects)
@@ -52,12 +54,35 @@ struct MainView: View {
 
     var body: some View {
         ZStack(alignment: .top) {
-            Color.white.ignoresSafeArea()
-            MainHeader(user: currentUser, streakNum: streakNum, projectCount: projectCount, postCount: postCount, showProfileSetting: $showProfileSetting)
-                .zIndex(1)
+            VStack(spacing: 0) {
+                Color(hex: "FFD55C")
+                    .frame(height: UIScreen.main.bounds.height * 0.4)
+                Color.white
+            }
+            .ignoresSafeArea()
+//            Color(hex: "FFD55C")
+//                .ignoresSafeArea(edges: .top)
+//            Color.white.ignoresSafeArea()
+            ////            MainHeader(user: currentUser, streakNum: streakNum, projectCount: projectCount, postCount: postCount, showProfileSetting: $showProfileSetting)
+//                .zIndex(1)
             ScrollView(.vertical, showsIndicators: false) {
+                GeometryReader { geo in
+                    Color.clear
+                        .onAppear {
+                            offset = geo.frame(in: .global).minY
+                        }
+                        .onChange(of: geo.frame(in: .global).minY) { newValue in
+                            withAnimation(.easeInOut(duration: 0.2)) {
+                                offset = newValue
+                            }
+                        }
+                }
+                .frame(height: 0)
+
                 VStack(spacing: 0) {
-                    Spacer().frame(height: 100)
+//                    Spacer().frame(height: 100)
+                    MainHeader(user: currentUser, streakNum: streakNum, projectCount: projectCount, postCount: postCount, showProfileSetting: $showProfileSetting)
+
                     VStack(spacing: 0) {
                         HStack {
                             Text("진행중인 과정")
@@ -67,7 +92,7 @@ struct MainView: View {
                             if currentProject != nil {
                                 Menu {
                                     Button {
-                                        showCameraEdit = true  // CameraEditView 사용
+                                        showCameraEdit = true // CameraEditView 사용
                                     } label: {
                                         HStack(spacing: 2) {
                                             Image(systemName: "camera")
@@ -175,6 +200,15 @@ struct MainView: View {
                     .frame(minHeight: UIScreen.main.bounds.height)
                 }
             }
+            .coordinateSpace(name: "scroll")
+            .onPreferenceChange(ScrollOffsetPreferenceKey.self) { value in
+                offset = value
+            }
+
+            // SafeArea 상단 색상
+            Color(backgroundColor(for: offset))
+                .frame(height: UIApplication.shared.windows.first?.safeAreaInsets.top ?? 44)
+                .edgesIgnoringSafeArea(.top)
         }
         //   CameraEditView - 바로 촬영하기용
         .fullScreenCover(isPresented: $showCameraEdit) {
@@ -190,13 +224,13 @@ struct MainView: View {
             )
         }
         .confirmationDialog("진행중인 과정", isPresented: $showActionSheet, titleVisibility: .visible) {
-            Button("바로 촬영하기") { 
+            Button("바로 촬영하기") {
                 showCameraEdit = true
             }
-            Button("과정 기록하기") { 
+            Button("과정 기록하기") {
                 //   과정 기록하기는 이미지 초기화하고 시작
                 mainPickedImage = nil
-                showCreate = true 
+                showCreate = true
             }
             Button("취소", role: .cancel) {}
         }
@@ -207,21 +241,21 @@ struct MainView: View {
             Button("취소", role: .cancel) {}
         }
         .navigationBarBackButtonHidden(true)
-
         .fullScreenCover(isPresented: $showProfileSetting) {
             ProfileSettingView()
         }
     }
-    
+
     // MARK: -   카메라 편집 결과 처리 함수
+
     private func handleCameraEditResult(_ editedImage: UIImage?) {
         if let editedImage = editedImage {
             print("   MainView 바로 촬영 완료: \(editedImage.size)")
             print("🔄 이미지를 mainPickedImage에 할당")
-            
+
             //   이미지 즉시 할당
             mainPickedImage = editedImage
-            
+
             //   이미지 할당 확인 후 CreateView 표시
             DispatchQueue.main.async {
                 if mainPickedImage != nil {
@@ -235,6 +269,23 @@ struct MainView: View {
         } else {
             print("    MainView 바로 촬영 취소")
         }
+    }
+
+    // 스크롤 위치에 따라 색상 변경
+    func backgroundColor(for offset: CGFloat) -> Color {
+        switch offset {
+        case ..<(-40):
+            return .white
+        default:
+            return Color(hex: "FFD55C")
+        }
+    }
+}
+
+struct ScrollOffsetPreferenceKey: PreferenceKey {
+    static var defaultValue: CGFloat = 0
+    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
+        value = nextValue()
     }
 }
 
