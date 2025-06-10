@@ -5,12 +5,8 @@
 //  Edited by Hwnag Jimin on 6/3/25.
 //
 
-// MARK: TODO
-
-// 우측 상단 '+' 버튼 항상 활성화, 버튼 선택시에만 TextField 노출
-
-import SwiftUI
 import SwiftData
+import SwiftUI
 
 struct ProjectSelector: View {
     @Environment(\.modelContext) private var context
@@ -25,6 +21,10 @@ struct ProjectSelector: View {
     @State private var showPostDeleteConfirmation = false
     @State private var postCountToDelete: Int = 0
     @State private var showEmptyProjectAlert = false
+
+    // 스와이프 관련 상태
+    @State private var swipeOffset: [String: CGFloat] = [:]
+    @State private var isSwipeActionVisible: [String: Bool] = [:]
 
     var body: some View {
         VStack {
@@ -90,45 +90,38 @@ struct ProjectSelector: View {
                 .padding(.top, 8)
             }
 
-            // 프로젝트 리스트
-            List {
-                ForEach(projects.sorted { $0.createdAt > $1.createdAt }) { project in
-                    HStack {
-                        Text(project.projectTitle)
-                            .font(.system(size: 16, weight: .medium))
-                            .lineLimit(1)
-                        Spacer()
-                        Text(DateFormatter.projectDateRange(startDate: project.postList.compactMap { $0.createdAt }.min() ?? Date(), endDate: project.finishedAt))
+            ScrollView {
+                LazyVStack(spacing: 0) {
+                    ForEach(Array(projects.sorted { $0.createdAt > $1.createdAt }.enumerated()), id: \.element.id) { index, project in
+                        ProjectRowView(
+                            project: project,
+                            isSelected: selectedProject?.id == project.id,
+                            onTap: {
+                                withAnimation(.easeInOut(duration: 0.2)) {
+                                    selectedProject = project
+                                }
+                            },
+                            onDelete: {
+                                projectToDelete = project
+                                showDeleteConfirmation = true
+                            }
+                        )
 
-                            .font(.caption)
-                            .foregroundColor(.gray)
-                        if selectedProject?.id == project.id {
-                            Image(systemName: "checkmark")
-                                .foregroundColor(.prime1)
+                        if index < projects.sorted(by: { $0.createdAt > $1.createdAt }).count - 1 {
+                            Divider()
                         }
                     }
-                    .contentShape(Rectangle())
-                    .onTapGesture {
-                        selectedProject = project
-                    }
-                    .swipeActions(edge: .trailing, allowsFullSwipe: false) {
-                        Button {
-                            projectToDelete = project
-                            showDeleteConfirmation = true
-                        } label: {
-                            Label("삭제", systemImage: "trash")
-                        }
-                        .tint(.red)
-                    }.listRowInsets(EdgeInsets())
                 }
             }
-            .listStyle(.plain)
             .frame(maxWidth: .infinity)
         }
         .padding(.vertical, 30)
         .padding(.horizontal, 16)
         .onTapGesture {
-            hideKeyboard()
+            if isTextFieldFocuesed {
+                hideKeyboard()
+                isTextFieldFocuesed = false
+            }
         }
         .confirmationDialog("정말 삭제하시겠습니까?", isPresented: $showDeleteConfirmation, titleVisibility: .visible) {
             Button("삭제", role: .destructive) {
@@ -174,11 +167,98 @@ struct ProjectSelector: View {
         let trimmedName = newProjectName.trimmingCharacters(in: .whitespacesAndNewlines)
         guard isAddingProject, !trimmedName.isEmpty else { return }
 
-        // 기존 진행중인 프로젝트 완료 및 새 프로젝트 생성 (헬퍼 함수 사용)
         let newProject = SwiftDataManager.startNewProject(context: context, title: trimmedName)
         selectedProject = newProject
         newProjectName = ""
         isAddingProject = false
+    }
+}
+
+// MARK: - Custom Project Row View
+
+struct ProjectRowView: View {
+    let project: Project
+    let isSelected: Bool
+    let onTap: () -> Void
+    let onDelete: () -> Void
+
+    @State private var swipeOffset: CGFloat = 0
+    @State private var isSwipeActive = false
+
+    private let deleteButtonWidth: CGFloat = 60
+
+    var body: some View {
+        ZStack(alignment: .trailing) {
+            Rectangle()
+                .fill(Color.red)
+                .frame(width: deleteButtonWidth)
+                .overlay(
+                    Button(action: onDelete) {
+                        Image(systemName: "trash")
+                            .foregroundColor(.white)
+                            .font(.system(size: 18, weight: .medium))
+                    }
+                )
+                .opacity(isSwipeActive ? 1 : 0)
+
+            HStack {
+                Text(project.projectTitle)
+                    .font(.system(size: 16, weight: .medium))
+                    .lineLimit(1)
+                    .foregroundColor(.black)
+                Spacer()
+                Text(DateFormatter.projectDateRange(startDate: project.postList.compactMap { $0.createdAt }.min() ?? Date(), endDate: project.finishedAt))
+                    .font(.caption)
+                    .foregroundColor(.gray)
+                if isSelected {
+                    Image(systemName: "checkmark")
+                        .foregroundColor(.prime1)
+                        .font(.system(size: 16, weight: .medium))
+                }
+            }
+            .padding(.vertical, 16)
+            .background(.clear)
+            .contentShape(Rectangle())
+            .offset(x: swipeOffset)
+            .animation(.interactiveSpring(response: 0.3, dampingFraction: 0.7), value: swipeOffset)
+            .gesture(
+                DragGesture()
+                    .onChanged { value in
+                        let translation = value.translation.width
+                        if translation < 0 {
+                            swipeOffset = max(translation, -deleteButtonWidth)
+                        } else if swipeOffset < 0 {
+                            // 오른쪽으로 드래그 -> 바로 0
+                            swipeOffset = min(0, swipeOffset + translation)
+                        }
+                        isSwipeActive = swipeOffset < -10
+                    }
+                    .onEnded { value in
+                        let predictedTranslation = value.predictedEndTranslation.width
+                        if swipeOffset < -deleteButtonWidth / 2 || predictedTranslation < -40 {
+                            swipeOffset = -deleteButtonWidth
+                            isSwipeActive = true
+                        } else {
+                            swipeOffset = 0
+                            isSwipeActive = false
+                        }
+                    }
+            )
+            .simultaneousGesture(
+                TapGesture()
+                    .onEnded { _ in
+                        if isSwipeActive {
+                            withAnimation(.easeInOut(duration: 0.3)) {
+                                swipeOffset = 0
+                                isSwipeActive = false
+                            }
+                        } else {
+                            onTap()
+                        }
+                    }
+            )
+        }
+        .clipped()
     }
 }
 
