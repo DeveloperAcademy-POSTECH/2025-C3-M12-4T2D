@@ -20,7 +20,7 @@ struct LikeCommentBar: View {
                 post.like.toggle()
                 try? modelContext.save()
             }) {
-                (post.like ? Image(systemName: "heart.fill") : Image(systemName: "heart"))
+                (post.like ? Image("like_on") : Image("like_off"))
                     .resizable()
                     .frame(width: 24, height: 24)
                     .foregroundColor(post.like ? .red : .gray)
@@ -28,9 +28,15 @@ struct LikeCommentBar: View {
             Button(action: {
                 onCommentTap()
             }) {
-                Image("comment")
-                Text("\(commentCount)")
-                    .foregroundColor(.gray)
+                HStackLayout(spacing: 2) {
+                    Image("comment")
+                        .resizable()
+                        .frame(width: 24, height: 24)
+                    Text("\(commentCount)")
+                        .font(.system(size: 15))
+                        .fontWeight(.semibold)
+                        .foregroundColor(.gray3)
+                }
             }
             Spacer()
         }
