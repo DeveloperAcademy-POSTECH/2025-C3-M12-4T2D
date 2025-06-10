@@ -15,20 +15,20 @@ struct LikeCommentBar: View {
     @Environment(\.modelContext) private var modelContext
 
     var body: some View {
-        HStack(spacing: 12) {
+        HStack(spacing: 11) {
             Button(action: {
                 post.like.toggle()
                 try? modelContext.save()
             }) {
                 (post.like ? Image("like_on") : Image("like_off"))
                     .resizable()
-                    .frame(width: 24, height: 24)
+                    .frame(width: 25, height: 25)
                     .foregroundColor(post.like ? .red : .gray)
             }
             Button(action: {
                 onCommentTap()
             }) {
-                HStackLayout(spacing: 2) {
+                HStackLayout(spacing: 5) {
                     Image("comment")
                         .resizable()
                         .frame(width: 24, height: 24)
