@@ -25,6 +25,8 @@ struct CreateView: View {
     @State private var selectedDate: Date
     @State private var selectedStage: ProcessStage = .idea
 
+    @Query private var allProjects: [Project]
+
     @Binding var createPickedImage: UIImage?
     var initialProject: Project? = nil
     var initialMemo: String = ""
@@ -143,15 +145,21 @@ struct CreateView: View {
                 }
             }
         }
-    }
+        .onChange(of: allProjects) { _, newProjects in
 
-    // MARK: - Computed Properties
+            if let selected = selectedProject {
+                let projectExists = newProjects.contains { $0.id == selected.id }
+                if !projectExists {
+                    selectedProject = nil
+                    print("선택된 프로젝트가 삭제되어 초기화됨")
+                }
+            }
+        }
+    }
 
     private var isPostValid: Bool {
         selectedProject != nil && (!descriptionText.isEmpty || createPickedImage != nil)
     }
-
-    // MARK: - Private Methods
 
     private func savePost() {
         guard let project = selectedProject else { return }
