@@ -31,6 +31,8 @@ struct PostView: View {
     @State private var editImage: UIImage? = nil
     @State private var showCommentModal = false
     @State private var comments: [Comment] = []
+    @State private var showHeart = false
+    @State private var heartAnim = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
@@ -95,11 +97,45 @@ struct PostView: View {
 
             // 이미지
             if let imageUrl = post.postImageUrl {
-                ImageView(image: imageUrl)
-                    .frame(maxWidth: .infinity)
-                    .clipped()
-                    .padding(.horizontal, -20)
-                    .allowsHitTesting(false)
+                ZStack {
+                    ImageView(image: imageUrl)
+                        .frame(maxWidth: .infinity)
+                        .clipped()
+                        .padding(.horizontal, -20)
+                        .onTapGesture(count: 2) {
+                            if post.like == false {
+                                post.like = true
+                            }
+                            try? modelContext.save()
+                            heartAnim = false
+                            showHeart = true
+                            // 애니메이션 시작
+                            withAnimation(.easeOut(duration: 0.2)) {
+                                heartAnim = true
+                            }
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) {
+                                withAnimation(.easeIn(duration: 0.5)) {
+                                    showHeart = false
+                                    heartAnim = false
+                                }
+                            }
+                        }
+                    if showHeart {
+                        GeometryReader { geo in
+                            Image(systemName: "heart.fill")
+                                .resizable()
+                                .foregroundColor(.white)
+                                .frame(width: 80, height: 80)
+                                .opacity(heartAnim ? 0 : 0.85)
+                                .offset(
+                                    x: heartAnim ? -geo.size.width/2 + 60 : 0, // 좌측 하단으로 이동
+                                    y: heartAnim ? geo.size.height/2 - 60 : 0
+                                )
+                                .position(x: geo.size.width/2, y: geo.size.height/2)
+                        }
+                        .allowsHitTesting(false)
+                    }
+                }
             }
 
             // 메모(설명)
