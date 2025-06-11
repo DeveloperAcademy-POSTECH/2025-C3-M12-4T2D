@@ -66,7 +66,7 @@ struct MainView: View {
                         .onAppear {
                             offset = geo.frame(in: .global).minY
                         }
-                        .onChange(of: geo.frame(in: .global).minY) { oldValue, newValue in
+                        .onChange(of: geo.frame(in: .global).minY) { _, newValue in
                             withAnimation(.easeInOut(duration: 0.2)) {
                                 offset = newValue
                             }

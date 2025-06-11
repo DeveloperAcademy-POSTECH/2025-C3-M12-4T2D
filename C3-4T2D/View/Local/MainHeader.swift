@@ -76,7 +76,7 @@ struct MainHeader: View {
                     }
                 }
                 .frame(height: 80)
-                
+
                 Image("head")
                     .resizable()
                     .scaledToFill()
