@@ -21,6 +21,8 @@ struct MainView: View {
 
     @State private var mainPickedImage: UIImage? // MainView의 pickedImage
 
+    @State private var offset: CGFloat = 0
+
     var sortedProjects: [Project] {
         sortOrder.sort(projects: allProjects)
     }
@@ -62,12 +64,29 @@ struct MainView: View {
 
     var body: some View {
         ZStack(alignment: .top) {
-            Color.white.ignoresSafeArea()
-            MainHeader(user: currentUser, streakNum: streakNum, projectCount: projectCount, postCount: postCount, showProfileSetting: $showProfileSetting)
-                .zIndex(1)
+            VStack(spacing: 0) {
+                Color(hex: "FFD55C")
+                    .frame(height: UIScreen.main.bounds.height * 0.4)
+                Color.white
+            }
+            .ignoresSafeArea()
             ScrollView(.vertical, showsIndicators: false) {
+                GeometryReader { geo in
+                    Color.clear
+                        .onAppear {
+                            offset = geo.frame(in: .global).minY
+                        }
+                        .onChange(of: geo.frame(in: .global).minY) { _, newValue in
+                            withAnimation(.easeInOut(duration: 0.2)) {
+                                offset = newValue
+                            }
+                        }
+                }
+                .frame(height: 0)
+
                 VStack(spacing: 0) {
-                    Spacer().frame(height: 100)
+                    MainHeader(user: currentUser, streakNum: streakNum, projectCount: projectCount, postCount: postCount, showProfileSetting: $showProfileSetting)
+
                     VStack(spacing: 0) {
                         HStack {
                             Text("진행중인 과정")
@@ -207,6 +226,15 @@ struct MainView: View {
                     .frame(minHeight: UIScreen.main.bounds.height)
                 }
             }
+            .coordinateSpace(name: "scroll")
+            .onPreferenceChange(ScrollOffsetPreferenceKey.self) { value in
+                offset = value
+            }
+
+            // SafeArea 상단 색상
+            Color(backgroundColor(for: offset))
+                .frame(height: UIApplication.shared.windows.first?.safeAreaInsets.top ?? 44)
+                .edgesIgnoringSafeArea(.top)
         }
         //   CameraEditView - 바로 촬영하기용
         .fullScreenCover(isPresented: $showCameraEdit) {
@@ -267,6 +295,23 @@ struct MainView: View {
         } else {
             print("    MainView 바로 촬영 취소")
         }
+    }
+
+    // 스크롤 위치에 따라 색상 변경
+    func backgroundColor(for offset: CGFloat) -> Color {
+        switch offset {
+        case ..<(-40):
+            return .white
+        default:
+            return Color(hex: "FFD55C")
+        }
+    }
+}
+
+struct ScrollOffsetPreferenceKey: PreferenceKey {
+    static var defaultValue: CGFloat = 0
+    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
+        value = nextValue()
     }
 }
 
