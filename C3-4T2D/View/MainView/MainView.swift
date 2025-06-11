@@ -60,18 +60,13 @@ struct MainView: View {
                 Color.white
             }
             .ignoresSafeArea()
-//            Color(hex: "FFD55C")
-//                .ignoresSafeArea(edges: .top)
-//            Color.white.ignoresSafeArea()
-            ////            MainHeader(user: currentUser, streakNum: streakNum, projectCount: projectCount, postCount: postCount, showProfileSetting: $showProfileSetting)
-//                .zIndex(1)
             ScrollView(.vertical, showsIndicators: false) {
                 GeometryReader { geo in
                     Color.clear
                         .onAppear {
                             offset = geo.frame(in: .global).minY
                         }
-                        .onChange(of: geo.frame(in: .global).minY) { newValue in
+                        .onChange(of: geo.frame(in: .global).minY) { oldValue, newValue in
                             withAnimation(.easeInOut(duration: 0.2)) {
                                 offset = newValue
                             }
@@ -80,7 +75,6 @@ struct MainView: View {
                 .frame(height: 0)
 
                 VStack(spacing: 0) {
-//                    Spacer().frame(height: 100)
                     MainHeader(user: currentUser, streakNum: streakNum, projectCount: projectCount, postCount: postCount, showProfileSetting: $showProfileSetting)
 
                     VStack(spacing: 0) {

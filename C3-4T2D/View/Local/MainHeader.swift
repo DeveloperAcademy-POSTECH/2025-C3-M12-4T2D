@@ -13,7 +13,6 @@ struct MainHeader: View {
                 // 노랑 Header
                 ZStack(alignment: .bottom) {
                     Color(hex: "FFD55C")
-//                    Color.green
                         .ignoresSafeArea(edges: .top)
                     VStack(alignment: .leading, spacing: 0) {
                         HStack(alignment: .center, spacing: 12) {
@@ -75,16 +74,6 @@ struct MainHeader: View {
                         .padding(.horizontal, 20)
                         .padding(.bottom, 8)
                     }
-                    //            VStack {
-                    //                Spacer()
-                    //                Image("head")
-                    //                    .resizable()
-                    //                    .scaledToFill()
-                    //                    .frame(maxWidth: .infinity)
-                    //                    .frame(height: 42)
-                    //                    .clipped()
-                    //                    .offset(y: 0)
-                    //            }
                 }
                 .frame(height: 80)
                 
@@ -94,7 +83,6 @@ struct MainHeader: View {
                     .frame(maxWidth: .infinity)
                     .frame(height: 42)
                     .clipped()
-//                    .offset(y: 0)
             }
         }
     }
