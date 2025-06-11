@@ -165,7 +165,7 @@
 
 | <img src="https://github.com/zz6cherry.png" width="100"/><br/>**Cherry**<br/>[@zz6cherry](https://github.com/zz6cherry)<br/>PM • iOS Developer | <img src="https://github.com/Gojaehyun.png" width="100"/><br/>**Jaehyun**<br/>[@Gojaehyun](https://github.com/Gojaehyun)<br/>iOS Developer | <img src="https://github.com/bishoe01.png" width="100"/><br/>**Bishoe**<br/>[@bishoe01](https://github.com/bishoe01)<br/>iOS Developer |
 |:---:|:---:|:---:|
-| <img src="https://github.com/hiseyeon.png" width="100"/><br/>**Seyeon**<br/>[@hiseyeon](https://github.com/hiseyeon)<br/>iOS Developer | <img src="https://github.com/chawj1234.png" width="100"/><br/>**Woojin**<br/>[@chawj1234](https://github.com/chawj1234)<br/>iOS Developer | <img src="https://github.com/RoastedJM.png" width="100"/><br/>**Jaemin**<br/>[@RoastedJM](https://github.com/RoastedJM)<br/>iOS Developer |
+| <img src="https://github.com/hiseyeon.png" width="100"/><br/>**Sena**<br/>[@hiseyeon](https://github.com/hiseyeon)<br/>iOS Developer | <img src="https://github.com/chawj1234.png" width="100"/><br/>**Wonjun**<br/>[@chawj1234](https://github.com/chawj1234)<br/>iOS Developer | <img src="https://github.com/RoastedJM.png" width="100"/><br/>**kave**<br/>[@RoastedJM](https://github.com/RoastedJM)<br/>iOS Developer |
 
 </div>
 
