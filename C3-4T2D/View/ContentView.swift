@@ -11,6 +11,7 @@ import SwiftUI
 struct ContentView: View {
     @State private var router = Router()
     @Query var users: [User]
+    @Query private var allProjects: [Project]
     @Environment(\.modelContext) private var modelContext
     @Environment(\.scenePhase) private var scenePhase
 
@@ -22,6 +23,8 @@ struct ContentView: View {
                 Group {
                     if users.isEmpty {
                         OnboardingView()
+                    } else if allProjects.isEmpty {
+                        EmptyStateMainView()
                     } else {
                         MainView()
                     }
@@ -36,6 +39,15 @@ struct ContentView: View {
                         SplashView2()
                     case .ProjectListView(let project):
                         ProjectList(project)
+                    case .homeView:
+                        // 온보딩 완료 후 홈으로 가는 경우 - 프로젝트 유무에 따라 분기
+                        Group {
+                            if allProjects.isEmpty {
+                                EmptyStateMainView()
+                            } else {
+                                MainView()
+                            }
+                        }
                     case .projectDetailView:
                         Text("projectDetailView")
                     case .postDetailView(let post, let project):

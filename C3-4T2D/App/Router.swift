@@ -29,6 +29,7 @@ enum Destination: Hashable {
     case mainView
     case splashView2
     case ProjectListView(Project)
+    case homeView  // 온보딩 완료 후 홈으로 가는 새로운 destination
 
     /* projectDetailView(Project) 이런식으로 나중에 필요에따라 데이터 넘겨주기도 가능함 */
     case projectDetailView
