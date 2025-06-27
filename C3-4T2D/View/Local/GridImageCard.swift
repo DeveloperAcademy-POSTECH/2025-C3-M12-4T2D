@@ -37,7 +37,7 @@ struct GridImageCard: View {
                 }
                 .onTapGesture {
                     if let project = post.project {
-                        router.navigate(to: .ProjectListView(project))
+                        router.navigate(to: .postDetailView(post, project))
                     }
                 }
             }

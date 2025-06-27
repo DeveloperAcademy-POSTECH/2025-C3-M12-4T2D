@@ -38,8 +38,8 @@ struct ContentView: View {
                         ProjectList(project)
                     case .projectDetailView:
                         Text("projectDetailView")
-                    case .postDetailView:
-                        Text("postDetailView")
+                    case .postDetailView(let post, let project):
+                        PostView(post: post, project: project)
                     case .createView:
                         Text("createView")
                     case .profileSettingView:
