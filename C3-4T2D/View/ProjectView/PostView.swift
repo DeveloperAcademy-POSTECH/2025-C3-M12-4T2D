@@ -17,6 +17,7 @@ struct EnableSwipeBackGesture: UIViewControllerRepresentable {
         }
         return controller
     }
+
     func updateUIViewController(_ uiViewController: UIViewController, context: Context) {}
 }
 
@@ -90,10 +91,10 @@ struct PostView: View {
             }
             // 날짜
             Text(DateFormatter.timestampFormatter.string(from: post.createdAt))
-                .font(.subheadline)
+                .font(.system(size: 11))
                 .foregroundColor(.gray)
-                .padding(.bottom, 4)
-                .padding(.top, -12)
+                .padding(.bottom, 2)
+                .padding(.top, -15)
 
             // 이미지
             if let imageUrl = post.postImageUrl {
@@ -102,6 +103,7 @@ struct PostView: View {
                         .frame(maxWidth: .infinity)
                         .clipped()
                         .padding(.horizontal, -20)
+                        .padding(.bottom, 2)
                         .onTapGesture(count: 2) {
                             if post.like == false {
                                 post.like = true
@@ -142,7 +144,6 @@ struct PostView: View {
             if let memo = post.memo, !memo.isEmpty {
                 Text(memo)
                     .font(.body)
-                    .padding(.top, 8)
             }
 
             LikeCommentBar(post: post, commentCount: comments.count, onCommentTap: { showCommentModal = true })
