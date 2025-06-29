@@ -89,8 +89,7 @@ struct SplashView2: View {
             VStack {
                 Spacer()
                 Button(action: {
-                    // MainView로 이동 -> Root로하면 후진 애니메이션됨
-                    router.navigate(to: .mainView)
+                    router.navigate(to: .homeView)
                 }) {
                     Text("시작하기")
                         .font(.headline)
